@@ -1,0 +1,18 @@
+
+    "Healthy"   <<102499006 OR 160245001
+    "Alcoholic Liver Disease"   <<41309000
+    "Chronic Liver Disease / Cirrhosis" <<328383001
+    "Type 2 Diabetes Mellitus"  <<44054006
+    "Essential Hypertension"    <<38341003
+    "Hyperlipidaemia"   <<55822004
+    "Ischaemic Heart Disease"   <<414545008
+    "Heart Failure (Chronic)"   <<48447003
+    "Chronic Kidney Disease (Stage 3-4)"    <<709044004
+    "COPD"  <<13645005
+    "Nonalcoholic Fatty Liver Disease (NAFLD)"  <<197321007 MINUS <<50325005
+    "Osteoarthritis"    <<396275006
+    "Rheumatoid Arthritis"  <<69896004
+    "Hypothyroidism"    <<40930008
+    "Hyperthyroidism"   <<34486009
+    "Iron Deficiency Anaemia"   <<87522002
+    "Hypothyroidism (alternative)"  <<40930008
