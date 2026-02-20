@@ -1,0 +1,36 @@
+[project]
+name = "data-golf"
+version = "0.1.0"
+description = "Synthetic patient data generator for data-golf exercise"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "openpyxl>=3.1",
+    "requests>=2.28",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+data-golf = "generate:main"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[tool.setuptools.packages.find]
+include = ["common*", "conditions*", "laboratory*", "population*", "formatters*"]
+
+[tool.setuptools.package-data]
+conditions = ["*.json"]
+laboratory = ["*.json"]
+population = ["data/*.xlsx"]
+
+[tool.ruff]
+line-length = 100
