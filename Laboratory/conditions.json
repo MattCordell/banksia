@@ -1,0 +1,541 @@
+{
+  "Healthy": {
+    "inherits": null,
+    "panel_overrides": {},
+    "notes": "Master baseline"
+  },
+  "Alcoholic Liver Disease": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "LFT": {
+        "ALT (U/L)": {
+          "mean": 150,
+          "sd": 80,
+          "min": 30,
+          "max": 1200,
+          "distribution": "lognormal"
+        },
+        "AST (U/L)": {
+          "mean": 220,
+          "sd": 100,
+          "min": 40,
+          "max": 2000,
+          "distribution": "lognormal"
+        },
+        "GGT (U/L)": {
+          "mean": 500,
+          "sd": 300,
+          "min": 50,
+          "max": 3000,
+          "distribution": "lognormal"
+        },
+        "Total Bilirubin (\u00b5mol/L)": {
+          "mean": 60,
+          "sd": 40,
+          "min": 6,
+          "max": 800,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 28,
+          "sd": 8,
+          "min": 8,
+          "max": 45,
+          "distribution": "normal"
+        }
+      },
+      "FBC": {
+        "MCV (fL)": {
+          "mean": 110,
+          "sd": 8,
+          "min": 95,
+          "max": 150,
+          "distribution": "normal"
+        },
+        "Haemoglobin (g/L)": {
+          "mean": 120,
+          "sd": 18,
+          "min": 70,
+          "max": 160,
+          "distribution": "normal"
+        }
+      },
+      "Iron Studies": {
+        "Ferritin (\u00b5g/L)": {
+          "mean": 900,
+          "sd": 600,
+          "min": 50,
+          "max": 8000,
+          "distribution": "lognormal"
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 12,
+          "sd": 30,
+          "min": 0.5,
+          "max": 2000,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Chronic Liver Disease / Cirrhosis": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "LFT": {
+        "ALT (U/L)": {
+          "mean": 120,
+          "sd": 100,
+          "min": 15,
+          "max": 4000,
+          "distribution": "lognormal"
+        },
+        "AST (U/L)": {
+          "mean": 200,
+          "sd": 150,
+          "min": 20,
+          "max": 4000,
+          "distribution": "lognormal"
+        },
+        "ALP (U/L)": {
+          "mean": 300,
+          "sd": 240,
+          "min": 40,
+          "max": 4000,
+          "distribution": "lognormal"
+        },
+        "Total Bilirubin (\u00b5mol/L)": {
+          "mean": 120,
+          "sd": 200,
+          "min": 10,
+          "max": 10000,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 26,
+          "sd": 10,
+          "min": 8,
+          "max": 45,
+          "distribution": "normal"
+        }
+      },
+      "FBC": {
+        "Platelets (\u00d710^9/L)": {
+          "mean": 60,
+          "sd": 50,
+          "min": 5,
+          "max": 250,
+          "distribution": "lognormal"
+        },
+        "Haemoglobin (g/L)": {
+          "mean": 110,
+          "sd": 20,
+          "min": 40,
+          "max": 160,
+          "distribution": "normal"
+        }
+      },
+      "Iron Studies": {
+        "Ferritin (\u00b5g/L)": {
+          "mean": 700,
+          "sd": 800,
+          "min": 10,
+          "max": 10000,
+          "distribution": "lognormal"
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 20,
+          "sd": 40,
+          "min": 0.5,
+          "max": 3000,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Type 2 Diabetes Mellitus": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "MBAP": {
+        "Glucose (fasting) (mmol/L)": {
+          "mean": 9.5,
+          "sd": 3.5,
+          "min": 4.0,
+          "max": 40,
+          "distribution": "lognormal"
+        }
+      },
+      "Lipid Panel": {
+        "Triglycerides (mmol/L)": {
+          "mean": 2.8,
+          "sd": 1.4,
+          "min": 0.7,
+          "max": 30,
+          "distribution": "lognormal"
+        },
+        "HDL (mmol/L)": {
+          "mean": 1.0,
+          "sd": 0.35,
+          "min": 0.3,
+          "max": 2.0,
+          "distribution": "normal"
+        }
+      },
+      "Kidney Function": {
+        "Creatinine (\u00b5mol/L)": {
+          "mean": 110,
+          "sd": 55,
+          "min": 40,
+          "max": 1600,
+          "distribution": "lognormal"
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 6,
+          "sd": 12,
+          "min": 0.2,
+          "max": 1000,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Essential Hypertension": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "Lipid Panel": {
+        "Total Cholesterol (mmol/L)": {
+          "mean": 6.0,
+          "sd": 1.6,
+          "min": 3.0,
+          "max": 14,
+          "distribution": "normal"
+        }
+      },
+      "MBAP": {
+        "Sodium (mmol/L)": {
+          "mean": 139,
+          "sd": 4,
+          "min": 120,
+          "max": 160,
+          "distribution": "normal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Hyperlipidaemia": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "Lipid Panel": {
+        "Total Cholesterol (mmol/L)": {
+          "mean": 7.0,
+          "sd": 2.0,
+          "min": 3.5,
+          "max": 18,
+          "distribution": "normal"
+        },
+        "LDL (mmol/L)": {
+          "mean": 5.0,
+          "sd": 1.8,
+          "min": 1.0,
+          "max": 14,
+          "distribution": "normal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Ischaemic Heart Disease": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "Lipid Panel": {
+        "Total Cholesterol (mmol/L)": {
+          "mean": 6.5,
+          "sd": 1.8,
+          "min": 3.0,
+          "max": 15,
+          "distribution": "normal"
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 8.0,
+          "sd": 12,
+          "min": 0.5,
+          "max": 800,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Heart Failure (Chronic)": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "MBAP": {
+        "Sodium (mmol/L)": {
+          "mean": 133,
+          "sd": 5,
+          "min": 115,
+          "max": 150,
+          "distribution": "normal"
+        },
+        "Urea (mmol/L)": {
+          "mean": 10,
+          "sd": 8,
+          "min": 3,
+          "max": 200,
+          "distribution": "lognormal"
+        }
+      },
+      "Kidney Function": {
+        "Creatinine (\u00b5mol/L)": {
+          "mean": 140,
+          "sd": 100,
+          "min": 40,
+          "max": 2000,
+          "distribution": "lognormal"
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 10,
+          "sd": 20,
+          "min": 0.3,
+          "max": 2000,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Chronic Kidney Disease (Stage 3-4)": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "Kidney Function": {
+        "Creatinine (\u00b5mol/L)": {
+          "mean": 300,
+          "sd": 150,
+          "min": 80,
+          "max": 5000,
+          "distribution": "lognormal"
+        },
+        "Urea (mmol/L)": {
+          "mean": 20,
+          "sd": 10,
+          "min": 6,
+          "max": 500,
+          "distribution": "lognormal"
+        }
+      },
+      "FBC": {
+        "Haemoglobin (g/L)": {
+          "mean": 100,
+          "sd": 20,
+          "min": 50,
+          "max": 150,
+          "distribution": "normal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "COPD": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "FBC": {
+        "WBC (\u00d710^9/L)": {
+          "mean": 9.5,
+          "sd": 4.0,
+          "min": 3.5,
+          "max": 40,
+          "distribution": "lognormal"
+        },
+        "Haemoglobin (g/L)": {
+          "mean": 155,
+          "sd": 25,
+          "min": 90,
+          "max": 210,
+          "distribution": "normal"
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 25,
+          "sd": 50,
+          "min": 0.5,
+          "max": 5000,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Nonalcoholic Fatty Liver Disease (NAFLD)": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "LFT": {
+        "ALT (U/L)": {
+          "mean": 85,
+          "sd": 60,
+          "min": 20,
+          "max": 1500,
+          "distribution": "lognormal"
+        },
+        "GGT (U/L)": {
+          "mean": 150,
+          "sd": 120,
+          "min": 30,
+          "max": 2000,
+          "distribution": "lognormal"
+        }
+      },
+      "Lipid Panel": {
+        "Triglycerides (mmol/L)": {
+          "mean": 2.9,
+          "sd": 1.6,
+          "min": 0.7,
+          "max": 20,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Osteoarthritis": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 4.5,
+          "sd": 6,
+          "min": 0.1,
+          "max": 400,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Rheumatoid Arthritis": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 30,
+          "sd": 60,
+          "min": 1,
+          "max": 4000,
+          "distribution": "lognormal"
+        }
+      },
+      "FBC": {
+        "Platelets (\u00d710^9/L)": {
+          "mean": 380,
+          "sd": 140,
+          "min": 120,
+          "max": 1500,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Hypothyroidism": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "Thyroid Panel": {
+        "TSH (mIU/L)": {
+          "mean": 12,
+          "sd": 10,
+          "min": 0.1,
+          "max": 500,
+          "distribution": "lognormal"
+        },
+        "Free T4 (pmol/L)": {
+          "mean": 8.5,
+          "sd": 3.5,
+          "min": 3,
+          "max": 30,
+          "distribution": "normal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Hyperthyroidism": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "Thyroid Panel": {
+        "TSH (mIU/L)": {
+          "mean": 0.03,
+          "sd": 0.05,
+          "min": 0.0001,
+          "max": 3.0,
+          "distribution": "lognormal"
+        },
+        "Free T4 (pmol/L)": {
+          "mean": 28,
+          "sd": 8,
+          "min": 10,
+          "max": 80,
+          "distribution": "normal"
+        }
+      }
+    },
+    "notes": ""
+  },
+  "Iron Deficiency Anaemia": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "FBC": {
+        "Haemoglobin (g/L)": {
+          "mean": 80,
+          "sd": 12,
+          "min": 30,
+          "max": 120,
+          "distribution": "normal"
+        },
+        "MCV (fL)": {
+          "mean": 70,
+          "sd": 6,
+          "min": 50,
+          "max": 95,
+          "distribution": "normal"
+        }
+      },
+      "Iron Studies": {
+        "Ferritin (\u00b5g/L)": {
+          "mean": 8,
+          "sd": 6,
+          "min": 1,
+          "max": 60,
+          "distribution": "lognormal"
+        },
+        "Serum Iron (\u00b5mol/L)": {
+          "mean": 6,
+          "sd": 4,
+          "min": 1,
+          "max": 30,
+          "distribution": "lognormal"
+        },
+        "Transferrin Saturation (%)": {
+          "mean": 10,
+          "sd": 8,
+          "min": 1,
+          "max": 60,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": ""
+  }
+}

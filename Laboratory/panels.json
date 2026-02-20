@@ -1,0 +1,414 @@
+{
+  "MBAP": {
+    "Sodium (mmol/L)": {
+      "distribution": "normal",
+      "mean": 140,
+      "sd": 2.5,
+      "min": 115,
+      "max": 160
+    },
+    "Potassium (mmol/L)": {
+      "distribution": "normal",
+      "mean": 4.35,
+      "sd": 0.43,
+      "min": 2.5,
+      "max": 7.0
+    },
+    "Chloride (mmol/L)": {
+      "distribution": "normal",
+      "mean": 102.5,
+      "sd": 3.75,
+      "min": 80,
+      "max": 125
+    },
+    "Bicarbonate (mmol/L)": {
+      "distribution": "normal",
+      "mean": 27,
+      "sd": 2.5,
+      "min": 8,
+      "max": 45
+    },
+    "Anion Gap (mmol/L)": {
+      "calculated": true,
+      "formula": "anion_gap"
+    },
+    "Calcium (corrected) (mmol/L)": {
+      "distribution": "normal",
+      "mean": 2.35,
+      "sd": 0.125,
+      "min": 1.5,
+      "max": 3.5
+    },
+    "Phosphate (mmol/L)": {
+      "distribution": "normal",
+      "mean": 1.13,
+      "sd": 0.19,
+      "min": 0.3,
+      "max": 3.0
+    },
+    "Urea (mmol/L)": {
+      "distribution": "lognormal",
+      "mean": 5.5,
+      "sd": 1.5,
+      "min": 1.5,
+      "max": 80
+    },
+    "Urate (\u00b5mol/L)": {
+      "distribution": "lognormal",
+      "mean": 320,
+      "sd": 70,
+      "min": 100,
+      "max": 900
+    },
+    "Creatinine (\u00b5mol/L)": {
+      "distribution": "lognormal",
+      "mean": 80,
+      "sd": 15,
+      "min": 20,
+      "max": 1500
+    },
+    "eGFR (mL/min/1.73m\u00b2)": {
+      "calculated": true,
+      "formula": "ckd_epi_2021"
+    },
+    "Glucose (fasting) (mmol/L)": {
+      "distribution": "lognormal",
+      "mean": 4.8,
+      "sd": 0.5,
+      "min": 2.0,
+      "max": 40
+    },
+    "Total Protein (g/L)": {
+      "distribution": "normal",
+      "mean": 70,
+      "sd": 5,
+      "min": 30,
+      "max": 120
+    },
+    "Albumin (g/L)": {
+      "distribution": "normal",
+      "mean": 42,
+      "sd": 3.5,
+      "min": 10,
+      "max": 55
+    },
+    "Globulin (g/L)": {
+      "distribution": "normal",
+      "mean": 28,
+      "sd": 4,
+      "min": 12,
+      "max": 60
+    },
+    "Total Bilirubin (\u00b5mol/L)": {
+      "distribution": "lognormal",
+      "mean": 10,
+      "sd": 5,
+      "min": 2,
+      "max": 500
+    },
+    "ALP (U/L)": {
+      "distribution": "lognormal",
+      "mean": 70,
+      "sd": 20,
+      "min": 20,
+      "max": 2000
+    },
+    "AST (U/L)": {
+      "distribution": "lognormal",
+      "mean": 22,
+      "sd": 8,
+      "min": 5,
+      "max": 4000
+    },
+    "ALT (U/L)": {
+      "distribution": "lognormal",
+      "mean": 25,
+      "sd": 12,
+      "min": 5,
+      "max": 4000
+    },
+    "GGT (U/L)": {
+      "distribution": "lognormal",
+      "mean": 25,
+      "sd": 15,
+      "min": 5,
+      "max": 3000
+    },
+    "LDH (U/L)": {
+      "distribution": "lognormal",
+      "mean": 185,
+      "sd": 33,
+      "min": 50,
+      "max": 2000
+    },
+    "Cholesterol (mmol/L)": {
+      "distribution": "normal",
+      "mean": 5.2,
+      "sd": 1.3,
+      "min": 2.5,
+      "max": 12
+    }
+  },
+  "FBC": {
+    "WBC (\u00d710^9/L)": {
+      "distribution": "lognormal",
+      "mean": 6.5,
+      "sd": 1.6,
+      "min": 3.0,
+      "max": 18
+    },
+    "Haemoglobin (g/L)": {
+      "distribution": "normal",
+      "mean": 145,
+      "sd": 13,
+      "min": 80,
+      "max": 180
+    },
+    "Platelets (\u00d710^9/L)": {
+      "distribution": "lognormal",
+      "mean": 250,
+      "sd": 70,
+      "min": 50,
+      "max": 700
+    },
+    "MCV (fL)": {
+      "distribution": "normal",
+      "mean": 90,
+      "sd": 6,
+      "min": 60,
+      "max": 130
+    },
+    "differential_props": {
+      "neutrophils": 0.55,
+      "lymphocytes": 0.3,
+      "monocytes": 0.06,
+      "eosinophils": 0.07,
+      "basophils": 0.02
+    }
+  },
+  "LFT": {
+    "ALT (U/L)": {
+      "distribution": "lognormal",
+      "mean": 25,
+      "sd": 12,
+      "min": 5,
+      "max": 4000
+    },
+    "AST (U/L)": {
+      "distribution": "lognormal",
+      "mean": 22,
+      "sd": 8,
+      "min": 5,
+      "max": 4000
+    },
+    "GGT (U/L)": {
+      "distribution": "lognormal",
+      "mean": 25,
+      "sd": 15,
+      "min": 5,
+      "max": 3000
+    },
+    "ALP (U/L)": {
+      "distribution": "lognormal",
+      "mean": 70,
+      "sd": 20,
+      "min": 20,
+      "max": 2000
+    },
+    "Total Bilirubin (\u00b5mol/L)": {
+      "distribution": "lognormal",
+      "mean": 10,
+      "sd": 5,
+      "min": 2,
+      "max": 500
+    },
+    "Albumin (g/L)": {
+      "distribution": "normal",
+      "mean": 42,
+      "sd": 3.5,
+      "min": 10,
+      "max": 55
+    }
+  },
+  "Lipid Panel": {
+    "Total Cholesterol (mmol/L)": {
+      "distribution": "normal",
+      "mean": 5.2,
+      "sd": 1.3,
+      "min": 2.5,
+      "max": 12
+    },
+    "HDL (mmol/L)": {
+      "distribution": "normal",
+      "mean": 1.3,
+      "sd": 0.4,
+      "min": 0.3,
+      "max": 3.0
+    },
+    "LDL (mmol/L)": {
+      "distribution": "normal",
+      "mean": 3.0,
+      "sd": 1.0,
+      "min": 0.5,
+      "max": 10
+    },
+    "Triglycerides (mmol/L)": {
+      "distribution": "lognormal",
+      "mean": 1.6,
+      "sd": 1.0,
+      "min": 0.3,
+      "max": 25
+    }
+  },
+  "Iron Studies": {
+    "Ferritin (\u00b5g/L)": {
+      "distribution": "lognormal",
+      "mean": 120,
+      "sd": 200,
+      "min": 2,
+      "max": 5000
+    },
+    "Serum Iron (\u00b5mol/L)": {
+      "distribution": "lognormal",
+      "mean": 18,
+      "sd": 8,
+      "min": 2,
+      "max": 60
+    },
+    "Transferrin (g/L)": {
+      "distribution": "normal",
+      "mean": 2.3,
+      "sd": 0.4,
+      "min": 1.0,
+      "max": 4.5
+    },
+    "Transferrin Saturation (%)": {
+      "distribution": "lognormal",
+      "mean": 25,
+      "sd": 15,
+      "min": 2,
+      "max": 90
+    }
+  },
+  "Thyroid Panel": {
+    "TSH (mIU/L)": {
+      "distribution": "lognormal",
+      "mean": 2.0,
+      "sd": 1.5,
+      "min": 0.01,
+      "max": 100
+    },
+    "Free T4 (pmol/L)": {
+      "distribution": "normal",
+      "mean": 15,
+      "sd": 3,
+      "min": 5,
+      "max": 40
+    }
+  },
+  "Bone Profile": {
+    "Calcium (mmol/L)": {
+      "distribution": "normal",
+      "mean": 2.35,
+      "sd": 0.125,
+      "min": 1.5,
+      "max": 3.5
+    },
+    "Phosphate (mmol/L)": {
+      "distribution": "normal",
+      "mean": 1.13,
+      "sd": 0.19,
+      "min": 0.3,
+      "max": 3.0
+    },
+    "ALP (U/L)": {
+      "distribution": "lognormal",
+      "mean": 70,
+      "sd": 20,
+      "min": 20,
+      "max": 2000
+    }
+  },
+  "B12 & Folate": {
+    "Vitamin B12 (pmol/L)": {
+      "distribution": "lognormal",
+      "mean": 300,
+      "sd": 150,
+      "min": 50,
+      "max": 2000
+    },
+    "Folate (nmol/L)": {
+      "distribution": "lognormal",
+      "mean": 6.0,
+      "sd": 3.0,
+      "min": 1.0,
+      "max": 50
+    }
+  },
+  "Kidney Function": {
+    "Sodium (mmol/L)": {
+      "distribution": "normal",
+      "mean": 140,
+      "sd": 2.5,
+      "min": 115,
+      "max": 160
+    },
+    "Potassium (mmol/L)": {
+      "distribution": "normal",
+      "mean": 4.35,
+      "sd": 0.43,
+      "min": 2.5,
+      "max": 7.0
+    },
+    "Urea (mmol/L)": {
+      "distribution": "lognormal",
+      "mean": 5.5,
+      "sd": 1.5,
+      "min": 1.5,
+      "max": 80
+    },
+    "Creatinine (\u00b5mol/L)": {
+      "distribution": "lognormal",
+      "mean": 80,
+      "sd": 15,
+      "min": 20,
+      "max": 1500
+    },
+    "eGFR (mL/min/1.73m\u00b2)": {
+      "calculated": true,
+      "formula": "ckd_epi_2021"
+    }
+  },
+  "Immunoglobulins": {
+    "IgG (g/L)": {
+      "distribution": "normal",
+      "mean": 12,
+      "sd": 3,
+      "min": 4,
+      "max": 30
+    },
+    "IgA (g/L)": {
+      "distribution": "normal",
+      "mean": 2.5,
+      "sd": 1.0,
+      "min": 0.5,
+      "max": 10
+    },
+    "IgM (g/L)": {
+      "distribution": "normal",
+      "mean": 1.2,
+      "sd": 0.5,
+      "min": 0.2,
+      "max": 6
+    }
+  },
+  "CRP": {
+    "CRP (mg/L)": {
+      "distribution": "lognormal",
+      "mean": 3.0,
+      "sd": 8.0,
+      "min": 0.0,
+      "max": 2000
+    }
+  }
+}
