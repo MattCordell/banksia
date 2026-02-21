@@ -1,6 +1,6 @@
 {
   "female_specific": {
-    "ecl": " ((<404684003:363698007=<<1086007) OR (<404684003 {{ term = \"female\"}}))",
+    "ecl": " ((<404684003:363698007=<<1086007) OR (<404684003 {{ term = \"female\"}}) OR <<106002000 OR (<404684003:246454002=(<<1348300002 OR <<309605003)))",
     "exclude_when": { "sex": ["male"] }
   },
   "male_specific": {
@@ -19,12 +19,25 @@
     "ecl": "((<404684003:246454002=<<3658006) OR (<404684003 {{ term = \"infant\"}}))",
     "exclude_when": { "min_age": 3 }
   },
+  "paediatric_specific": {
+    "ecl": "((<404684003:246454002=<<255398004) OR (<404684003 {{ term = (\"paediatric\" \"child\")}}))",
+    "exclude_when": { "min_age": 18 }
+  },
+    "Adolescent _specific": {
+    "ecl": "((<404684003:246454002=<<263659003) OR <<237812002 OR (<404684003 {{ term = (\"adolescent\" \"puberty\")}}))",
+    "exclude_when": { "max_age": 10, "min_age": 18 }
+  },
   "adult_specific": {
     "ecl": "((<404684003:246454002=<<41847000) OR (<404684003 {{ term = \"adult\"}}))",
     "exclude_when": { "max_age": 17 }
   },
-  "paediatric_specific": {
-    "ecl": "((<404684003:246454002=<<255398004) OR (<404684003 {{ term = \"paediatric\"}}))",
-    "exclude_when": { "min_age": 18 }
+  "perimenopause_specific": {
+    "ecl": "((<404684003:246454002=<<309605003) OR <<276477006 OR <<266607004)",
+    "exclude_when": { "sex": ["male"], "max_age": 45 }
+  },
+  "elder_specific": {
+    "ecl": "((<404684003:246454002=<<271872005) OR (<404684003 {{ term = (\"elder\" \"senile\")}}))",
+    "exclude_when": { "max_age": 65 }
   }
+
 }
