@@ -26,6 +26,8 @@ def _assign_snomed(ctx, tx_server, snomed_edition, no_snomed):
         return
     result = resolve_snomed_code(
         ctx.condition,
+        sex=ctx.sex,
+        age=ctx.age,
         tx_server=tx_server,
         edition=snomed_edition,
     )

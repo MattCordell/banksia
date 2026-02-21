@@ -1,15 +1,19 @@
 """Condition assignment based on Australian epidemiological prevalence data."""
 
 import json
+import logging
 import random
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
 from common.types import PatientContext
 from .snomed import expand_ecl, DEFAULT_TX_SERVER
 
+logger = logging.getLogger(__name__)
+
 _EPIDEMIOLOGY_PATH = Path(__file__).parent / "epidemiology.json"
+_SNOMED_EXCLUSIONS_PATH = Path(__file__).parent / "snomed_exclusions.json"
 
 
 @lru_cache(maxsize=1)
@@ -17,6 +21,49 @@ def _load_epidemiology() -> Dict[str, Any]:
     """Load and cache epidemiology config."""
     with open(_EPIDEMIOLOGY_PATH, encoding="utf-8") as f:
         return json.load(f)
+
+
+@lru_cache(maxsize=1)
+def _load_snomed_exclusions() -> Dict[str, Any]:
+    """Load and cache SNOMED CT exclusion category config."""
+    if not _SNOMED_EXCLUSIONS_PATH.exists():
+        return {}
+    with open(_SNOMED_EXCLUSIONS_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _should_exclude(rules: Dict[str, Any], sex: str, age: int) -> bool:
+    """Check whether a patient matches any exclusion rule (OR logic)."""
+    if sex in rules.get("sex", []):
+        return True
+    if "min_age" in rules and age >= rules["min_age"]:
+        return True
+    if "max_age" in rules and age <= rules["max_age"]:
+        return True
+    return False
+
+
+def _build_exclusion_set(
+    sex: str,
+    age: int,
+    tx_server: str,
+    edition: Optional[str],
+) -> Set[str]:
+    """Build the set of SNOMED codes to exclude for this patient's demographics."""
+    exclusions = _load_snomed_exclusions()
+    excluded_codes: Set[str] = set()
+
+    for _category, cfg in exclusions.items():
+        rules = cfg.get("exclude_when", {})
+        ecl = cfg.get("ecl", "")
+        if not ecl or ecl == "...":
+            continue
+        if _should_exclude(rules, sex, age):
+            concepts = expand_ecl(ecl, tx_server=tx_server, edition=edition)
+            for c in concepts:
+                excluded_codes.add(c["code"])
+
+    return excluded_codes
 
 
 def _get_age_multiplier(age: int, age_bands: List[Dict]) -> float:
@@ -101,16 +148,22 @@ def assign_condition(
 
 def resolve_snomed_code(
     condition: str,
+    sex: str = "",
+    age: int = -1,
     tx_server: Optional[str] = None,
     edition: Optional[str] = None,
 ) -> Optional[Dict[str, str]]:
     """Resolve a SNOMED CT code for the given condition via ECL expansion.
 
     Expands the condition's ECL expression against the specified terminology
-    server and randomly selects one code from the result set.
+    server, filters out demographically inappropriate concepts (e.g.
+    pregnancy codes for males), and randomly selects one code from the
+    remaining result set.
 
     Args:
         condition: Condition name matching a key in epidemiology.json.
+        sex: Patient sex for demographic filtering. If empty, no filtering.
+        age: Patient age for demographic filtering. If -1, no filtering.
         tx_server: FHIR terminology server URL. Defaults to Ontoserver.
         edition: Optional SNOMED CT edition version (e.g. "20250131").
             If None, the server default is used.
@@ -133,6 +186,20 @@ def resolve_snomed_code(
 
     if not concepts:
         return None
+
+    # Apply demographic filtering if sex and age are provided
+    if sex and age >= 0:
+        excluded = _build_exclusion_set(sex, age, server, edition)
+        if excluded:
+            filtered = [c for c in concepts if c["code"] not in excluded]
+            if filtered:
+                concepts = filtered
+            else:
+                logger.warning(
+                    "All %d concepts excluded for %s (sex=%s, age=%d); "
+                    "falling back to unfiltered list",
+                    len(concepts), condition, sex, age,
+                )
 
     chosen = random.choice(concepts)
     return {

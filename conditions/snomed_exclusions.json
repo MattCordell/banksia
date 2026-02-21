@@ -1,0 +1,30 @@
+{
+  "female_specific": {
+    "ecl": " ((<404684003:363698007=<<1086007) OR (<404684003 {{ term = \"female\"}}))",
+    "exclude_when": { "sex": ["male"] }
+  },
+  "male_specific": {
+    "ecl": "((<404684003:363698007=<<10052007) OR (<404684003 {{ term = \"male\"}}))",
+    "exclude_when": { "sex": ["female"] }
+  },
+  "pregnancy_related": {
+    "ecl": "<<248982007",
+    "exclude_when": { "sex": ["male"], "max_age": 14, "min_age": 55 }
+  },
+  "neonatal": {
+    "ecl": "((<404684003:246454002=<<255407002) OR (<404684003 {{ term = \"neonatal\"}}))",
+    "exclude_when": { "min_age": 1 }
+  },
+  "infant_specific": {
+    "ecl": "((<404684003:246454002=<<3658006) OR (<404684003 {{ term = \"infant\"}}))",
+    "exclude_when": { "min_age": 3 }
+  },
+  "adult_specific": {
+    "ecl": "((<404684003:246454002=<<41847000) OR (<404684003 {{ term = \"adult\"}}))",
+    "exclude_when": { "max_age": 17 }
+  },
+  "paediatric_specific": {
+    "ecl": "((<404684003:246454002=<<255398004) OR (<404684003 {{ term = \"paediatric\"}}))",
+    "exclude_when": { "min_age": 18 }
+  }
+}
