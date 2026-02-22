@@ -100,6 +100,105 @@ Prevalence rates used in `conditions/epidemiology.json` for demographic-weighted
   Iron deficiency anaemia ~8-12% women reproductive age; <5% men.
   https://pmc.ncbi.nlm.nih.gov/articles/PMC9809261/
 
+## Infection Epidemiology
+
+- **AIHW -- Infectious and Communicable Diseases**
+  1.5M+ notifiable disease notifications in 2023. 362,600 infectious disease hospitalisations (2021), 92% non-notifiable. COVID-19 837k, influenza 290k, campylobacter 41k notifications.
+  https://www.aihw.gov.au/reports/australias-health/infectious-and-communicable-diseases
+
+- **NNDSS -- National Notifiable Diseases Surveillance System (Annual Reports)**
+  Notification rates by age group: highest in children <5 (698/100k). Campylobacteriosis 93.5/100k, salmonellosis 55.3/100k, cryptosporidiosis 12.8/100k.
+  https://www.cdc.gov.au/diseases/surveillance-systems-and-networks/national-notifiable-diseases-surveillance-system-nndss
+
+- **Tham et al. (2022) -- Incidence of Acute Respiratory Infections in Australia**
+  4-week ARI period prevalence 24.8%; ~68.9M cases/yr (~3.2/person/yr). Age 0-4: 46.3%, 65+: 9.7%. F 3.4 vs M 3.0/person/yr.
+  *Communicable Diseases Intelligence*. PMC9151186.
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC9151186/
+
+- **Vagenas et al. (2022) -- Sex and Gender Differences in Bacterial Infections**
+  Males generally more susceptible; sepsis 55-64% male; legionellosis M:F 1.7-5; Q fever M:F ~1.6.
+  *Infection and Immunity*. PMC9584217.
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC9584217/
+
+- **RACGP -- Superficial Fungal Infections**
+  Clinical guidance on tinea, candidiasis prevalence in Australian general practice. Onychomycosis up to 50% in >70yr.
+  https://www1.racgp.org.au/getattachment/c11550b4-6687-4fcb-a89f-29fd3f9630cf/Superficial-fungal-infections.aspx
+
+- **Slavin et al. (2017) -- Changing Epidemiology of Candidaemia in Australia**
+  Mean annual incidence 2.41/100k population. C. albicans 44.4%, C. glabrata 26.7%.
+  *Journal of Antimicrobial Chemotherapy*. 72(4):1103-1108.
+  https://academic.oup.com/jac/article/72/4/1103/2514408
+
+- **Kilburn et al. (1999) -- Prevalence of Tinea Pedis in Australian School Students**
+  Age/sex-adjusted culture-proven prevalence 5.2%; increasing from 2.1% (4-6yr) to 9.7% (16-18yr).
+  https://pubmed.ncbi.nlm.nih.gov/10354029/
+
+- **Lim et al. (2015) -- Cryptosporidiosis in Australia: Tropical and Remote Areas**
+  Notification rate 12.8/100k. Highest in warm, remote areas and Aboriginal/Torres Strait Islander populations.
+  *PLoS Neglected Tropical Diseases*. PMC4579119.
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC4579119/
+
+- **Moncrieff et al. (2022) -- Epidemiology of Notifiable Diseases in Australia 1991-2011**
+  Other bacterial diseases notification incidence 9/100k/yr; 60% TB, 24% meningococcal, 15% legionellosis.
+  *Communicable Diseases Intelligence*. PMC9150208.
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC9150208/
+
+## Infection Lab Result Patterns
+
+Clinical sources for lab parameter overrides in `laboratory/conditions.json` for infection conditions.
+
+- **StatPearls — Leukocytosis**
+  Bacterial infection: WBC 11-30 ×10^9/L, neutrophilic predominance (70-80%), left shift.
+  https://www.ncbi.nlm.nih.gov/books/NBK560882/
+
+- **StatPearls — Lymphocytosis**
+  Viral infection: normal-low WBC with lymphocyte predominance (>40%).
+  https://www.ncbi.nlm.nih.gov/books/NBK549819/
+
+- **StatPearls — Eosinophilia**
+  Parasitic (helminth) infection: eosinophilia is the hallmark finding. Mild >500/µL, moderate >1500/µL.
+  https://www.ncbi.nlm.nih.gov/books/NBK560845/
+
+- **PMC — Eosinophils in Helminth Infection**
+  Tissue-invasive helminths drive marked eosinophilia via IL-5/IL-13.
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC5048491/
+
+- **PMC — Eosinophils in Fungal Diseases (Rosenberg et al.)**
+  Eosinophilia in allergic fungal disease (ABPA); monocytosis characteristic of chronic fungal infection.
+  https://jlb.onlinelibrary.wiley.com/doi/full/10.1002/JLB.4MR1117-473R
+
+- **PMC — CRP Velocity: Differentiating Bacterial vs Viral Infection**
+  Bacterial CRP median ~133 mg/L; viral CRP typically <40 mg/L. CRP >60 mg/L ~90% predictive of bacterial aetiology.
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC9728869/
+
+- **StatPearls — C-Reactive Protein**
+  CRP >50 mg/L strongly suggests bacterial infection. Mild rise (10-40 mg/L) in viral infections.
+  https://www.ncbi.nlm.nih.gov/books/NBK441843/
+
+- **PMC — Thrombocytopenia in Viral Infections**
+  Viral infections cause thrombocytopenia via marrow suppression, immune-mediated destruction, splenic sequestration.
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC7924611/
+
+- **PMC — Hypoalbuminemia as Acute-Phase Response**
+  Albumin is a negative acute-phase reactant; mean ~32-33 g/L in sepsis. Predictor of severity.
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC7379941/
+
+- **ScienceDirect — Ferritin in Infectious Diseases**
+  Ferritin rises as acute-phase reactant in all infection types. Hepcidin-mediated iron sequestration lowers serum iron and transferrin saturation.
+  https://www.sciencedirect.com/science/article/pii/S2052297525000204
+
+- **PMC — Hyponatremia in Critically Ill Patients**
+  Hyponatremia (SIADH) in 28-40% of sepsis patients. Mean sodium ~136 mmol/L.
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC3943132/
+
+- **AAFP — Evaluation of Leukocytosis**
+  Differential diagnosis framework: neutrophilia (bacterial), lymphocytosis (viral), monocytosis (chronic/fungal), eosinophilia (parasitic/allergic).
+  https://www.aafp.org/pubs/afp/issues/2015/1201/p1004.html
+
+- **StatPearls — Liver Function Tests**
+  Hepatotropic viruses cause hepatocellular injury (ALT/AST predominant); fungal infiltration causes cholestatic pattern (ALP predominant).
+  https://www.ncbi.nlm.nih.gov/books/NBK482489/
+
 ## SNOMED CT
 
 - **CSIRO Ontoserver (FHIR R4)**

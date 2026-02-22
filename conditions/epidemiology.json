@@ -269,5 +269,81 @@
       "athlete": 1.5
     },
     "notes": "ABS/PMC. ~8-12% women reproductive age; <5% men. F>>M. Also rises in 85+."
+  },
+  "Bacterial Infection": {
+    "ecl": "<<87628006",
+    "base_prevalence": 0.025,
+    "sex_ratio": { "male": 1.15, "female": 0.87, "other": 1.0 },
+    "age_prevalence": [
+      { "min_age": 0, "max_age": 4, "multiplier": 2.5 },
+      { "min_age": 5, "max_age": 14, "multiplier": 1.5 },
+      { "min_age": 15, "max_age": 29, "multiplier": 0.8 },
+      { "min_age": 30, "max_age": 49, "multiplier": 0.7 },
+      { "min_age": 50, "max_age": 64, "multiplier": 1.0 },
+      { "min_age": 65, "max_age": 74, "multiplier": 1.8 },
+      { "min_age": 75, "max_age": 200, "multiplier": 2.5 }
+    ],
+    "lifestyle_multipliers": {
+      "smoker": 1.5,
+      "heavy_drinker": 1.3,
+      "high_bmi": 1.2
+    },
+    "notes": "AIHW/NNDSS/ABS. ~2.5% point prevalence. Includes community-acquired UTI, SSTI, bacterial pneumonia, gastroenteritis (campylobacter ~41k, salmonella ~13k notifications/yr). 362,600 infectious disease hospitalisations/yr (2021). Bimodal age: children <5 (NNDSS highest rate 698/100k) and elderly 65+. M slightly >F for most bacterial infections (sepsis 55-64% male; legionellosis M:F 1.7-5). Smoking impairs mucociliary clearance; alcohol impairs immune function."
+  },
+  "Viral Infection": {
+    "ecl": "<<34014006",
+    "base_prevalence": 0.035,
+    "sex_ratio": { "male": 0.95, "female": 1.05, "other": 1.0 },
+    "age_prevalence": [
+      { "min_age": 0, "max_age": 4, "multiplier": 3.0 },
+      { "min_age": 5, "max_age": 9, "multiplier": 2.5 },
+      { "min_age": 10, "max_age": 19, "multiplier": 1.8 },
+      { "min_age": 20, "max_age": 29, "multiplier": 1.2 },
+      { "min_age": 30, "max_age": 49, "multiplier": 0.8 },
+      { "min_age": 50, "max_age": 64, "multiplier": 0.6 },
+      { "min_age": 65, "max_age": 74, "multiplier": 0.8 },
+      { "min_age": 75, "max_age": 200, "multiplier": 1.0 }
+    ],
+    "lifestyle_multipliers": {
+      "smoker": 1.3,
+      "heavy_drinker": 1.2
+    },
+    "notes": "AIHW/NNDSS 2023. ~3.5% point prevalence. 4-week ARI period prevalence 24.8% (Tham et al. 2022, PMC9151186); ~68.9M ARI cases/yr (~3.2/person/yr), most viral. Influenza 290k+ notifications, COVID-19 837k+ notifications (2023). Age 0-4: 46.3% 4-week prevalence; 65+: 9.7%. F slightly higher ARI incidence (3.4 vs 3.0/person/yr). Children have highest rates; elderly lower incidence but higher severity."
+  },
+  "Fungal Infection": {
+    "ecl": "<<3218000",
+    "base_prevalence": 0.008,
+    "sex_ratio": { "male": 1.2, "female": 0.85, "other": 1.0 },
+    "age_prevalence": [
+      { "min_age": 0, "max_age": 4, "multiplier": 1.2 },
+      { "min_age": 5, "max_age": 14, "multiplier": 0.6 },
+      { "min_age": 15, "max_age": 29, "multiplier": 0.8 },
+      { "min_age": 30, "max_age": 49, "multiplier": 1.0 },
+      { "min_age": 50, "max_age": 64, "multiplier": 1.3 },
+      { "min_age": 65, "max_age": 74, "multiplier": 2.0 },
+      { "min_age": 75, "max_age": 200, "multiplier": 3.0 }
+    ],
+    "lifestyle_multipliers": {
+      "high_bmi": 1.5,
+      "heavy_drinker": 1.3,
+      "athlete": 1.3
+    },
+    "notes": "RACGP/Global Burden of Disease. ~0.8% point prevalence for clinically active infection. Tinea pedis culture-proven ~5% in school students (Kilburn et al. 1999), onychomycosis up to 50% in >70yr. Candidaemia incidence 2.41/100k (low vs USA 8-14/100k). M>F for dermatophytes; infants prone to oral thrush; elderly/immunocompromised at highest risk for invasive disease. Athletes at higher risk for tinea pedis. Obesity increases candidal infection risk."
+  },
+  "Parasitic Infection": {
+    "ecl": "<<17322007",
+    "base_prevalence": 0.002,
+    "sex_ratio": { "male": 1.1, "female": 0.9, "other": 1.0 },
+    "age_prevalence": [
+      { "min_age": 0, "max_age": 4, "multiplier": 2.0 },
+      { "min_age": 5, "max_age": 14, "multiplier": 1.8 },
+      { "min_age": 15, "max_age": 29, "multiplier": 1.0 },
+      { "min_age": 30, "max_age": 49, "multiplier": 0.8 },
+      { "min_age": 50, "max_age": 64, "multiplier": 0.7 },
+      { "min_age": 65, "max_age": 74, "multiplier": 0.8 },
+      { "min_age": 75, "max_age": 200, "multiplier": 1.2 }
+    ],
+    "lifestyle_multipliers": {},
+    "notes": "NNDSS/AIHW. ~0.2% point prevalence. Cryptosporidiosis 12.8/100k; giardiasis similar. Helminths rare in general population but endemic in remote Aboriginal communities. Children <5 highest notification rate (698/100k all infections). Parasitic infections in Australia are predominantly protozoal (Giardia, Cryptosporidium). M slightly >F. No strong lifestyle risk factors from available set."
   }
 }

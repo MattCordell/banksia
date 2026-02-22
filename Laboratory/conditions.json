@@ -537,5 +537,437 @@
       }
     },
     "notes": ""
+  },
+  "Bacterial Infection": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "FBC": {
+        "WBC (×10^9/L)": {
+          "mean": 14.0,
+          "sd": 5.0,
+          "min": 4.0,
+          "max": 40.0,
+          "distribution": "lognormal"
+        },
+        "Haemoglobin (g/L)": {
+          "mean": 130,
+          "sd": 18,
+          "min": 70,
+          "max": 175,
+          "distribution": "normal"
+        },
+        "Platelets (×10^9/L)": {
+          "mean": 320,
+          "sd": 120,
+          "min": 80,
+          "max": 900,
+          "distribution": "lognormal"
+        },
+        "differential_props": {
+          "neutrophils": 0.75,
+          "lymphocytes": 0.15,
+          "monocytes": 0.06,
+          "eosinophils": 0.02,
+          "basophils": 0.02
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 120,
+          "sd": 80,
+          "min": 10,
+          "max": 500,
+          "distribution": "lognormal"
+        }
+      },
+      "LFT": {
+        "ALT (U/L)": {
+          "mean": 40,
+          "sd": 30,
+          "min": 5,
+          "max": 500,
+          "distribution": "lognormal"
+        },
+        "AST (U/L)": {
+          "mean": 38,
+          "sd": 25,
+          "min": 5,
+          "max": 500,
+          "distribution": "lognormal"
+        },
+        "ALP (U/L)": {
+          "mean": 90,
+          "sd": 40,
+          "min": 20,
+          "max": 400,
+          "distribution": "lognormal"
+        },
+        "Total Bilirubin (µmol/L)": {
+          "mean": 18,
+          "sd": 15,
+          "min": 2,
+          "max": 200,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 32,
+          "sd": 6,
+          "min": 12,
+          "max": 45,
+          "distribution": "normal"
+        }
+      },
+      "MBAP": {
+        "Sodium (mmol/L)": {
+          "mean": 136,
+          "sd": 4,
+          "min": 120,
+          "max": 155,
+          "distribution": "normal"
+        },
+        "Urea (mmol/L)": {
+          "mean": 8.0,
+          "sd": 4.0,
+          "min": 2.0,
+          "max": 80,
+          "distribution": "lognormal"
+        }
+      },
+      "Kidney Function": {
+        "Creatinine (µmol/L)": {
+          "mean": 100,
+          "sd": 50,
+          "min": 30,
+          "max": 800,
+          "distribution": "lognormal"
+        }
+      },
+      "Iron Studies": {
+        "Ferritin (µg/L)": {
+          "mean": 400,
+          "sd": 350,
+          "min": 30,
+          "max": 5000,
+          "distribution": "lognormal"
+        },
+        "Serum Iron (µmol/L)": {
+          "mean": 8,
+          "sd": 5,
+          "min": 2,
+          "max": 30,
+          "distribution": "lognormal"
+        },
+        "Transferrin Saturation (%)": {
+          "mean": 12,
+          "sd": 8,
+          "min": 2,
+          "max": 50,
+          "distribution": "lognormal"
+        }
+      },
+      "Immunoglobulins": {
+        "IgG (g/L)": {
+          "mean": 14,
+          "sd": 4,
+          "min": 5,
+          "max": 30,
+          "distribution": "normal"
+        },
+        "IgM (g/L)": {
+          "mean": 1.5,
+          "sd": 0.7,
+          "min": 0.2,
+          "max": 6,
+          "distribution": "normal"
+        }
+      }
+    },
+    "notes": "Neutrophilic leukocytosis, high CRP, hypoalbuminemia, elevated ferritin with low serum iron (hepcidin-mediated sequestration)."
+  },
+  "Viral Infection": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "FBC": {
+        "WBC (×10^9/L)": {
+          "mean": 5.5,
+          "sd": 2.0,
+          "min": 2.0,
+          "max": 15.0,
+          "distribution": "lognormal"
+        },
+        "Platelets (×10^9/L)": {
+          "mean": 180,
+          "sd": 70,
+          "min": 30,
+          "max": 450,
+          "distribution": "lognormal"
+        },
+        "differential_props": {
+          "neutrophils": 0.35,
+          "lymphocytes": 0.50,
+          "monocytes": 0.08,
+          "eosinophils": 0.05,
+          "basophils": 0.02
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 25,
+          "sd": 20,
+          "min": 1,
+          "max": 150,
+          "distribution": "lognormal"
+        }
+      },
+      "LFT": {
+        "ALT (U/L)": {
+          "mean": 60,
+          "sd": 80,
+          "min": 5,
+          "max": 4000,
+          "distribution": "lognormal"
+        },
+        "AST (U/L)": {
+          "mean": 55,
+          "sd": 70,
+          "min": 5,
+          "max": 4000,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 38,
+          "sd": 5,
+          "min": 15,
+          "max": 50,
+          "distribution": "normal"
+        }
+      },
+      "Iron Studies": {
+        "Ferritin (µg/L)": {
+          "mean": 300,
+          "sd": 300,
+          "min": 20,
+          "max": 5000,
+          "distribution": "lognormal"
+        },
+        "Serum Iron (µmol/L)": {
+          "mean": 10,
+          "sd": 6,
+          "min": 2,
+          "max": 40,
+          "distribution": "lognormal"
+        },
+        "Transferrin Saturation (%)": {
+          "mean": 15,
+          "sd": 10,
+          "min": 2,
+          "max": 60,
+          "distribution": "lognormal"
+        }
+      },
+      "Immunoglobulins": {
+        "IgM (g/L)": {
+          "mean": 1.8,
+          "sd": 0.8,
+          "min": 0.2,
+          "max": 6,
+          "distribution": "normal"
+        }
+      }
+    },
+    "notes": "Lymphocyte-predominant differential, normal-low WBC, mild CRP, thrombocytopenia. Wide ALT/AST SD captures hepatotropic viruses."
+  },
+  "Fungal Infection": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "FBC": {
+        "WBC (×10^9/L)": {
+          "mean": 10.0,
+          "sd": 4.0,
+          "min": 2.0,
+          "max": 30.0,
+          "distribution": "lognormal"
+        },
+        "Haemoglobin (g/L)": {
+          "mean": 120,
+          "sd": 18,
+          "min": 60,
+          "max": 170,
+          "distribution": "normal"
+        },
+        "differential_props": {
+          "neutrophils": 0.55,
+          "lymphocytes": 0.25,
+          "monocytes": 0.10,
+          "eosinophils": 0.08,
+          "basophils": 0.02
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 80,
+          "sd": 70,
+          "min": 5,
+          "max": 400,
+          "distribution": "lognormal"
+        }
+      },
+      "LFT": {
+        "ALP (U/L)": {
+          "mean": 150,
+          "sd": 120,
+          "min": 20,
+          "max": 2000,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 30,
+          "sd": 6,
+          "min": 10,
+          "max": 45,
+          "distribution": "normal"
+        }
+      },
+      "Iron Studies": {
+        "Ferritin (µg/L)": {
+          "mean": 500,
+          "sd": 500,
+          "min": 30,
+          "max": 8000,
+          "distribution": "lognormal"
+        },
+        "Serum Iron (µmol/L)": {
+          "mean": 7,
+          "sd": 5,
+          "min": 2,
+          "max": 30,
+          "distribution": "lognormal"
+        },
+        "Transferrin Saturation (%)": {
+          "mean": 10,
+          "sd": 7,
+          "min": 2,
+          "max": 45,
+          "distribution": "lognormal"
+        }
+      },
+      "Immunoglobulins": {
+        "IgG (g/L)": {
+          "mean": 16,
+          "sd": 5,
+          "min": 5,
+          "max": 35,
+          "distribution": "normal"
+        }
+      }
+    },
+    "notes": "Variable WBC with monocytosis, elevated ALP (infiltrative pattern), high CRP, anemia of chronic disease, polyclonal hypergammaglobulinemia."
+  },
+  "Parasitic Infection": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "FBC": {
+        "WBC (×10^9/L)": {
+          "mean": 8.5,
+          "sd": 3.0,
+          "min": 3.0,
+          "max": 25.0,
+          "distribution": "lognormal"
+        },
+        "Haemoglobin (g/L)": {
+          "mean": 110,
+          "sd": 20,
+          "min": 50,
+          "max": 165,
+          "distribution": "normal"
+        },
+        "Platelets (×10^9/L)": {
+          "mean": 180,
+          "sd": 80,
+          "min": 20,
+          "max": 500,
+          "distribution": "lognormal"
+        },
+        "MCV (fL)": {
+          "mean": 82,
+          "sd": 8,
+          "min": 55,
+          "max": 120,
+          "distribution": "normal"
+        },
+        "differential_props": {
+          "neutrophils": 0.40,
+          "lymphocytes": 0.25,
+          "monocytes": 0.08,
+          "eosinophils": 0.25,
+          "basophils": 0.02
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 40,
+          "sd": 40,
+          "min": 1,
+          "max": 300,
+          "distribution": "lognormal"
+        }
+      },
+      "LFT": {
+        "ALP (U/L)": {
+          "mean": 120,
+          "sd": 80,
+          "min": 20,
+          "max": 1500,
+          "distribution": "lognormal"
+        },
+        "Total Bilirubin (µmol/L)": {
+          "mean": 18,
+          "sd": 25,
+          "min": 2,
+          "max": 500,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 32,
+          "sd": 6,
+          "min": 12,
+          "max": 48,
+          "distribution": "normal"
+        }
+      },
+      "Iron Studies": {
+        "Ferritin (µg/L)": {
+          "mean": 350,
+          "sd": 400,
+          "min": 5,
+          "max": 5000,
+          "distribution": "lognormal"
+        },
+        "Serum Iron (µmol/L)": {
+          "mean": 8,
+          "sd": 6,
+          "min": 1,
+          "max": 35,
+          "distribution": "lognormal"
+        },
+        "Transferrin Saturation (%)": {
+          "mean": 12,
+          "sd": 10,
+          "min": 1,
+          "max": 55,
+          "distribution": "lognormal"
+        }
+      },
+      "Immunoglobulins": {
+        "IgG (g/L)": {
+          "mean": 15,
+          "sd": 5,
+          "min": 5,
+          "max": 35,
+          "distribution": "normal"
+        }
+      }
+    },
+    "notes": "Marked eosinophilia (hallmark), anemia (hemolysis/blood loss), low MCV (iron loss from GI parasites), thrombocytopenia, elevated ALP, moderate CRP."
   }
 }
