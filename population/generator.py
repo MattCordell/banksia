@@ -229,6 +229,12 @@ def assign_lifestyle_factors(age, sex):
         elif is_female:
             high_bmi_rate *= 0.93
 
+    # Athletes are significantly less likely to have high BMI overall;
+    # ~20% of athletes across a general sport mix are overweight/obese
+    # vs ~65% of the general adult population (ABS 2022)
+    if "athlete" in factors:
+        high_bmi_rate *= 0.33
+
     if np.random.random() < high_bmi_rate:
         factors.append("high_bmi")
 

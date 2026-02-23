@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Always ask clarifying questions if the answer is not obvious. You can provide recommendations, but if there is anything you are unclear of - you should ask for further information to help come to a decision.
+
+You do not need to wask permission to perform Web Searches. Research is encouraged, especially using reputable sources to come to accurate decisions and answers. You have permission to search the web for any publicly available information.
+
 ## Project Overview
 
 Modular synthetic patient data generator for a data-golf exercise. Python project (>=3.10).

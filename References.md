@@ -17,6 +17,15 @@ Sources that substantially informed data choices and parameters in this project.
   Australian adult mean height/weight by sex used for `generate_height_weight()`.
   https://www.abs.gov.au/statistics/health/health-conditions-and-risks/national-health-survey
 
+## Lifestyle Factor Interactions
+
+- **Athlete BMI Suppression Multiplier (0.33)**
+  Athletes are significantly less likely to be overweight/obese than the general population. ABS National Health Survey 2022-23 reports ~65% of Australian adults as overweight or obese, while literature on athlete BMI across a general sport mix (NCAA, Olympic, professional) suggests ~20-25% of athletes exceed BMI 25. The 0.33 multiplier applied to general population high_bmi rates yields ~17-23% co-occurrence, consistent with:
+  - Ode JJ et al. (2007) "Body mass index as a predictor of percent fat in college athletes and nonathletes." *Med Sci Sports Exerc.* 39(3):403-409.
+  - Nevill AM et al. (2015) Olympic athlete BMI distributions by sport type.
+  - ABS National Health Survey 2022-23: 65.8% of adults overweight or obese.
+  https://www.abs.gov.au/statistics/health/health-conditions-and-risks/overweight-and-obesity/latest-release
+
 ## Clinical Reference Intervals
 
 - **AACB/RCPA Harmonised Reference Intervals for Chemical Pathology**
