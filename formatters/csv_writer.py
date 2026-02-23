@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional
 import pandas as pd
 
 from common.types import PatientContext
+from medicines.generator import MAX_MEDICINES
 
 
 def contexts_to_dataframe(
@@ -29,6 +30,16 @@ def contexts_to_dataframe(
             "SNOMED_Code": ctx.snomed_code,
             "SNOMED_Display": ctx.snomed_display,
         }
+        for j in range(MAX_MEDICINES):
+            if j < len(ctx.medicines):
+                med = ctx.medicines[j]
+                row[f"Medicine_{j+1}_Category"] = med.get("category")
+                row[f"Medicine_{j+1}_Code"] = med.get("code")
+                row[f"Medicine_{j+1}_Display"] = med.get("display")
+            else:
+                row[f"Medicine_{j+1}_Category"] = None
+                row[f"Medicine_{j+1}_Code"] = None
+                row[f"Medicine_{j+1}_Display"] = None
         if lab_results and i < len(lab_results):
             lab = lab_results[i]
             for k, v in lab.items():

@@ -4,12 +4,13 @@ This guide explains how to add a new medical condition to the synthetic patient 
 
 ## Overview
 
-Each condition requires entries in three files:
+Each condition requires entries in four files:
 
 | File | Purpose |
 |------|---------|
 | `conditions/epidemiology.json` | Prevalence, age/sex distribution, lifestyle risk factors, SNOMED ECL |
 | `laboratory/conditions.json` | Lab result overrides (shifted means/SDs for affected tests) |
+| `medicines/prescriptions.json` | Medicine categories with probabilities and AMT substance ECL |
 | `References.md` | Clinical sources that informed your data choices |
 
 Optionally, you may also need to update:
@@ -131,7 +132,67 @@ Tests that appear in multiple panels (e.g., Albumin in MBAP and LFT) share value
 - Only override tests that are clinically relevant to your condition. A condition that primarily affects the liver doesn't need to override thyroid tests.
 - Look at existing conditions in `conditions.json` for examples of how other conditions set their overrides.
 
-## Step 3: SNOMED Exclusions (if needed)
+## Step 3: Medicine Prescriptions
+
+Add an entry to `medicines/prescriptions.json`. This defines which medicine categories may be prescribed for patients with this condition.
+
+```json
+"Condition Name": {
+  "medicines": [
+    {
+      "category": "Drug Class Name",
+      "ecl": "372567009 OR 703674001",
+      "probability": 0.85,
+      "notes": "Brief rationale for this class and probability."
+    }
+  ],
+  "notes": "Overall prescribing rationale."
+}
+```
+
+### Field reference
+
+- **category**: A human-readable label for the drug class (e.g., "ACE Inhibitors", "Statins"). This appears in the output CSV.
+- **ecl**: SNOMED CT ECL expression targeting AMT substance concepts. Use concept IDs from the AMT ingredient reference set. Multiple alternatives are separated with `OR` (e.g., `"386872004 OR 372916001"` for ramipril or perindopril).
+- **probability**: Chance (0.0–1.0) that a patient with this condition is prescribed something from this class. Use Australian prescribing data (PBS, Therapeutic Guidelines) to inform this.
+- **notes**: Brief clinical rationale.
+
+### Tips for choosing categories
+
+- Only include medicines that are clinically relevant to your condition.
+- Probabilities should reflect real-world prescribing patterns, not theoretical maximums. First-line monotherapy might be 0.80–0.95; a specialist-only adjunct might be 0.05–0.15.
+- Concept IDs must match entries in the AMT ingredient reference files (`-20260223-1069.csv` for individual ingredients, `-20260223-10327.csv` for combination products).
+- Output is capped at 3 medicines per patient, so order categories from most to least commonly prescribed — earlier categories are more likely to appear before the cap is reached.
+- Look at existing conditions in `prescriptions.json` for examples of how other conditions set their categories and probabilities.
+
+### ECL templates for product selection
+
+The ECL in `prescriptions.json` should always target **ingredient/substance** concepts. To select specific product types (e.g., AMT trade products), use `--med-ecl-template` at runtime with a named template key:
+
+```bash
+# Default: returns ingredient concepts (e.g., "Metformin")
+python generate.py --mode single --condition "Type 2 Diabetes Mellitus" --sex male --age 55
+
+# AMT TPUU: returns trade product concepts (e.g., "Glucophage 500 mg tablet")
+python generate.py --mode single --condition "Type 2 Diabetes Mellitus" --sex male --age 55 \
+  --med-ecl-template amt-tpuu
+```
+
+Named templates are defined in `medicines/ecl_templates.json`. Available templates:
+
+| Key | Description |
+|-----|-------------|
+| `amt-tpuu` | AMT Trade Product Unit of Use |
+| `amt-mpuu` | AMT Medicinal Product Unit of Use |
+| `amt-tp` | AMT Trade Product |
+| `amt-mp` | AMT Medicinal Product |
+| `product` | SNOMED CT international medicinal product hierarchy |
+
+You can also pass a raw ECL template string with `{ingredients}` as the placeholder. To add new named templates, add entries to `medicines/ecl_templates.json`.
+
+The ingredient ECL from `prescriptions.json` is substituted into the template's `{ingredients}` placeholder. This keeps the config portable across different drug terminology extensions.
+
+## Step 4: SNOMED Exclusions (if needed)
 
 Check whether the SNOMED ECL for your condition returns codes that would be inappropriate for certain demographics. For example, pregnancy-related codes should not be assigned to males.
 
@@ -146,7 +207,7 @@ If exclusions are needed, add a rule to `conditions/snomed_exclusions.json`:
 
 The exclusion rules are applied globally across all conditions, so check whether an existing rule already covers your case before adding a new one.
 
-## Step 4: Update References
+## Step 5: Update References
 
 Add entries to `References.md` under the appropriate section. Include:
 
@@ -156,7 +217,7 @@ Add entries to `References.md` under the appropriate section. Include:
 
 Group epidemiology and lab pattern sources under separate headings if both are substantial.
 
-## Step 5: Verify
+## Step 6: Verify
 
 Test your new condition with single-patient generation:
 
@@ -168,6 +229,7 @@ Check that:
 - The command runs without errors
 - Lab values look clinically plausible for the condition
 - Key distinguishing features are visible (e.g., elevated CRP, shifted WBC differential)
+- Medicine categories are clinically appropriate for the condition
 
 Then test in a cohort to verify prevalence weighting:
 
@@ -187,7 +249,8 @@ python generate.py --mode single --condition "Condition Name" --sex female --age
 
 - [ ] Entry added to `conditions/epidemiology.json` with ECL, prevalence, age/sex/lifestyle data
 - [ ] Entry added to `laboratory/conditions.json` with panel overrides
-- [ ] Condition name matches exactly between both JSON files
+- [ ] Condition name matches exactly between all JSON files
+- [ ] Entry added to `medicines/prescriptions.json` with medicine categories
 - [ ] SNOMED exclusions reviewed (add to `snomed_exclusions.json` if needed)
 - [ ] Clinical sources added to `References.md`
 - [ ] Single-patient generation tested and produces plausible results

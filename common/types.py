@@ -1,7 +1,7 @@
 """Shared data types for the data-golf pipeline."""
 
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -19,6 +19,7 @@ class PatientContext:
     state: Optional[str] = None
     height_cm: Optional[int] = None
     weight_kg: Optional[int] = None
+    medicines: List[Dict[str, Any]] = field(default_factory=list)
 
     def __post_init__(self):
         self.sex = self.sex.lower()

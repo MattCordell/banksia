@@ -1,0 +1,28 @@
+{
+  "amt-mp": {
+    "template": "(<<(<<763158003:<<762951001=({ingredients}))) AND (^929360061000036106)",
+    "description": "AMT Medicinal Product"
+  },
+  "amt-mpuu": {
+    "template": "(<<(<<763158003:<<762951001=({ingredients}))) AND (^929360071000036103)",
+    "description": "AMT Medicinal Product Unit of Use — template accounts for ingredient modifications"
+  },
+  "amt-tpuu": {
+    "template": "(<<(<<763158003:<<762951001=({ingredients}))) AND (^929360031000036100)",
+    "description": "AMT Trade Product Unit of Use — template accounts for ingredient modifications"
+  },
+  "amt-tp": {
+    "template": "((<<(<<763158003:<<762951001=({ingredients}))) AND (^929360031000036100)).774158006",
+    "description": "AMT Trade Product"
+  },
+  "amt-ctpp": {
+    "template": "^929360051000036108:774160008=((<<(<<763158003:<<762951001=({ingredients}))) AND (^929360031000036100))",
+    "description": "AMT Medicinal Product"
+  },
+  "product": {
+    "template": "<<373873005:<<127489000=({ingredients})",
+    "description": "SNOMED CT international medicinal product hierarchy"
+  }
+}
+
+

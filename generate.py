@@ -17,6 +17,7 @@ from common.types import PatientContext
 from conditions.generator import assign_condition, resolve_snomed_code
 from laboratory.generator import generate_lab_results, _resolve_profiles
 from population.generator import generate_contexts
+from medicines.generator import generate_medicines
 from formatters.csv_writer import contexts_to_dataframe, write_csv
 
 
@@ -45,6 +46,7 @@ def generate_single(
     tx_server: str = None,
     snomed_edition: str = None,
     no_snomed: bool = False,
+    med_ecl_template: str = None,
 ):
     """Generate a single patient with demographics + lab results."""
     ctx = PatientContext(
@@ -54,6 +56,10 @@ def generate_single(
         condition=condition,
     )
     _assign_snomed(ctx, tx_server, snomed_edition, no_snomed)
+    ctx.medicines = generate_medicines(
+        ctx, tx_server=tx_server, edition=snomed_edition, no_snomed=no_snomed,
+        ecl_template=med_ecl_template,
+    )
     profiles = _resolve_profiles()
     lab = generate_lab_results(ctx, profiles=profiles, rng_seed=rng_seed)
     return ctx, lab
@@ -68,6 +74,7 @@ def generate_cohort(
     tx_server: str = None,
     snomed_edition: str = None,
     no_snomed: bool = False,
+    med_ecl_template: str = None,
 ):
     """Generate a cohort: population demographics + lab results for each."""
     if rng_seed is not None:
@@ -82,6 +89,10 @@ def generate_cohort(
     for ctx in contexts:
         ctx.condition = assign_condition(ctx)
         _assign_snomed(ctx, tx_server, snomed_edition, no_snomed)
+        ctx.medicines = generate_medicines(
+            ctx, tx_server=tx_server, edition=snomed_edition, no_snomed=no_snomed,
+            ecl_template=med_ecl_template,
+        )
 
     # 3. Generate lab results for each context
     lab_results = []
@@ -125,6 +136,10 @@ def main():
                         help="SNOMED CT edition version (e.g. 20250131)")
     parser.add_argument("--no-snomed", action="store_true",
                         help="Skip SNOMED CT code resolution (offline mode)")
+    parser.add_argument("--med-ecl-template", type=str, default=None,
+                        help="Medicine ECL template: a named key from "
+                             "medicines/ecl_templates.json (e.g. 'amt-tpuu', 'amt-mpuu', "
+                             "'product') or a raw ECL string with {ingredients} placeholder")
 
     args = parser.parse_args()
 
@@ -147,6 +162,7 @@ def main():
             tx_server=args.tx_server,
             snomed_edition=args.snomed_edition,
             no_snomed=args.no_snomed,
+            med_ecl_template=args.med_ecl_template,
         )
         df = contexts_to_dataframe([ctx], [lab])
         if args.output:
@@ -165,6 +181,7 @@ def main():
             tx_server=args.tx_server,
             snomed_edition=args.snomed_edition,
             no_snomed=args.no_snomed,
+            med_ecl_template=args.med_ecl_template,
         )
 
     elif args.mode == "population":
@@ -172,6 +189,10 @@ def main():
         for ctx in contexts:
             ctx.condition = assign_condition(ctx)
             _assign_snomed(ctx, args.tx_server, args.snomed_edition, args.no_snomed)
+            ctx.medicines = generate_medicines(
+                ctx, tx_server=args.tx_server, edition=args.snomed_edition,
+                no_snomed=args.no_snomed, ecl_template=args.med_ecl_template,
+            )
         df = contexts_to_dataframe(contexts)
         if args.output:
             write_csv(df, args.output)

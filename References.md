@@ -208,6 +208,82 @@ Clinical sources for lab parameter overrides in `laboratory/conditions.json` for
   Hepatotropic viruses cause hepatocellular injury (ALT/AST predominant); fungal infiltration causes cholestatic pattern (ALP predominant).
   https://www.ncbi.nlm.nih.gov/books/NBK482489/
 
+## Medicine Prescriptions
+
+Sources for condition-to-medicine mappings in `medicines/prescriptions.json`, aligned with Australian prescribing practices.
+
+- **Australian Diabetes Society — Type 2 Diabetes Glycaemic Management Algorithm (June 2024)**
+  Informed T2DM medicine categories and prescribing order (metformin first-line, SGLT2i, DPP-4i, GLP-1 RA).
+  https://www.diabetessociety.com.au/guideline/australian-t2d-glycaemic-management-algorithm-june-2024/
+
+- **PBS — Restriction Changes to Type 2 Diabetes Mellitus Medicines**
+  PBS access criteria for SGLT2 inhibitors, GLP-1 receptor agonists.
+  https://www.pbs.gov.au/info/reviews/pbs-restriction-changes-to-type-2-diabetes-mellitus-t2dm-medicines
+
+- **Australian Prescriber — First-Line Medicines in the Treatment of Hypertension**
+  ACE inhibitors, ARBs, CCBs, thiazide diuretics as first-line. Beta-blockers not first-line for uncomplicated HTN.
+  https://australianprescriber.tg.org.au/articles/first-line-medicines-in-the-treatment-of-hypertension.html
+
+- **Australian Prescriber — Managing Hypercholesterolaemia**
+  Statin prescribing patterns, ezetimibe as adjunct, fibrates for triglycerides.
+  https://australianprescriber.tg.org.au/articles/managing-hypercholesterolaemia.html
+
+- **Heart Foundation — ACS Guideline 2025**
+  Secondary prevention post-ACS: aspirin, statins, beta-blockers, ACEi.
+  https://www.heartfoundation.org.au/for-professionals/acs-guideline
+
+- **Australian Prescriber — Secondary Prevention of Acute Coronary Syndromes (2025)**
+  Summary of antiplatelet, statin, and antihypertensive prescribing post-ACS.
+  https://australianprescriber.tg.org.au/articles/secondary-prevention-of-acute-coronary-syndromes-a-summary-of-the-new-2025-Australian-guideline.html
+
+- **PBS — Utilisation Analysis of PBS-Listed Heart Failure Medicines (2024)**
+  ACEi/ARNI, beta-blocker, MRA, SGLT2i utilisation in HFrEF and HFpEF.
+  https://www.pbs.gov.au/reviews/utilisation-analysis-of-pbs-listed-medicines-for-heart-fail/
+
+- **NPS MedicineWise — Medicines for Chronic Kidney Disease: A Practical Guide**
+  ACEi/ARB, SGLT2i (dapagliflozin), phosphate binders, EPO agents.
+  https://www.nps.org.au/news/medicines-for-chronic-kidney-disease-a-practical-guide
+
+- **COPD-X Guidelines**
+  Stepwise bronchodilator therapy: SABA, LAMA, LABA, ICS combinations.
+  https://copdx.org.au/
+
+- **Australian Prescriber — Drugs for Chronic Obstructive Pulmonary Disease**
+  Inhaler classes and prescribing patterns in Australian practice.
+  https://australianprescriber.tg.org.au/articles/drugs-for-chronic-obstructive-pulmonary-disease.html
+
+- **Australian Prescriber — Disease-Modifying Drugs in Adult Rheumatoid Arthritis**
+  Methotrexate first-line, triple therapy, biologic DMARDs after csDMARD failure.
+  https://australianprescriber.tg.org.au/articles/disease-modifying-drugs-in-adult-rheumatoid-arthritis.html
+
+- **Australian Prescriber — Modern Management of Thyroid Replacement Therapy**
+  Levothyroxine as near-universal treatment for hypothyroidism.
+  https://australianprescriber.tg.org.au/articles/modern-management-of-thyroid-replacement-therapy.html
+
+- **Australian Prescriber — Managing Medicines in Alcohol-Associated Liver Disease**
+  Thiamine supplementation, lactulose, spironolactone, naltrexone/acamprosate.
+  https://australianprescriber.tg.org.au/articles/managing-medicines-in-alcohol-associated-liver-disease-a-practical-review.html
+
+- **Australian Prescriber — Correcting Iron Deficiency**
+  Oral iron (ferrous sulfate/fumarate) first-line, IV ferric carboxymaltose if oral fails.
+  https://australianprescriber.tg.org.au/articles/correcting-iron-deficiency-1.html
+
+- **Therapeutic Guidelines — Antibiotic Prescribing Summary**
+  Amoxicillin, flucloxacillin, cefalexin, doxycycline, roxithromycin, trimethoprim prescribing patterns.
+  https://www.safetyandquality.gov.au/sites/default/files/2023-05/gpsummary_v15.pdf
+
+- **Australian Prescriber — Systemic Antifungal Agents for Cutaneous Infections**
+  Terbinafine and fluconazole as most utilised systemic antifungals in Australia.
+  https://www.nps.org.au/australian-prescriber/articles/systemic-antifungal-agents-for-cutaneous-fungal-infections
+
+- **Australian Prescriber — Managing Osteoarthritis**
+  Paracetamol, topical and oral NSAIDs, PPI gastroprotection.
+  https://australianprescriber.tg.org.au/articles/managing-osteoarthritis.html
+
+- **TGA — Removal of Prescribing Restrictions for Ivermectin (June 2023)**
+  GP prescribing restored for scabies, strongyloides.
+  https://www.tga.gov.au/news/media-releases/removal-prescribing-restrictions-ivermectin
+
 ## SNOMED CT
 
 - **CSIRO Ontoserver (FHIR R4)**
