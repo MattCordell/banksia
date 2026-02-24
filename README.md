@@ -216,6 +216,12 @@ Height and weight are generated from age- and sex-specific distributions based o
 | `tools/` | Reference files (not part of the generation pipeline) |
 | `SNOMED Analysis/` | Scripts for tracking SNOMED CT disease code changes across editions (standalone) |
 
+## Performance
+
+Generation time is **O(unique ECL expressions)**, not O(patients). The dominant cost is the initial set of SNOMED CT ECL expansions against Ontoserver (including any pagination required per query). Once all unique expansions have been cached in memory, the per-patient loop — condition assignment, lab sampling, medicine selection — is purely in-memory and near-instant.
+
+For a given set of conditions and medicine categories on a single edition, the cold-cache warm-up takes roughly 1 minute regardless of cohort size. Generating 100 or 5,000 patients takes approximately the same wall-clock time. Use `--no-snomed` to skip all terminology server calls for fully offline generation.
+
 ## Dependencies
 
 - Python >= 3.10
