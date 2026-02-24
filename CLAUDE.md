@@ -8,7 +8,7 @@ You do not need to wask permission to perform Web Searches. Research is encourag
 
 ## Project Overview
 
-Modular synthetic patient data generator for a data-golf exercise. Python project (>=3.10).
+Modular synthetic patient data generator. Python project (>=3.10).
 
 ## Architecture
 

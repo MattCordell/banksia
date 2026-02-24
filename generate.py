@@ -1,5 +1,5 @@
 """
-data-golf: Synthetic patient data generator.
+banksia: Synthetic patient data generator.
 
 Usage:
     python generate.py --mode single --condition "Hypothyroidism" --sex female --age 54
@@ -118,7 +118,7 @@ def generate_cohort(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="data-golf synthetic patient generator")
+    parser = argparse.ArgumentParser(description="banksia synthetic patient generator")
     parser.add_argument("--mode", choices=["single", "cohort", "population"],
                         default="cohort", help="Generation mode")
     parser.add_argument("--n", type=int, default=200, help="Number of patients (cohort/population)")

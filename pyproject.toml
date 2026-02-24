@@ -1,7 +1,7 @@
 [project]
-name = "data-golf"
+name = "banksia"
 version = "0.1.0"
-description = "Synthetic patient data generator for data-golf exercise"
+description = "Synthetic patient data generator"
 requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
@@ -18,7 +18,7 @@ dev = [
 ]
 
 [project.scripts]
-data-golf = "generate:main"
+banksia = "generate:main"
 
 [build-system]
 requires = ["setuptools>=68.0"]

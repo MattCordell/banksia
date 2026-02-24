@@ -1,4 +1,4 @@
-"""Common utilities for data-golf generators."""
+"""Common utilities for banksia generators."""
 
 from .types import PatientContext
 from .sampling import sample_value

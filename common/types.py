@@ -1,4 +1,4 @@
-"""Shared data types for the data-golf pipeline."""
+"""Shared data types for the banksia pipeline."""
 
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional

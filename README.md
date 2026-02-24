@@ -1,4 +1,4 @@
-# data-golf
+# banksia
 
 Modular synthetic patient data generator for data analytics and machine learning training. Produces realistic Australian patient cohorts with demographically-weighted populations and condition-specific laboratory results.
 
@@ -8,10 +8,10 @@ Modular synthetic patient data generator for data analytics and machine learning
 pip install -e .
 ```
 
-After installation, the `data-golf` CLI command is also available:
+After installation, the `banksia` CLI command is also available:
 
 ```bash
-data-golf --mode single --condition "Hypothyroidism" --sex female --age 54
+banksia --mode single --condition "Hypothyroidism" --sex female --age 54
 ```
 
 ## Usage
