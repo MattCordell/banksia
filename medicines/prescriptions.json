@@ -2,22 +2,28 @@
   "Healthy": {
     "medicines": [
       {
-        "category": "Simple Analgesics",
-        "ecl": "387517004 OR 387207008",
+        "category": "Non-opioid analgesic",
+        "ecl": "<373216001",
         "probability": 0.08,
         "notes": "Paracetamol or ibuprofen OTC use"
       },
       {
         "category": "Antihistamines",
-        "ecl": "372523007 OR 386884002",
+        "ecl": "<373228009",
         "probability": 0.05,
         "notes": "Cetirizine, loratadine for seasonal allergies"
       },
       {
         "category": "Vitamin D",
-        "ecl": "18414002",
+        "ecl": "<30178006",
         "probability": 0.06,
         "notes": "Colecalciferol supplementation"
+      },
+      {
+        "category": "General Vitamins",
+        "ecl": "<87708000",
+        "probability": 0.15,
+        "notes": "https://www.abs.gov.au/statistics/health/food-and-nutrition/dietary-supplements/latest-release"
       }
     ],
     "notes": "Small proportion of healthy patients take OTC medicines."
@@ -33,7 +39,7 @@
       },
       {
         "category": "Folic Acid",
-        "ecl": "63718003",
+        "ecl": "<792796007",
         "probability": 0.70,
         "notes": "Commonly depleted in alcohol use disorder"
       },
@@ -51,7 +57,7 @@
       },
       {
         "category": "Proton Pump Inhibitors",
-        "ecl": "387137007 OR 396047003 OR 395821003",
+        "ecl": "<372525000",
         "probability": 0.20,
         "notes": "Omeprazole, esomeprazole, or pantoprazole for GI protection"
       }
@@ -63,7 +69,7 @@
     "medicines": [
       {
         "category": "Non-Selective Beta-Blockers",
-        "ecl": "372772003 OR 386870007",
+        "ecl": "<373254001 AND <441338003",
         "probability": 0.65,
         "notes": "Propranolol or carvedilol for variceal prophylaxis"
       },
@@ -74,20 +80,20 @@
         "notes": "First-line for hepatic encephalopathy"
       },
       {
-        "category": "Spironolactone",
-        "ecl": "387078006",
+        "category": "Aldosterone receptor antagonist (Spironolactone)",
+        "ecl": "<372603003",
         "probability": 0.50,
         "notes": "First-line diuretic for ascites"
       },
       {
         "category": "Rifaximin",
-        "ecl": "412553001",
+        "ecl": "<406756000",
         "probability": 0.25,
         "notes": "Adjunct to lactulose for recurrent encephalopathy; PBS Authority"
       },
       {
         "category": "Loop Diuretics",
-        "ecl": "387475002",
+        "ecl": "<372691009",
         "probability": 0.35,
         "notes": "Furosemide adjunct for ascites"
       },
@@ -104,38 +110,38 @@
   "Type 2 Diabetes Mellitus": {
     "medicines": [
       {
-        "category": "Biguanides",
-        "ecl": "372567009",
+        "category": "Biguanide hypoglycaemic agent",
+        "ecl": "<1363127000",
         "probability": 0.85,
         "notes": "Metformin; standard first-line per ADS algorithm"
       },
       {
         "category": "SGLT2 Inhibitors",
-        "ecl": "703674001 OR 703894008",
+        "ecl": "<703673007",
         "probability": 0.35,
         "notes": "Dapagliflozin or empagliflozin; expanding PBS access"
       },
       {
         "category": "DPP-4 Inhibitors",
-        "ecl": "423307000 OR 702798009 OR 443087004 OR 428611002",
+        "ecl": "<423837000",
         "probability": 0.20,
         "notes": "Sitagliptin, linagliptin, saxagliptin, or vildagliptin"
       },
       {
-        "category": "Sulfonylureas",
-        "ecl": "395731001",
+        "category": "Sulfonyluric hypoglycaemic",
+        "ecl": "<117177007",
         "probability": 0.15,
         "notes": "Gliclazide; declining use but still common"
       },
       {
         "category": "GLP-1 Receptor Agonists",
-        "ecl": "764283003 OR 714080005",
+        "ecl": "<416171004",
         "probability": 0.10,
         "notes": "Semaglutide or dulaglutide; PBS requires prior SGLT2i trial"
       },
       {
-        "category": "Statins",
-        "ecl": "373444002 OR 700067006",
+        "category": "Statins (HMG-CoA reductase inhibitor)",
+        "ecl": "<372912004",
         "probability": 0.60,
         "notes": "Atorvastatin or rosuvastatin for CV risk reduction"
       }
@@ -147,31 +153,31 @@
     "medicines": [
       {
         "category": "ACE Inhibitors",
-        "ecl": "386872004 OR 372916001 OR 372658000",
+        "ecl": "<372733002",
         "probability": 0.45,
         "notes": "Ramipril, perindopril, or enalapril; first-line"
       },
       {
         "category": "Angiotensin Receptor Blockers",
-        "ecl": "386877005 OR 372512008 OR 387069000 OR 373567002",
+        "ecl": "<372913009",
         "probability": 0.30,
         "notes": "Irbesartan, candesartan, telmisartan, or losartan"
       },
       {
         "category": "Calcium Channel Blockers",
-        "ecl": "386864001 OR 386863007 OR 395986007",
+        "ecl": "<406769001",
         "probability": 0.35,
         "notes": "Amlodipine, felodipine, or lercanidipine"
       },
       {
-        "category": "Thiazide Diuretics",
-        "ecl": "387525002 OR 387419003",
+        "category": "Thiazide/Sulfonamide Diuretics",
+        "ecl": "<372747003 OR <43585000",
         "probability": 0.20,
         "notes": "Hydrochlorothiazide or indapamide"
       },
       {
-        "category": "Beta-Blockers",
-        "ecl": "372826007 OR 387506000 OR 386868003",
+        "category": "Beta-1 Blockers",
+        "ecl": "<372661004",
         "probability": 0.10,
         "notes": "Metoprolol, atenolol, or bisoprolol; not first-line for uncomplicated HTN"
       }
@@ -182,8 +188,8 @@
   "Hyperlipidaemia": {
     "medicines": [
       {
-        "category": "Statins",
-        "ecl": "373444002 OR 700067006 OR 387584000 OR 373566006",
+        "category": "Statins (HMG-CoA reductase inhibitor)",
+        "ecl": "<372912004",
         "probability": 0.90,
         "notes": "Atorvastatin, rosuvastatin, simvastatin, or pravastatin"
       },
@@ -195,7 +201,7 @@
       },
       {
         "category": "Fibrates",
-        "ecl": "386879008",
+        "ecl": "<860926007",
         "probability": 0.08,
         "notes": "Fenofibrate; mainly for triglycerides"
       }
@@ -212,32 +218,32 @@
         "notes": "Long-term single antiplatelet for secondary prevention"
       },
       {
-        "category": "Statins",
-        "ecl": "373444002 OR 700067006",
+        "category": "Statins (HMG-CoA reductase inhibitor)",
+        "ecl": "<372912004",
         "probability": 0.90,
         "notes": "Universal secondary prevention; high-dose atorvastatin preferred"
       },
       {
-        "category": "Beta-Blockers",
-        "ecl": "372826007 OR 386868003 OR 387506000",
+        "category": "Beta-1 Blockers",
+        "ecl": "<372661004",
         "probability": 0.65,
         "notes": "Metoprolol, bisoprolol, or atenolol; post-MI and antianginal"
       },
       {
         "category": "ACE Inhibitors",
-        "ecl": "386872004 OR 372916001",
+        "ecl": "<372733002",
         "probability": 0.55,
         "notes": "Ramipril or perindopril; secondary prevention"
       },
       {
         "category": "P2Y12 Inhibitors",
-        "ecl": "386952008",
+        "ecl": "<1162905001",
         "probability": 0.30,
         "notes": "Clopidogrel; antiplatelet alternative or DAPT"
       },
       {
         "category": "Nitrates",
-        "ecl": "387404004 OR 386854005",
+        "ecl": "<372700007",
         "probability": 0.20,
         "notes": "GTN or isosorbide mononitrate for angina"
       }
@@ -249,7 +255,7 @@
     "medicines": [
       {
         "category": "ACE Inhibitors",
-        "ecl": "386872004 OR 372916001 OR 372658000",
+        "ecl": "<372733002",
         "probability": 0.50,
         "notes": "Ramipril, perindopril, or enalapril; first-line HFrEF"
       },
@@ -267,13 +273,13 @@
       },
       {
         "category": "SGLT2 Inhibitors",
-        "ecl": "703674001 OR 703894008",
+        "ecl": "<703673007",
         "probability": 0.40,
         "notes": "Dapagliflozin or empagliflozin; PBS-listed for HF"
       },
       {
         "category": "Loop Diuretics",
-        "ecl": "387475002",
+        "ecl": "<372691009",
         "probability": 0.65,
         "notes": "Furosemide for symptom control"
       },
@@ -291,31 +297,31 @@
     "medicines": [
       {
         "category": "ACE Inhibitors / ARBs",
-        "ecl": "386872004 OR 372916001 OR 386877005 OR 372512008",
+        "ecl": "<372733002 OR <372913009",
         "probability": 0.70,
         "notes": "Ramipril, perindopril, irbesartan, or candesartan; renoprotective"
       },
       {
         "category": "SGLT2 Inhibitors",
-        "ecl": "703674001",
+        "ecl": "<703673007",
         "probability": 0.35,
         "notes": "Dapagliflozin; PBS-listed for CKD (eGFR 25-75)"
       },
       {
         "category": "Loop Diuretics",
-        "ecl": "387475002",
+        "ecl": "<372691009",
         "probability": 0.40,
         "notes": "Furosemide for fluid management"
       },
       {
-        "category": "Statins",
-        "ecl": "373444002 OR 700067006",
+        "category": "Statins (HMG-CoA reductase inhibitor)",
+        "ecl": "<372912004",
         "probability": 0.50,
         "notes": "CV risk reduction"
       },
       {
         "category": "Vitamin D",
-        "ecl": "18414002 OR 259333003",
+        "ecl": "<30178006",
         "probability": 0.35,
         "notes": "Colecalciferol or calcitriol"
       },
@@ -362,20 +368,20 @@
   "Nonalcoholic Fatty Liver Disease (NAFLD)": {
     "medicines": [
       {
-        "category": "Statins",
-        "ecl": "373444002 OR 700067006",
+        "category": "Statins (HMG-CoA reductase inhibitor)",
+        "ecl": "<372912004",
         "probability": 0.40,
         "notes": "Safe in NAFLD; for co-existing dyslipidaemia"
       },
       {
-        "category": "Biguanides",
-        "ecl": "372567009",
+        "category": "Biguanide hypoglycaemic agent",
+        "ecl": "<1363127000",
         "probability": 0.30,
         "notes": "Metformin for co-existing T2DM"
       },
       {
         "category": "ACE Inhibitors / ARBs",
-        "ecl": "386872004 OR 372916001 OR 386864001",
+        "ecl": "<372733002 OR <406769001",
         "probability": 0.25,
         "notes": "For co-existing hypertension; ramipril, perindopril, or amlodipine"
       }
@@ -386,20 +392,20 @@
   "Osteoarthritis": {
     "medicines": [
       {
-        "category": "Simple Analgesics",
-        "ecl": "387517004",
+        "category": "Non-opioid analgesic",
+        "ecl": "<373216001 MINUS <372665008",
         "probability": 0.50,
         "notes": "Paracetamol; RACGP equivocal but widely used"
       },
       {
         "category": "Oral NSAIDs",
-        "ecl": "387207008 OR 372588000 OR 116081000",
+        "ecl": "<372665008 AND (<440131009.<<762951001)",
         "probability": 0.40,
         "notes": "Ibuprofen, naproxen, or celecoxib"
       },
       {
         "category": "Proton Pump Inhibitors",
-        "ecl": "387137007 OR 396047003",
+        "ecl": "<372525000 AND (<440131009.<<762951001)",
         "probability": 0.25,
         "notes": "Omeprazole or esomeprazole; gastroprotection with oral NSAIDs"
       }
@@ -423,7 +429,7 @@
       },
       {
         "category": "Folic Acid",
-        "ecl": "63718003",
+        "ecl": "<792796007",
         "probability": 0.65,
         "notes": "Routinely co-prescribed with methotrexate"
       },
@@ -435,7 +441,7 @@
       },
       {
         "category": "Oral NSAIDs",
-        "ecl": "372588000 OR 116081000 OR 387207008",
+        "ecl": "<372665008 AND (<440131009.<<762951001)",
         "probability": 0.35,
         "notes": "Naproxen, celecoxib, or ibuprofen for symptom control"
       },
@@ -452,10 +458,10 @@
   "Hypothyroidism": {
     "medicines": [
       {
-        "category": "Levothyroxine",
-        "ecl": "710809001",
+        "category": "Thyroid hormone",
+        "ecl": "<61020000",
         "probability": 0.95,
-        "notes": "Near-universal thyroid hormone replacement"
+        "notes": "Levothyroxine Near-universal thyroid hormone replacement. <61020000 used to include a sprinkling of Liothyronine."
       }
     ],
     "notes": "Australian Prescriber: modern management of thyroid replacement therapy."
@@ -465,7 +471,7 @@
     "medicines": [
       {
         "category": "Antithyroid Drugs",
-        "ecl": "395831005 OR 387203007",
+        "ecl": "<418416001",
         "probability": 0.80,
         "notes": "Carbimazole (first-line) or propylthiouracil"
       },
@@ -483,13 +489,13 @@
     "medicines": [
       {
         "category": "Oral Iron",
-        "ecl": "387402000 OR 387289009",
+        "ecl": "<373742002",
         "probability": 0.80,
         "notes": "Ferrous sulfate or ferrous fumarate; first-line"
       },
       {
         "category": "Intravenous Iron",
-        "ecl": "430077004",
+        "ecl": "<111072007",
         "probability": 0.15,
         "notes": "Ferric carboxymaltose (Ferinject); if oral fails"
       },
@@ -507,19 +513,19 @@
     "medicines": [
       {
         "category": "Penicillins",
-        "ecl": "372687004 OR 387544009",
+        "ecl": "<764146007",
         "probability": 0.55,
         "notes": "Amoxicillin or flucloxacillin; most common GP antibiotics"
       },
       {
         "category": "Cephalosporins",
-        "ecl": "387304003",
+        "ecl": "<764147003",
         "probability": 0.20,
         "notes": "Cefalexin; skin/soft tissue and UTI"
       },
       {
         "category": "Macrolides / Tetracyclines",
-        "ecl": "96037004 OR 372478003",
+        "ecl": "<372480009 OR <373206009",
         "probability": 0.15,
         "notes": "Roxithromycin or doxycycline; respiratory, penicillin allergy"
       },
@@ -536,14 +542,14 @@
   "Viral Infection": {
     "medicines": [
       {
-        "category": "Simple Analgesics",
-        "ecl": "387517004 OR 387207008",
+        "category": "Non-opioid analgesic",
+        "ecl": "<373216001",
         "probability": 0.60,
         "notes": "Paracetamol or ibuprofen for symptomatic relief"
       },
       {
         "category": "Antivirals",
-        "ecl": "96098007 OR 412261005 OR 41193000",
+        "ecl": "<372701006",
         "probability": 0.15,
         "notes": "Valaciclovir, oseltamivir, or aciclovir; only for specific viral infections"
       }
@@ -555,13 +561,13 @@
     "medicines": [
       {
         "category": "Systemic Antifungals",
-        "ecl": "373450007 OR 387174006",
+        "ecl": "<373219008 AND (<440131009.<<762951001)",
         "probability": 0.55,
         "notes": "Terbinafine or fluconazole; most utilised systemic antifungals in Australia"
       },
       {
         "category": "Topical Antifungals",
-        "ecl": "387325003 OR 372738006",
+        "ecl": "<373219008 AND (<767314005.<<762951001)",
         "probability": 0.40,
         "notes": "Clotrimazole or miconazole; first-line for superficial infections"
       }
@@ -573,7 +579,7 @@
     "medicines": [
       {
         "category": "Anthelmintics",
-        "ecl": "387311004 OR 387558006",
+        "ecl": "<372802005",
         "probability": 0.60,
         "notes": "Mebendazole or albendazole; OTC for threadworm"
       },
@@ -585,7 +591,7 @@
       },
       {
         "category": "Antiprotozoals",
-        "ecl": "372602008",
+        "ecl": "372602008 OR <372857007",
         "probability": 0.20,
         "notes": "Metronidazole for giardiasis, amoebiasis"
       }

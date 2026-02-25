@@ -1,0 +1,85 @@
+============================================================
+TRAIN DATA METRICS
+============================================================
+
+Q1. How many females in the dataset: 12744
+Q2. How many adults (Age >= 18): 20187
+Q3. Proportion of obese patients (BMI >= 30) with Chol:HDL > 5: 0.3497 (4576 of 13086 obese patients with lipid data)
+Q4. How many "Healthy" condition patients: 10669
+Q5. How many patients have "Hyperthyroidism": 66
+Q6. How many patients had "Hyperthyroidism" in 2021: 9
+
+Q7. Proportion of patients with "Osteoarthritis" in 2021: 0.0607
+Q8. Proportion of patients with "Osteoarthritis" in 2022: 0.0601
+Q9. Proportion of patients with "Osteoarthritis" in 2023: 0.0546
+Q10. Proportion of patients with "Osteoarthritis" in 2024: 0.0542
+Q11. Proportion of patients with "Osteoarthritis" in 2025: 0.0568
+Q12. Proportion of patients with "Osteoarthritis" in 2026: 0.0577
+Q13. Year with greatest proportion of "Osteoarthritis": 2021 (0.0607)
+Q14. Average proportion of "Osteoarthritis" across 2021-2026: 0.0574
+
+Q15. Proportion of patients with "Rheumatoid Arthritis" in 2021: 0.0123
+Q16. Proportion of patients with "Rheumatoid Arthritis" in 2022: 0.0130
+Q17. Proportion of patients with "Rheumatoid Arthritis" in 2023: 0.0145
+Q18. Proportion of patients with "Rheumatoid Arthritis" in 2024: 0.0118
+Q19. Proportion of patients with "Rheumatoid Arthritis" in 2025: 0.0100
+Q20. Proportion of patients with "Rheumatoid Arthritis" in 2026: 0.0109
+Q21. Year with greatest proportion of "Rheumatoid Arthritis": 2023 (0.0145)
+
+Q22. Condition counts across whole train dataset:
+    Alcoholic Liver Disease: 396
+    Bacterial Infection: 656
+    COPD: 377
+    Chronic Kidney Disease (Stage 3-4): 404
+    Chronic Liver Disease / Cirrhosis: 158
+    Essential Hypertension: 2428
+    Fungal Infection: 230
+    Healthy: 10669
+    Heart Failure (Chronic): 146
+    Hyperlipidaemia: 1568
+    Hyperthyroidism: 66
+    Hypothyroidism: 484
+    Iron Deficiency Anaemia: 1339
+    Ischaemic Heart Disease: 539
+    Nonalcoholic Fatty Liver Disease (NAFLD): 2259
+    Osteoarthritis: 1466
+    Parasitic Infection: 47
+    Rheumatoid Arthritis: 308
+    Type 2 Diabetes Mellitus: 1120
+    Viral Infection: 928
+
+============================================================
+TEST DATA METRICS
+============================================================
+
+Q23. Condition counts across whole test dataset:
+    Alcoholic Liver Disease: 42
+    Bacterial Infection: 73
+    COPD: 45
+    Chronic Kidney Disease (Stage 3-4): 49
+    Chronic Liver Disease / Cirrhosis: 21
+    Essential Hypertension: 253
+    Fungal Infection: 19
+    Healthy: 1186
+    Heart Failure (Chronic): 15
+    Hyperlipidaemia: 180
+    Hyperthyroidism: 6
+    Hypothyroidism: 57
+    Iron Deficiency Anaemia: 153
+    Ischaemic Heart Disease: 67
+    Nonalcoholic Fatty Liver Disease (NAFLD): 233
+    Osteoarthritis: 162
+    Parasitic Infection: 3
+    Rheumatoid Arthritis: 39
+    Type 2 Diabetes Mellitus: 136
+    Viral Infection: 105
+
+============================================================
+ADDITIONAL TRAIN METRICS - MEDICATIONS
+============================================================
+
+Q25. How many patients have a Thiamine medication: 417
+Q26. How many patients have an ACE Inhibitors medication: 1282
+Q27. How many patients have a Digoxin medication: 8
+Q28. How many patients have a Statins medication: 3549
+Q29. How many patients are on both "ACE Inhibitors" AND "Calcium Channel Blockers": 354

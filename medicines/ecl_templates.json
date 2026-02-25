@@ -20,7 +20,7 @@
     "description": "AMT Medicinal Product"
   },
   "product": {
-    "template": "<<373873005:<<127489000=({ingredients})",
+    "template": "<<373873005:<<127489000=({ingredients}),411116001=*",
     "description": "SNOMED CT international medicinal product hierarchy"
   }
 }

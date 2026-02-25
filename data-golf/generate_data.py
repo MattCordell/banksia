@@ -50,6 +50,18 @@ KAGGLE_EXCLUDE_COLS = [
     "Medicine_3_Category",
 ]
 
+# Test kaggle additionally excludes all SNOMED/medicine code+display columns
+TEST_KAGGLE_EXTRA_EXCLUDE = [
+    "SNOMED_Code",
+    "SNOMED_Display",
+    "Medicine_1_Code",
+    "Medicine_1_Display",
+    "Medicine_2_Code",
+    "Medicine_2_Display",
+    "Medicine_3_Code",
+    "Medicine_3_Display",
+]
+
 DEFAULT_N = 10
 DEFAULT_SEED = 42
 
@@ -192,11 +204,12 @@ def main():
     print(f"Saved {test_raw_path}")
 
     # Export kaggle CSVs (drop excluded columns)
-    kaggle_drop = [c for c in KAGGLE_EXCLUDE_COLS if c in combined.columns]
+    train_kaggle_drop = [c for c in KAGGLE_EXCLUDE_COLS if c in combined.columns]
+    test_kaggle_drop = [c for c in KAGGLE_EXCLUDE_COLS + TEST_KAGGLE_EXTRA_EXCLUDE if c in combined.columns]
     train_kaggle_path = os.path.join(SCRIPT_DIR, "train_kaggle.csv")
     test_kaggle_path = os.path.join(SCRIPT_DIR, "test_kaggle.csv")
-    train.drop(columns=kaggle_drop).to_csv(train_kaggle_path, index=False)
-    test.drop(columns=kaggle_drop).to_csv(test_kaggle_path, index=False)
+    train.drop(columns=train_kaggle_drop).to_csv(train_kaggle_path, index=False)
+    test.drop(columns=test_kaggle_drop).to_csv(test_kaggle_path, index=False)
     print(f"Saved {train_kaggle_path}")
     print(f"Saved {test_kaggle_path}")
 

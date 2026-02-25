@@ -1,0 +1,23 @@
+Q1. How many females in the dataset: 12744
+Q2. How many adults (Age >= 18): 20187
+Q3. How many Obese patients are there: 13086
+Q4. Proportion of obese patients (BMI >= 30) with Chol:HDL > 5: 0.3497
+Q5. How many "Healthy" condition patients: 10669
+Q6. How many patients have "Hyperthyroidism": 66
+Q7. Proportion of patients with "Osteoarthritis" in 2026: 0.0577
+Q8. Year with greatest proportion of "Rheumatoid Arthritis": 2023
+Q9. How Many Patients with Osteoarthritis: 1466
+Q10. How Many Patients with Viral Infection: 928
+Q11 (TBD)How Many Patients with Have a Lung Infection (TBD): 42
+Q12 (TBD) How Many Patients have a Gram-negative bacterial infection and prescribed a  (TBD): 42
+Q13. How many patients have a Thiamine medication: 417
+Q14. How many patients have an ACE Inhibitors medication: 1282
+Q15. How many patients have a Digoxin medication: 8
+Q16. How many patients have a Statins medication: 3549
+Q17. How many patients are on both "ACE Inhibitors" AND "Calcium Channel Blockers": 354
+Q18.1 PREDICT How Many Patients with Hyperlipidaemia: 180
+Q18.2 PREDICT How Many Patients with Iron Deficiency Anaemia: 153
+Q18.3 PREDICT How Many Patients with Hypothyroidism: 57
+Q18.4 PREDICT How Many Patients have some sort of infection: 200
+Q18.5 PREDICT How Many Patients with an infection would benefit from antibiotics: 73
+Q18.6 PREDICT Submit Full Test with Predictions: ??
