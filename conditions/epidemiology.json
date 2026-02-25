@@ -8,7 +8,7 @@
     "notes": "Fallback when no condition assigned. Prevalence is complement of all others."
   },
   "Alcoholic Liver Disease": {
-    "ecl": "<<41309000",
+    "ecl": "<<41309000 OR ((*:42752001=<<41309000) MINUS (<302049001:255234002=<<41309000))",
     "base_prevalence": 0.005,
     "sex_ratio": { "male": 2.5, "female": 0.4, "other": 1.0 },
     "age_prevalence": [
@@ -25,7 +25,7 @@
     "notes": "AIHW Liver Disease Quick Facts. ~0.5% clinical prevalence. M>>F. Peak mortality ~60yr. Heavy drinking dominant risk factor."
   },
   "Chronic Liver Disease / Cirrhosis": {
-    "ecl": "<<328383001",
+    "ecl": "<<328383001 OR ((*:42752001=<<328383001) MINUS (<302049001:255234002=<<328383001))",
     "base_prevalence": 0.004,
     "sex_ratio": { "male": 1.5, "female": 0.67, "other": 1.0 },
     "age_prevalence": [
@@ -43,7 +43,7 @@
     "notes": "AIHW. ~70,000 Australians with cirrhosis (~0.3-0.4%). Mean age at first hospitalisation ~61yr. M ~66% of hospitalisations."
   },
   "Type 2 Diabetes Mellitus": {
-    "ecl": "<<44054006",
+    "ecl": "<<38341003 OR ((*:42752001=<<38341003) MINUS (<302049001:255234002=<<38341003))",
     "base_prevalence": 0.046,
     "sex_ratio": { "male": 1.3, "female": 0.77, "other": 1.0 },
     "age_prevalence": [
@@ -82,7 +82,7 @@
     "notes": "ABS 2022 NHS self-reported 11.6%. Steep rise after 45. 75+: ~45%."
   },
   "Hyperlipidaemia": {
-    "ecl": "<<55822004",
+    "ecl": "<<55822004 OR ((*:42752001=<<55822004) MINUS (<302049001:255234002=<<55822004))",
     "base_prevalence": 0.084,
     "sex_ratio": { "male": 1.0, "female": 1.0, "other": 1.0 },
     "age_prevalence": [
@@ -101,7 +101,7 @@
     "notes": "ABS 2022 NHS self-reported 8.4%. M=F. 75+: 29%."
   },
   "Ischaemic Heart Disease": {
-    "ecl": "<<414545008",
+    "ecl": "<<414545008 OR ((*:42752001=<<414545008) MINUS (<302049001:255234002=<<414545008))",
     "base_prevalence": 0.030,
     "sex_ratio": { "male": 1.5, "female": 0.67, "other": 1.0 },
     "age_prevalence": [
@@ -120,7 +120,7 @@
     "notes": "AIHW. ~3% of adults. M ~2x F. 75+: M 19%, F 8.8%."
   },
   "Heart Failure (Chronic)": {
-    "ecl": "<<48447003",
+    "ecl": "<<48447003 OR ((*:42752001=<<48447003) MINUS (<302049001:255234002=<<48447003))",
     "base_prevalence": 0.007,
     "sex_ratio": { "male": 1.7, "female": 0.6, "other": 1.0 },
     "age_prevalence": [
@@ -138,7 +138,7 @@
     "notes": "AIHW 2022. ~0.7% self-reported. M 1.0% vs F 0.5%. 75% of cases aged 65+."
   },
   "Chronic Kidney Disease (Stage 3-4)": {
-    "ecl": "<<709044004",
+    "ecl": "<<709044004 OR ((*:42752001=<<709044004) MINUS (<302049001:255234002=<<709044004))",
     "base_prevalence": 0.040,
     "sex_ratio": { "male": 1.0, "female": 1.0, "other": 1.0 },
     "age_prevalence": [
@@ -154,7 +154,7 @@
     "notes": "AIHW. Stages 3a-4 ~4% of adults. M=F. 75+: ~44%."
   },
   "COPD": {
-    "ecl": "<<13645005",
+    "ecl": " <<13645005 OR ((*:42752001=<<13645005) MINUS (<302049001:255234002=<<13645005))",
     "base_prevalence": 0.025,
     "sex_ratio": { "male": 1.1, "female": 0.9, "other": 1.0 },
     "age_prevalence": [
@@ -171,7 +171,7 @@
     "notes": "AIHW/ABS 2022. 2.5% overall; 4.8% in 45+. Smoking dominant risk factor. 75+: M 8.3%, F 5.4%."
   },
   "Nonalcoholic Fatty Liver Disease (NAFLD)": {
-    "ecl": "<<197321007 MINUS <<50325005",
+    "ecl": "(<<197321007 MINUS <<50325005) OR ((*:42752001=(<<197321007 MINUS <<50325005)) MINUS (<302049001:255234002=(<<197321007 MINUS <<50325005)))",
     "base_prevalence": 0.060,
     "sex_ratio": { "male": 1.2, "female": 0.85, "other": 1.0 },
     "age_prevalence": [
@@ -189,7 +189,7 @@
     "notes": "Vaz et al. 2023. ~35-39% measured but using ~6% clinical diagnosis rate. M>F. Peak middle age."
   },
   "Osteoarthritis": {
-    "ecl": "<<396275006",
+    "ecl": "<<396275006 OR ((*:42752001=<<396275006) MINUS (<302049001:255234002=<<396275006))",
     "base_prevalence": 0.083,
     "sex_ratio": { "male": 0.75, "female": 1.25, "other": 1.0 },
     "age_prevalence": [
@@ -206,7 +206,7 @@
     "notes": "ABS 2022. 8.3% overall. F 10% vs M 6.1%. 75+: 30%."
   },
   "Rheumatoid Arthritis": {
-    "ecl": "<<69896004",
+    "ecl": "<<69896004 OR ((*:42752001=<<69896004) MINUS (<302049001:255234002=<<69896004))",
     "base_prevalence": 0.020,
     "sex_ratio": { "male": 0.8, "female": 1.25, "other": 1.0 },
     "age_prevalence": [
@@ -224,7 +224,7 @@
     "notes": "AIHW. 2.0% overall. F 2.5% vs M 1.6%. Onset commonly 35-64. 75+: 8.9%."
   },
   "Hypothyroidism": {
-    "ecl": "<<40930008",
+    "ecl": "<<40930008 OR ((*:42752001=<<40930008) MINUS (<302049001:255234002=<<40930008))",
     "base_prevalence": 0.030,
     "sex_ratio": { "male": 0.3, "female": 1.7, "other": 1.0 },
     "age_prevalence": [
@@ -239,7 +239,7 @@
     "notes": "RACGP/Hormones Australia. ~3% including subclinical. F>>M (5-10x). Increases with age."
   },
   "Hyperthyroidism": {
-    "ecl": "<<34486009",
+    "ecl": "<<34486009 OR ((*:42752001=<<34486009) MINUS (<302049001:255234002=<<34486009))",
     "base_prevalence": 0.003,
     "sex_ratio": { "male": 0.3, "female": 1.7, "other": 1.0 },
     "age_prevalence": [
@@ -253,7 +253,7 @@
     "notes": "Hormones Australia. ~0.3%. F>>M. Graves' typically 20-50yr."
   },
   "Iron Deficiency Anaemia": {
-    "ecl": "<<87522002",
+    "ecl": "<<87522002 OR ((*:42752001=<<87522002) MINUS (<302049001:255234002=<<87522002))",
     "base_prevalence": 0.040,
     "sex_ratio": { "male": 0.2, "female": 1.8, "other": 1.0 },
     "age_prevalence": [
@@ -271,7 +271,7 @@
     "notes": "ABS/PMC. ~8-12% women reproductive age; <5% men. F>>M. Also rises in 85+."
   },
   "Bacterial Infection": {
-    "ecl": "<<87628006",
+    "ecl": "<<87628006 OR ((*:42752001=<<87628006) MINUS <<363165003)",
     "base_prevalence": 0.025,
     "sex_ratio": { "male": 1.15, "female": 0.87, "other": 1.0 },
     "age_prevalence": [
@@ -291,7 +291,7 @@
     "notes": "AIHW/NNDSS/ABS. ~2.5% point prevalence. Includes community-acquired UTI, SSTI, bacterial pneumonia, gastroenteritis (campylobacter ~41k, salmonella ~13k notifications/yr). 362,600 infectious disease hospitalisations/yr (2021). Bimodal age: children <5 (NNDSS highest rate 698/100k) and elderly 65+. M slightly >F for most bacterial infections (sepsis 55-64% male; legionellosis M:F 1.7-5). Smoking impairs mucociliary clearance; alcohol impairs immune function."
   },
   "Viral Infection": {
-    "ecl": "<<34014006",
+    "ecl": "<<34014006 OR ((*:42752001=<<34014006) MINUS <<363165003)",
     "base_prevalence": 0.035,
     "sex_ratio": { "male": 0.95, "female": 1.05, "other": 1.0 },
     "age_prevalence": [
@@ -311,7 +311,7 @@
     "notes": "AIHW/NNDSS 2023. ~3.5% point prevalence. 4-week ARI period prevalence 24.8% (Tham et al. 2022, PMC9151186); ~68.9M ARI cases/yr (~3.2/person/yr), most viral. Influenza 290k+ notifications, COVID-19 837k+ notifications (2023). Age 0-4: 46.3% 4-week prevalence; 65+: 9.7%. F slightly higher ARI incidence (3.4 vs 3.0/person/yr). Children have highest rates; elderly lower incidence but higher severity."
   },
   "Fungal Infection": {
-    "ecl": "<<3218000",
+    "ecl": "<<3218000 OR ((*:42752001=<<3218000) MINUS <<363165003)",
     "base_prevalence": 0.008,
     "sex_ratio": { "male": 1.2, "female": 0.85, "other": 1.0 },
     "age_prevalence": [
@@ -331,7 +331,7 @@
     "notes": "RACGP/Global Burden of Disease. ~0.8% point prevalence for clinically active infection. Tinea pedis culture-proven ~5% in school students (Kilburn et al. 1999), onychomycosis up to 50% in >70yr. Candidaemia incidence 2.41/100k (low vs USA 8-14/100k). M>F for dermatophytes; infants prone to oral thrush; elderly/immunocompromised at highest risk for invasive disease. Athletes at higher risk for tinea pedis. Obesity increases candidal infection risk."
   },
   "Parasitic Infection": {
-    "ecl": "<<17322007",
+    "ecl": "<<17322007 OR ((*:42752001=<<17322007) MINUS <<363165003)",
     "base_prevalence": 0.002,
     "sex_ratio": { "male": 1.1, "female": 0.9, "other": 1.0 },
     "age_prevalence": [
