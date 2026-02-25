@@ -24,8 +24,11 @@ banksia = "generate:main"
 requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+py-modules = ["generate"]
+
 [tool.setuptools.packages.find]
-include = ["common*", "conditions*", "laboratory*", "population*", "formatters*"]
+include = ["common*", "conditions*", "laboratory*", "medicines*", "population*", "formatters*"]
 
 [tool.setuptools.package-data]
 conditions = ["*.json"]
