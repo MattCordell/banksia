@@ -69,6 +69,43 @@
           "distribution": "lognormal"
         }
       },
+      "MBAP": {
+        "ALT (U/L)": {
+          "mean": 150,
+          "sd": 80,
+          "min": 30,
+          "max": 1200,
+          "distribution": "lognormal"
+        },
+        "AST (U/L)": {
+          "mean": 220,
+          "sd": 100,
+          "min": 40,
+          "max": 2000,
+          "distribution": "lognormal"
+        },
+        "GGT (U/L)": {
+          "mean": 500,
+          "sd": 300,
+          "min": 50,
+          "max": 3000,
+          "distribution": "lognormal"
+        },
+        "Total Bilirubin (µmol/L)": {
+          "mean": 60,
+          "sd": 40,
+          "min": 6,
+          "max": 800,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 28,
+          "sd": 8,
+          "min": 8,
+          "max": 45,
+          "distribution": "normal"
+        }
+      },
       "CRP": {
         "CRP (mg/L)": {
           "mean": 12,
@@ -146,6 +183,43 @@
           "distribution": "lognormal"
         }
       },
+      "MBAP": {
+        "ALT (U/L)": {
+          "mean": 120,
+          "sd": 100,
+          "min": 15,
+          "max": 4000,
+          "distribution": "lognormal"
+        },
+        "AST (U/L)": {
+          "mean": 200,
+          "sd": 150,
+          "min": 20,
+          "max": 4000,
+          "distribution": "lognormal"
+        },
+        "ALP (U/L)": {
+          "mean": 300,
+          "sd": 240,
+          "min": 40,
+          "max": 4000,
+          "distribution": "lognormal"
+        },
+        "Total Bilirubin (µmol/L)": {
+          "mean": 120,
+          "sd": 200,
+          "min": 10,
+          "max": 10000,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 26,
+          "sd": 10,
+          "min": 8,
+          "max": 45,
+          "distribution": "normal"
+        }
+      },
       "CRP": {
         "CRP (mg/L)": {
           "mean": 20,
@@ -167,6 +241,13 @@
           "sd": 3.5,
           "min": 4.0,
           "max": 40,
+          "distribution": "lognormal"
+        },
+        "Creatinine (µmol/L)": {
+          "mean": 110,
+          "sd": 55,
+          "min": 40,
+          "max": 1600,
           "distribution": "lognormal"
         }
       },
@@ -220,6 +301,22 @@
         }
       },
       "MBAP": {
+        "Cholesterol (mmol/L)": {
+          "mean": 6.0,
+          "sd": 1.6,
+          "min": 3.0,
+          "max": 14,
+          "distribution": "normal"
+        },
+        "Sodium (mmol/L)": {
+          "mean": 139,
+          "sd": 4,
+          "min": 120,
+          "max": 160,
+          "distribution": "normal"
+        }
+      },
+      "Kidney Function": {
         "Sodium (mmol/L)": {
           "mean": 139,
           "sd": 4,
@@ -249,6 +346,15 @@
           "max": 14,
           "distribution": "normal"
         }
+      },
+      "MBAP": {
+        "Cholesterol (mmol/L)": {
+          "mean": 7.0,
+          "sd": 2.0,
+          "min": 3.5,
+          "max": 18,
+          "distribution": "normal"
+        }
       }
     },
     "notes": ""
@@ -258,6 +364,15 @@
     "panel_overrides": {
       "Lipid Panel": {
         "Total Cholesterol (mmol/L)": {
+          "mean": 6.5,
+          "sd": 1.8,
+          "min": 3.0,
+          "max": 15,
+          "distribution": "normal"
+        }
+      },
+      "MBAP": {
+        "Cholesterol (mmol/L)": {
           "mean": 6.5,
           "sd": 1.8,
           "min": 3.0,
@@ -294,6 +409,13 @@
           "min": 3,
           "max": 200,
           "distribution": "lognormal"
+        },
+        "Creatinine (µmol/L)": {
+          "mean": 140,
+          "sd": 100,
+          "min": 40,
+          "max": 2000,
+          "distribution": "lognormal"
         }
       },
       "Kidney Function": {
@@ -302,6 +424,20 @@
           "sd": 100,
           "min": 40,
           "max": 2000,
+          "distribution": "lognormal"
+        },
+        "Sodium (mmol/L)": {
+          "mean": 133,
+          "sd": 5,
+          "min": 115,
+          "max": 150,
+          "distribution": "normal"
+        },
+        "Urea (mmol/L)": {
+          "mean": 10,
+          "sd": 8,
+          "min": 3,
+          "max": 200,
           "distribution": "lognormal"
         }
       },
@@ -322,6 +458,22 @@
     "panel_overrides": {
       "Kidney Function": {
         "Creatinine (\u00b5mol/L)": {
+          "mean": 300,
+          "sd": 150,
+          "min": 80,
+          "max": 5000,
+          "distribution": "lognormal"
+        },
+        "Urea (mmol/L)": {
+          "mean": 20,
+          "sd": 10,
+          "min": 6,
+          "max": 500,
+          "distribution": "lognormal"
+        }
+      },
+      "MBAP": {
+        "Creatinine (µmol/L)": {
           "mean": 300,
           "sd": 150,
           "min": 80,
@@ -383,6 +535,22 @@
     "inherits": "Healthy",
     "panel_overrides": {
       "LFT": {
+        "ALT (U/L)": {
+          "mean": 85,
+          "sd": 60,
+          "min": 20,
+          "max": 1500,
+          "distribution": "lognormal"
+        },
+        "GGT (U/L)": {
+          "mean": 150,
+          "sd": 120,
+          "min": 30,
+          "max": 2000,
+          "distribution": "lognormal"
+        }
+      },
+      "MBAP": {
         "ALT (U/L)": {
           "mean": 85,
           "sd": 60,
@@ -631,6 +799,48 @@
           "min": 2.0,
           "max": 80,
           "distribution": "lognormal"
+        },
+        "ALT (U/L)": {
+          "mean": 40,
+          "sd": 30,
+          "min": 5,
+          "max": 500,
+          "distribution": "lognormal"
+        },
+        "AST (U/L)": {
+          "mean": 38,
+          "sd": 25,
+          "min": 5,
+          "max": 500,
+          "distribution": "lognormal"
+        },
+        "ALP (U/L)": {
+          "mean": 90,
+          "sd": 40,
+          "min": 20,
+          "max": 400,
+          "distribution": "lognormal"
+        },
+        "Total Bilirubin (µmol/L)": {
+          "mean": 18,
+          "sd": 15,
+          "min": 2,
+          "max": 200,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 32,
+          "sd": 6,
+          "min": 12,
+          "max": 45,
+          "distribution": "normal"
+        },
+        "Creatinine (µmol/L)": {
+          "mean": 100,
+          "sd": 50,
+          "min": 30,
+          "max": 800,
+          "distribution": "lognormal"
         }
       },
       "Kidney Function": {
@@ -639,6 +849,20 @@
           "sd": 50,
           "min": 30,
           "max": 800,
+          "distribution": "lognormal"
+        },
+        "Sodium (mmol/L)": {
+          "mean": 136,
+          "sd": 4,
+          "min": 120,
+          "max": 155,
+          "distribution": "normal"
+        },
+        "Urea (mmol/L)": {
+          "mean": 8.0,
+          "sd": 4.0,
+          "min": 2.0,
+          "max": 80,
           "distribution": "lognormal"
         }
       },
@@ -720,6 +944,29 @@
         }
       },
       "LFT": {
+        "ALT (U/L)": {
+          "mean": 60,
+          "sd": 80,
+          "min": 5,
+          "max": 4000,
+          "distribution": "lognormal"
+        },
+        "AST (U/L)": {
+          "mean": 55,
+          "sd": 70,
+          "min": 5,
+          "max": 4000,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 38,
+          "sd": 5,
+          "min": 15,
+          "max": 50,
+          "distribution": "normal"
+        }
+      },
+      "MBAP": {
         "ALT (U/L)": {
           "mean": 60,
           "sd": 80,
@@ -828,6 +1075,22 @@
           "distribution": "normal"
         }
       },
+      "MBAP": {
+        "ALP (U/L)": {
+          "mean": 150,
+          "sd": 120,
+          "min": 20,
+          "max": 2000,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 30,
+          "sd": 6,
+          "min": 10,
+          "max": 45,
+          "distribution": "normal"
+        }
+      },
       "Iron Studies": {
         "Ferritin (µg/L)": {
           "mean": 500,
@@ -913,6 +1176,29 @@
         }
       },
       "LFT": {
+        "ALP (U/L)": {
+          "mean": 120,
+          "sd": 80,
+          "min": 20,
+          "max": 1500,
+          "distribution": "lognormal"
+        },
+        "Total Bilirubin (µmol/L)": {
+          "mean": 18,
+          "sd": 25,
+          "min": 2,
+          "max": 500,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 32,
+          "sd": 6,
+          "min": 12,
+          "max": 48,
+          "distribution": "normal"
+        }
+      },
+      "MBAP": {
         "ALP (U/L)": {
           "mean": 120,
           "sd": 80,
