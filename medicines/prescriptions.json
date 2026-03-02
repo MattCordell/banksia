@@ -597,5 +597,107 @@
       }
     ],
     "notes": "TGA ivermectin update; common Australian GP antiparasitic prescribing."
+  },
+
+  "Inflammatory Conditions": {
+    "medicines": [
+      {
+        "category": "Oral NSAIDs",
+        "ecl": "<372665008 AND (<440131009.<<762951001)",
+        "probability": 0.65,
+        "notes": "Naproxen, ibuprofen, indomethacin, celecoxib; first-line for gout flares, tendinitis, bursitis"
+      },
+      {
+        "category": "Proton Pump Inhibitors",
+        "ecl": "<372525000",
+        "probability": 0.50,
+        "notes": "Omeprazole, esomeprazole; gastroprotection with NSAIDs/corticosteroids"
+      },
+      {
+        "category": "Corticosteroids (Prednisolone)",
+        "ecl": "116601002",
+        "probability": 0.45,
+        "notes": "Systemic corticosteroid for IBD flares, lupus, vasculitis, acute gout"
+      },
+      {
+        "category": "Allopurinol / Febuxostat",
+        "ecl": "387135004 OR 441743008",
+        "probability": 0.30,
+        "notes": "Urate-lowering therapy for gout subset"
+      },
+      {
+        "category": "Colchicine",
+        "ecl": "387413002",
+        "probability": 0.25,
+        "notes": "Gout prophylaxis and acute flare treatment"
+      },
+      {
+        "category": "DMARDs",
+        "ecl": "387381009 OR 373540008 OR 387248006",
+        "probability": 0.20,
+        "notes": "Methotrexate, hydroxychloroquine, sulfasalazine for autoimmune/spondyloarthritis subset"
+      },
+      {
+        "category": "Biologic DMARDs",
+        "ecl": "407317001 OR 387045004",
+        "probability": 0.10,
+        "notes": "Adalimumab or etanercept; PBS Authority after csDMARD failure for severe disease"
+      }
+    ],
+    "notes": "Broad inflammatory category. NSAIDs and PPIs most common. Corticosteroids for flares/severe disease. Urate-lowering for gout subset. DMARDs/biologics for autoimmune subset."
+  },
+
+  "Pregnancy": {
+    "medicines": [
+      {
+        "category": "Folic Acid",
+        "ecl": "<792796007",
+        "probability": 0.90,
+        "notes": "Near-universal; RANZCOG recommends 0.5mg/day, 5mg if high risk"
+      },
+      {
+        "category": "Prenatal Multivitamins",
+        "ecl": "<87708000",
+        "probability": 0.75,
+        "notes": "Combination supplements containing folic acid, iodine, iron, vitamin D"
+      },
+      {
+        "category": "Iron Supplementation",
+        "ecl": "<372043002",
+        "probability": 0.45,
+        "notes": "Ferrous sulfate/fumarate; 30-40% of pregnant Australian women develop iron deficiency. RANZCOG C-Obs 25"
+      },
+      {
+        "category": "Vitamin D",
+        "ecl": "<30178006",
+        "probability": 0.35,
+        "notes": "Colecalciferol; 30-40% prevalence of deficiency in Australian pregnant women"
+      },
+      {
+        "category": "Ondansetron",
+        "ecl": "372487007",
+        "probability": 0.15,
+        "notes": "For severe nausea/hyperemesis; ~70-80% experience nausea but only 15-20% require pharmacotherapy"
+      },
+      {
+        "category": "Low-dose Aspirin",
+        "ecl": "387458008",
+        "probability": 0.15,
+        "notes": "Pre-eclampsia prevention in at-risk women; 150mg/day from 12-36 weeks. RANZCOG/ISSHP"
+      },
+      {
+        "category": "Progesterone",
+        "ecl": "16683002",
+        "probability": 0.08,
+        "notes": "Vaginal progesterone for threatened miscarriage, history of preterm birth, or short cervix"
+      },
+      {
+        "category": "Metoclopramide",
+        "ecl": "372776000",
+        "probability": 0.08,
+        "notes": "Alternative antiemetic for nausea/vomiting in pregnancy"
+      }
+    ],
+    "notes": "Predominantly supplements (folic acid, iron, vitamins) with high uptake. Therapeutic drugs for specific indications. RANZCOG Antenatal Guidelines, NHMRC Iodine Supplementation 2010, PBS."
   }
 }

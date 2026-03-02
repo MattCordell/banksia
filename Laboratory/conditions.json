@@ -1255,5 +1255,293 @@
       }
     },
     "notes": "Marked eosinophilia (hallmark), anemia (hemolysis/blood loss), low MCV (iron loss from GI parasites), thrombocytopenia, elevated ALP, moderate CRP."
+  },
+  "Inflammatory Conditions": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 30,
+          "sd": 50,
+          "min": 3,
+          "max": 500,
+          "distribution": "lognormal"
+        }
+      },
+      "FBC": {
+        "WBC (×10^9/L)": {
+          "mean": 10.5,
+          "sd": 3.5,
+          "min": 3,
+          "max": 30,
+          "distribution": "lognormal"
+        },
+        "Haemoglobin (g/L)": {
+          "mean": 118,
+          "sd": 18,
+          "min": 70,
+          "max": 160,
+          "distribution": "normal"
+        },
+        "Platelets (×10^9/L)": {
+          "mean": 370,
+          "sd": 120,
+          "min": 150,
+          "max": 900,
+          "distribution": "lognormal"
+        }
+      },
+      "MBAP": {
+        "Albumin (g/L)": {
+          "mean": 32,
+          "sd": 6,
+          "min": 15,
+          "max": 45,
+          "distribution": "normal"
+        }
+      },
+      "Iron Studies": {
+        "Ferritin (µg/L)": {
+          "mean": 250,
+          "sd": 200,
+          "min": 20,
+          "max": 2000,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": "Elevated CRP, reactive thrombocytosis, mild anaemia of chronic disease, hypoalbuminaemia, elevated ferritin (acute phase). WBC mildly elevated."
+  },
+  "Pregnancy": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "FBC": {
+        "Haemoglobin (g/L)": {
+          "mean": 115,
+          "sd": 12,
+          "min": 80,
+          "max": 145,
+          "distribution": "normal"
+        },
+        "WBC (×10^9/L)": {
+          "mean": 9.5,
+          "sd": 2.5,
+          "min": 5.0,
+          "max": 16.0,
+          "distribution": "lognormal"
+        },
+        "Platelets (×10^9/L)": {
+          "mean": 220,
+          "sd": 60,
+          "min": 80,
+          "max": 400,
+          "distribution": "lognormal"
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 6.0,
+          "sd": 8.0,
+          "min": 0.5,
+          "max": 50,
+          "distribution": "lognormal"
+        }
+      },
+      "Iron Studies": {
+        "Ferritin (µg/L)": {
+          "mean": 25,
+          "sd": 20,
+          "min": 2,
+          "max": 150,
+          "distribution": "lognormal"
+        },
+        "Serum Iron (µmol/L)": {
+          "mean": 12,
+          "sd": 6,
+          "min": 3,
+          "max": 35,
+          "distribution": "lognormal"
+        },
+        "Transferrin Saturation (%)": {
+          "mean": 18,
+          "sd": 10,
+          "min": 3,
+          "max": 50,
+          "distribution": "lognormal"
+        }
+      },
+      "Thyroid Panel": {
+        "TSH (mIU/L)": {
+          "mean": 1.5,
+          "sd": 1.0,
+          "min": 0.03,
+          "max": 5.0,
+          "distribution": "lognormal"
+        },
+        "Free T4 (pmol/L)": {
+          "mean": 14.5,
+          "sd": 2.5,
+          "min": 8,
+          "max": 22,
+          "distribution": "normal"
+        }
+      },
+      "Kidney Function": {
+        "Creatinine (µmol/L)": {
+          "mean": 52,
+          "sd": 10,
+          "min": 25,
+          "max": 80,
+          "distribution": "normal"
+        },
+        "Urea (mmol/L)": {
+          "mean": 3.2,
+          "sd": 1.0,
+          "min": 1.0,
+          "max": 7.0,
+          "distribution": "normal"
+        },
+        "Sodium (mmol/L)": {
+          "mean": 136,
+          "sd": 2.5,
+          "min": 128,
+          "max": 144,
+          "distribution": "normal"
+        }
+      },
+      "LFT": {
+        "ALP (U/L)": {
+          "mean": 140,
+          "sd": 50,
+          "min": 50,
+          "max": 400,
+          "distribution": "lognormal"
+        },
+        "Albumin (g/L)": {
+          "mean": 32,
+          "sd": 4,
+          "min": 20,
+          "max": 42,
+          "distribution": "normal"
+        },
+        "ALT (U/L)": {
+          "mean": 18,
+          "sd": 8,
+          "min": 5,
+          "max": 50,
+          "distribution": "lognormal"
+        },
+        "AST (U/L)": {
+          "mean": 18,
+          "sd": 7,
+          "min": 5,
+          "max": 45,
+          "distribution": "lognormal"
+        },
+        "GGT (U/L)": {
+          "mean": 15,
+          "sd": 8,
+          "min": 3,
+          "max": 40,
+          "distribution": "lognormal"
+        },
+        "Total Bilirubin (µmol/L)": {
+          "mean": 7,
+          "sd": 3,
+          "min": 2,
+          "max": 20,
+          "distribution": "lognormal"
+        }
+      },
+      "Lipid Panel": {
+        "Total Cholesterol (mmol/L)": {
+          "mean": 6.8,
+          "sd": 1.2,
+          "min": 4.0,
+          "max": 10.0,
+          "distribution": "normal"
+        },
+        "Triglycerides (mmol/L)": {
+          "mean": 2.8,
+          "sd": 1.2,
+          "min": 1.0,
+          "max": 8.0,
+          "distribution": "lognormal"
+        },
+        "HDL (mmol/L)": {
+          "mean": 1.7,
+          "sd": 0.4,
+          "min": 0.8,
+          "max": 3.0,
+          "distribution": "normal"
+        }
+      },
+      "MBAP": {
+        "Sodium (mmol/L)": {
+          "mean": 136,
+          "sd": 2.5,
+          "min": 128,
+          "max": 144,
+          "distribution": "normal"
+        },
+        "Albumin (g/L)": {
+          "mean": 32,
+          "sd": 4,
+          "min": 20,
+          "max": 42,
+          "distribution": "normal"
+        },
+        "Creatinine (µmol/L)": {
+          "mean": 52,
+          "sd": 10,
+          "min": 25,
+          "max": 80,
+          "distribution": "normal"
+        },
+        "Urea (mmol/L)": {
+          "mean": 3.2,
+          "sd": 1.0,
+          "min": 1.0,
+          "max": 7.0,
+          "distribution": "normal"
+        },
+        "ALP (U/L)": {
+          "mean": 140,
+          "sd": 50,
+          "min": 50,
+          "max": 400,
+          "distribution": "lognormal"
+        },
+        "ALT (U/L)": {
+          "mean": 18,
+          "sd": 8,
+          "min": 5,
+          "max": 50,
+          "distribution": "lognormal"
+        },
+        "AST (U/L)": {
+          "mean": 18,
+          "sd": 7,
+          "min": 5,
+          "max": 45,
+          "distribution": "lognormal"
+        },
+        "GGT (U/L)": {
+          "mean": 15,
+          "sd": 8,
+          "min": 3,
+          "max": 40,
+          "distribution": "lognormal"
+        },
+        "Cholesterol (mmol/L)": {
+          "mean": 6.8,
+          "sd": 1.2,
+          "min": 4.0,
+          "max": 10.0,
+          "distribution": "normal"
+        }
+      }
+    },
+    "notes": "Physiological changes: dilutional anaemia (plasma vol +40-50%), physiological leukocytosis, mild gestational thrombocytopenia, depleted ferritin (iron demands +1000mg), lower TSH (hCG-mediated), decreased creatinine/urea (GFR +50%), elevated placental ALP (2-4x), hypoalbuminaemia, lower GGT/bilirubin, physiological hyperlipidaemia (cholesterol +25-50%, triglycerides 2-3x). Sources: Abbassi-Ghanavati et al. 2009, RANZCOG."
   }
 }
