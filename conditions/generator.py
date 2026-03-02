@@ -34,6 +34,8 @@ def _load_snomed_exclusions() -> Dict[str, Any]:
 
 def _should_exclude(rules: Dict[str, Any], sex: str, age: int) -> bool:
     """Check whether a patient matches any exclusion rule (OR logic)."""
+    if rules.get("always"):
+        return True
     if sex in rules.get("sex", []):
         return True
     if "min_age" in rules and age >= rules["min_age"]:

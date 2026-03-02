@@ -8,27 +8,27 @@
     "exclude_when": { "sex": ["female"] }
   },
   "pregnancy_related": {
-    "ecl": "<<248982007",
+    "ecl": "<<248982007 OR <<198609003 OR (<404684003 {{ term = (\"pregnan\" \"gestational\" \"maternal\")}})",
     "exclude_when": { "sex": ["male"], "max_age": 14, "min_age": 55 }
   },
   "neonatal": {
-    "ecl": "((<404684003:246454002=<<255407002) OR (<404684003 {{ term = \"neonatal\"}}))",
+    "ecl": "(<404684003:246454002=<<255407002) OR (<404684003 {{ term = (\"neonatal\" \"newborn\")}})",
     "exclude_when": { "min_age": 1 }
   },
   "infant_specific": {
-    "ecl": "((<404684003:246454002=<<3658006) OR (<404684003 {{ term = \"infant\"}}))",
+    "ecl": "(<404684003:246454002=<<3658006) OR (<404684003 {{ term = \"infant\"}})",
     "exclude_when": { "min_age": 3 }
   },
   "paediatric_specific": {
-    "ecl": "((<404684003:246454002=<<255398004) OR (<404684003 {{ term = (\"paediatric\" \"child\")}}))",
+    "ecl": "(<404684003:246454002=<<255398004) OR (<404684003 {{ term = (\"paediatric\" \"child\")}})",
     "exclude_when": { "min_age": 18 }
   },
     "Adolescent _specific": {
-    "ecl": "((<404684003:246454002=<<263659003) OR <<237812002 OR (<404684003 {{ term = (\"adolescent\" \"puberty\")}}))",
+    "ecl": "(<404684003:246454002=<<263659003) OR <<237812002 OR (<404684003 {{ term = (\"adolescent\" \"puberty\")}})",
     "exclude_when": { "max_age": 10, "min_age": 18 }
   },
   "adult_specific": {
-    "ecl": "((<404684003:246454002=<<41847000) OR (<404684003 {{ term = \"adult\"}}))",
+    "ecl": "(<404684003:246454002=<<41847000) OR (<404684003 {{ term = \"adult\"}})",
     "exclude_when": { "max_age": 17 }
   },
   "perimenopause_specific": {
@@ -36,8 +36,11 @@
     "exclude_when": { "sex": ["male"], "max_age": 45 }
   },
   "elder_specific": {
-    "ecl": "((<404684003:246454002=<<271872005) OR (<404684003 {{ term = (\"elder\" \"senile\")}}))",
+    "ecl": "(<404684003:246454002=<<271872005) OR (<404684003 {{ term = (\"elder\" \"senile\")}})",
     "exclude_when": { "max_age": 65 }
+  },
+  "terminology_noise": {
+    "ecl": "^171991000036103",
+    "exclude_when": { "always": true }
   }
-
 }
