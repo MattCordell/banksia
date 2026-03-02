@@ -1315,6 +1315,15 @@
   "Pregnancy": {
     "inherits": "Healthy",
     "panel_overrides": {
+      "MBAP": {
+        "Glucose (fasting) (mmol/L)": {
+          "mean": 4.4,
+          "sd": 0.65,
+          "min": 2.5,
+          "max": 12.0,
+          "distribution": "lognormal"
+        }
+      },
       "FBC": {
         "Haemoglobin (g/L)": {
           "mean": 115,

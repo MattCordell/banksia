@@ -109,6 +109,26 @@ Prevalence rates used in `conditions/epidemiology.json` for demographic-weighted
   Iron deficiency anaemia ~8-12% women reproductive age; <5% men.
   https://pmc.ncbi.nlm.nih.gov/articles/PMC9809261/
 
+## Pregnancy Lab Parameters
+
+- **HAPO Study Cooperative Research Group (2008) — Hyperglycemia and Adverse Pregnancy Outcomes**
+  Fasting glucose distribution in 23,316 pregnant women: non-GDM mean 4.2 mmol/L, SD 0.4. Primary basis for Pregnancy condition glucose override (composite mean 4.4, SD 0.65 to include ~13% GDM subpopulation).
+  *New England Journal of Medicine*. 2008;358(19):1991-2002.
+  https://www.nejm.org/doi/full/10.1056/NEJMoa0707943
+
+- **ADIPS 2014 Consensus Guidelines for GDM Testing and Diagnosis**
+  Nankervis A, et al. Adopted IADPSG/WHO 2013 criteria for Australia: fasting glucose >= 5.1 mmol/L diagnostic for GDM.
+  https://www.adips.org/downloads/2014ADIPSGDMGuidelinesV18.11.2014_000.pdf
+
+- **AIHW — Diabetes in Pregnancy (2023)**
+  ~16% of women who gave birth in Australian hospitals had GDM (2020-21). Rising trend from ~5% pre-2015 (partly due to lowered diagnostic thresholds).
+  https://www.aihw.gov.au/reports/diabetes/diabetes-in-pregnancy
+
+- **Crowther CA, et al. (2005) — ACHOIS Trial**
+  Australian randomised trial of GDM treatment. Informed GDM fasting glucose distribution (mean ~5.5 mmol/L).
+  *New England Journal of Medicine*. 2005;352(24):2477-2486.
+  https://www.nejm.org/doi/full/10.1056/NEJMoa042973
+
 ## Infection Epidemiology
 
 - **AIHW -- Infectious and Communicable Diseases**
