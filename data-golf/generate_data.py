@@ -188,30 +188,14 @@ def main():
 
     print(f"\nTotal patients generated: {len(combined)}")
 
-    # Shuffle and split train/test
-    combined = combined.sample(frac=1, random_state=args.seed).reset_index(drop=True)
-    split_idx = int(len(combined) * 0.9)
-    train = combined.iloc[:split_idx].reset_index(drop=True)
-    test = combined.iloc[split_idx:].reset_index(drop=True)
-    print(f"Train: {len(train)}, Test: {len(test)}")
+    # Sort by EncounterDate and assign Episode Number
+    combined = combined.sort_values("EncounterDate").reset_index(drop=True)
+    combined.insert(0, "Episode Number", range(1, len(combined) + 1))
 
-    # Export raw CSVs
-    train_raw_path = os.path.join(SCRIPT_DIR, "train_raw.csv")
-    test_raw_path = os.path.join(SCRIPT_DIR, "test_raw.csv")
-    train.to_csv(train_raw_path, index=False)
-    test.to_csv(test_raw_path, index=False)
-    print(f"Saved {train_raw_path}")
-    print(f"Saved {test_raw_path}")
-
-    # Export kaggle CSVs (drop excluded columns)
-    train_kaggle_drop = [c for c in KAGGLE_EXCLUDE_COLS if c in combined.columns]
-    test_kaggle_drop = [c for c in KAGGLE_EXCLUDE_COLS + TEST_KAGGLE_EXTRA_EXCLUDE if c in combined.columns]
-    train_kaggle_path = os.path.join(SCRIPT_DIR, "train_kaggle.csv")
-    test_kaggle_path = os.path.join(SCRIPT_DIR, "test_kaggle.csv")
-    train.drop(columns=train_kaggle_drop).to_csv(train_kaggle_path, index=False)
-    test.drop(columns=test_kaggle_drop).to_csv(test_kaggle_path, index=False)
-    print(f"Saved {train_kaggle_path}")
-    print(f"Saved {test_kaggle_path}")
+    # Export single raw CSV
+    raw_path = os.path.join(SCRIPT_DIR, "raw_data.csv")
+    combined.to_csv(raw_path, index=False)
+    print(f"Saved {raw_path}")
 
 
 if __name__ == "__main__":
