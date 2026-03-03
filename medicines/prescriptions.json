@@ -489,13 +489,13 @@
     "medicines": [
       {
         "category": "Oral Iron",
-        "ecl": "<373742002",
+        "ecl": "(<13790009.<<762951001) AND <<767270007",
         "probability": 0.80,
         "notes": "Ferrous sulfate or ferrous fumarate; first-line"
       },
       {
         "category": "Intravenous Iron",
-        "ecl": "<111072007",
+        "ecl": "(<255668001.<<762951001) AND <<767270007",
         "probability": 0.15,
         "notes": "Ferric carboxymaltose (Ferinject); if oral fails"
       },
@@ -663,7 +663,7 @@
       },
       {
         "category": "Iron Supplementation",
-        "ecl": "<372043002",
+        "ecl": "(<13790009.<<762951001) AND <<767270007",
         "probability": 0.45,
         "notes": "Ferrous sulfate/fumarate; 30-40% of pregnant Australian women develop iron deficiency. RANZCOG C-Obs 25"
       },
