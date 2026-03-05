@@ -333,9 +333,11 @@ def main():
     training_df.to_csv(training_path, index=False)
     print(f"Training dataset written to {training_path}")
 
-    # Write solution.csv (Episode Number + Q flag columns only)
+    # Write solution.csv (Episode Number + Q flag columns only + Usage for Kaggle)
     solution_path = os.path.join(SCRIPT_DIR, "solution.csv")
-    df[["Episode Number"] + q_cols].to_csv(solution_path, index=False)
+    solution_df = df[["Episode Number"] + q_cols].copy()
+    solution_df["Usage"] = ["Public" if i % 2 == 0 else "Private" for i in range(len(solution_df))]
+    solution_df.to_csv(solution_path, index=False)
     print(f"Solution written to {solution_path}")
 
     # Write sample_submission.csv (Episode Number + random Q flags)
