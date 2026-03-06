@@ -206,3 +206,6 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 data-golf/kaggle.ipynb
+
+# Generated images
+image_generation/output/

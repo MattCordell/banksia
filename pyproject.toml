@@ -16,6 +16,9 @@ dev = [
     "pytest>=7.0",
     "ruff>=0.4",
 ]
+imaging = [
+    "Pillow>=10.0",
+]
 
 [project.scripts]
 banksia = "generate:main"
@@ -25,12 +28,13 @@ requires = ["setuptools>=68.0"]
 build-backend = "setuptools.backends._legacy:_Backend"
 
 [tool.setuptools.packages.find]
-include = ["common*", "conditions*", "laboratory*", "population*", "formatters*"]
+include = ["common*", "conditions*", "laboratory*", "population*", "formatters*", "identity*", "image_generation*"]
 
 [tool.setuptools.package-data]
 conditions = ["*.json"]
 laboratory = ["*.json"]
 population = ["data/*.xlsx"]
+image_generation = ["*.json"]
 
 [tool.ruff]
 line-length = 100
