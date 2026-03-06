@@ -1,6 +1,7 @@
 """Shared data types for the banksia pipeline."""
 
 from dataclasses import dataclass, field
+from datetime import date
 from typing import Any, Dict, List, Optional
 
 
@@ -16,6 +17,11 @@ class PatientContext:
     condition: str = "Healthy"
     snomed_code: Optional[str] = None
     snomed_display: Optional[str] = None
+    given_name: Optional[str] = None
+    family_name: Optional[str] = None
+    birth_date: Optional[date] = None
+    street_address: Optional[str] = None
+    city: Optional[str] = None
     state: Optional[str] = None
     height_cm: Optional[int] = None
     weight_kg: Optional[int] = None
