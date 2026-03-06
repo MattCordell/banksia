@@ -8,6 +8,7 @@ Usage:
 """
 
 import argparse
+import json
 import random
 from datetime import date
 
@@ -21,6 +22,7 @@ from laboratory.generator import generate_lab_results, _resolve_profiles
 from population.generator import generate_contexts
 from medicines.generator import generate_medicines
 from formatters.csv_writer import contexts_to_dataframe, write_csv
+from formatters.fhir_writer import build_fhir_patient, post_to_fhir_server
 
 
 def _assign_snomed(ctx, tx_server, snomed_edition, no_snomed):
@@ -120,7 +122,7 @@ def generate_cohort(
     else:
         print(df.to_string())
 
-    return df
+    return df, contexts
 
 
 def main():
@@ -149,6 +151,12 @@ def main():
     parser.add_argument("--episode-date", type=str, default=None,
                         help="Episode date for birth date calculation (YYYY-MM-DD). "
                              "Defaults to today.")
+    parser.add_argument("--output-format", choices=["csv", "fhir"], default="csv",
+                        help="Output format: csv (default) or fhir")
+    parser.add_argument("--fhir-server", type=str, default="https://server.fire.ly",
+                        help="FHIR server base URL for posting Patient resources")
+    parser.add_argument("--no-photo", action="store_true",
+                        help="Skip profile photo generation for FHIR output")
 
     args = parser.parse_args()
     episode_date = date.fromisoformat(args.episode_date) if args.episode_date else None
@@ -175,26 +183,67 @@ def main():
             med_ecl_template=args.med_ecl_template,
             episode_date=episode_date,
         )
-        df = contexts_to_dataframe([ctx], [lab])
-        if args.output:
-            write_csv(df, args.output)
-            print(f"Single patient saved to {args.output}")
+
+        if args.output_format == "fhir":
+            resource = build_fhir_patient(ctx, include_photo=not args.no_photo)
+            if args.output:
+                with open(args.output, "w") as f:
+                    json.dump(resource, f, indent=2)
+                print(f"FHIR Patient saved to {args.output}")
+            else:
+                result = post_to_fhir_server(resource, base_url=args.fhir_server)
+                print(json.dumps(resource, indent=2))
         else:
-            print(df.T)
+            df = contexts_to_dataframe([ctx], [lab])
+            if args.output:
+                write_csv(df, args.output)
+                print(f"Single patient saved to {args.output}")
+            else:
+                print(df.T)
 
     elif args.mode == "cohort":
-        generate_cohort(
-            n=args.n,
-            abs_data_path=args.abs_data,
-            rng_seed=args.seed,
-            missing_panel_prob=args.missing_panel_prob,
-            output_path=args.output,
-            tx_server=args.tx_server,
-            snomed_edition=args.snomed_edition,
-            no_snomed=args.no_snomed,
-            med_ecl_template=args.med_ecl_template,
-            episode_date=episode_date,
-        )
+        if args.output_format == "fhir":
+            _, contexts = generate_cohort(
+                n=args.n,
+                abs_data_path=args.abs_data,
+                rng_seed=args.seed,
+                missing_panel_prob=args.missing_panel_prob,
+                output_path=None,
+                tx_server=args.tx_server,
+                snomed_edition=args.snomed_edition,
+                no_snomed=args.no_snomed,
+                med_ecl_template=args.med_ecl_template,
+                episode_date=episode_date,
+            )
+            resources = [
+                build_fhir_patient(ctx, include_photo=not args.no_photo)
+                for ctx in contexts
+            ]
+            if args.output:
+                bundle = {
+                    "resourceType": "Bundle",
+                    "type": "collection",
+                    "entry": [{"resource": r} for r in resources],
+                }
+                with open(args.output, "w") as f:
+                    json.dump(bundle, f, indent=2)
+                print(f"FHIR Bundle with {len(resources)} patients saved to {args.output}")
+            else:
+                for r in resources:
+                    post_to_fhir_server(r, base_url=args.fhir_server)
+        else:
+            generate_cohort(
+                n=args.n,
+                abs_data_path=args.abs_data,
+                rng_seed=args.seed,
+                missing_panel_prob=args.missing_panel_prob,
+                output_path=args.output,
+                tx_server=args.tx_server,
+                snomed_edition=args.snomed_edition,
+                no_snomed=args.no_snomed,
+                med_ecl_template=args.med_ecl_template,
+                episode_date=episode_date,
+            )
 
     elif args.mode == "population":
         contexts = generate_contexts(args.n, file_path=args.abs_data)
@@ -206,12 +255,31 @@ def main():
                 ctx, tx_server=args.tx_server, edition=args.snomed_edition,
                 no_snomed=args.no_snomed, ecl_template=args.med_ecl_template,
             )
-        df = contexts_to_dataframe(contexts)
-        if args.output:
-            write_csv(df, args.output)
-            print(f"Population of {args.n} saved to {args.output}")
+
+        if args.output_format == "fhir":
+            resources = [
+                build_fhir_patient(ctx, include_photo=not args.no_photo)
+                for ctx in contexts
+            ]
+            if args.output:
+                bundle = {
+                    "resourceType": "Bundle",
+                    "type": "collection",
+                    "entry": [{"resource": r} for r in resources],
+                }
+                with open(args.output, "w") as f:
+                    json.dump(bundle, f, indent=2)
+                print(f"FHIR Bundle with {len(resources)} patients saved to {args.output}")
+            else:
+                for r in resources:
+                    post_to_fhir_server(r, base_url=args.fhir_server)
         else:
-            print(df.to_string())
+            df = contexts_to_dataframe(contexts)
+            if args.output:
+                write_csv(df, args.output)
+                print(f"Population of {args.n} saved to {args.output}")
+            else:
+                print(df.to_string())
 
 
 if __name__ == "__main__":

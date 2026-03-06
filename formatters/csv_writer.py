@@ -31,6 +31,7 @@ def contexts_to_dataframe(
             "BirthDate": ctx.birth_date,
             "StreetAddress": ctx.street_address,
             "City": ctx.city,
+            "Postcode": ctx.postcode,
             "Condition": ctx.condition,
             "SNOMED_Code": ctx.snomed_code,
             "SNOMED_Display": ctx.snomed_display,

@@ -23,6 +23,7 @@ class PatientContext:
     street_address: Optional[str] = None
     city: Optional[str] = None
     state: Optional[str] = None
+    postcode: Optional[str] = None
     height_cm: Optional[int] = None
     weight_kg: Optional[int] = None
     medicines: List[Dict[str, Any]] = field(default_factory=list)

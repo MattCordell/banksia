@@ -48,6 +48,25 @@ CITIES = [
 
 AUSTRALIAN_STATES = ["NSW", "VIC", "QLD", "SA", "WA", "TAS", "NT", "ACT"]
 
+STATE_POSTCODE_RANGES = {
+    "NSW": [(2000, 2599), (2619, 2899), (2921, 2999)],
+    "VIC": [(3000, 3999)],
+    "QLD": [(4000, 4999)],
+    "SA":  [(5000, 5999)],
+    "WA":  [(6000, 6999)],
+    "TAS": [(7000, 7999)],
+    "NT":  [(800, 899)],
+    "ACT": [(2600, 2618), (2900, 2920)],
+}
+
+
+def generate_postcode(state: str) -> str:
+    """Generate a realistic 4-digit Australian postcode for the given state."""
+    ranges = STATE_POSTCODE_RANGES.get(state, [(2000, 2999)])
+    low, high = random.choice(ranges)
+    code = random.randint(low, high)
+    return f"{code:04d}"
+
 
 def generate_street_number() -> int:
     """Generate a street number between 1 and 999, skewed toward lower values."""
@@ -65,6 +84,7 @@ def generate_address(state: Optional[str] = None) -> dict:
     Returns:
         dict with keys: street_address, city, state
     """
+    chosen_state = state or random.choice(AUSTRALIAN_STATES)
     street_number = generate_street_number()
     street_name = random.choice(STREET_PLANTS)
     street_suffix = random.choice(STREET_SUFFIXES)
@@ -72,7 +92,8 @@ def generate_address(state: Optional[str] = None) -> dict:
     return {
         "street_address": f"{street_number} {street_name} {street_suffix}",
         "city": random.choice(CITIES),
-        "state": state or random.choice(AUSTRALIAN_STATES),
+        "state": chosen_state,
+        "postcode": generate_postcode(chosen_state),
     }
 
 
@@ -127,6 +148,7 @@ def assign_identity(ctx: PatientContext, episode_date: Optional[date] = None) ->
     address = generate_address(state=ctx.state)
     ctx.street_address = address["street_address"]
     ctx.city = address["city"]
+    ctx.postcode = address["postcode"]
     # If ctx.state was None, adopt the randomly chosen one
     if ctx.state is None:
         ctx.state = address["state"]
