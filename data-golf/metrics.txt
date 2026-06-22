@@ -1,85 +1,68 @@
 ============================================================
-TRAIN DATA METRICS
+Analytics Questions
 ============================================================
 
-Q1. How many females in the dataset: 12744
-Q2. How many adults (Age >= 18): 20187
-Q3. Proportion of obese patients (BMI >= 30) with Chol:HDL > 5: 0.3497 (4576 of 13086 obese patients with lipid data)
-Q4. How many "Healthy" condition patients: 10669
-Q5. How many patients have "Hyperthyroidism": 66
-Q6. How many patients had "Hyperthyroidism" in 2021: 9
-
-Q7. Proportion of patients with "Osteoarthritis" in 2021: 0.0607
-Q8. Proportion of patients with "Osteoarthritis" in 2022: 0.0601
-Q9. Proportion of patients with "Osteoarthritis" in 2023: 0.0546
-Q10. Proportion of patients with "Osteoarthritis" in 2024: 0.0542
-Q11. Proportion of patients with "Osteoarthritis" in 2025: 0.0568
-Q12. Proportion of patients with "Osteoarthritis" in 2026: 0.0577
-Q13. Year with greatest proportion of "Osteoarthritis": 2021 (0.0607)
-Q14. Average proportion of "Osteoarthritis" across 2021-2026: 0.0574
-
-Q15. Proportion of patients with "Rheumatoid Arthritis" in 2021: 0.0123
-Q16. Proportion of patients with "Rheumatoid Arthritis" in 2022: 0.0130
-Q17. Proportion of patients with "Rheumatoid Arthritis" in 2023: 0.0145
-Q18. Proportion of patients with "Rheumatoid Arthritis" in 2024: 0.0118
-Q19. Proportion of patients with "Rheumatoid Arthritis" in 2025: 0.0100
-Q20. Proportion of patients with "Rheumatoid Arthritis" in 2026: 0.0109
-Q21. Year with greatest proportion of "Rheumatoid Arthritis": 2023 (0.0145)
-
-Q22. Condition counts across whole train dataset:
-    Alcoholic Liver Disease: 396
-    Bacterial Infection: 656
-    COPD: 377
-    Chronic Kidney Disease (Stage 3-4): 404
-    Chronic Liver Disease / Cirrhosis: 158
-    Essential Hypertension: 2428
-    Fungal Infection: 230
-    Healthy: 10669
-    Heart Failure (Chronic): 146
-    Hyperlipidaemia: 1568
-    Hyperthyroidism: 66
-    Hypothyroidism: 484
-    Iron Deficiency Anaemia: 1339
-    Ischaemic Heart Disease: 539
-    Nonalcoholic Fatty Liver Disease (NAFLD): 2259
-    Osteoarthritis: 1466
-    Parasitic Infection: 47
-    Rheumatoid Arthritis: 308
-    Type 2 Diabetes Mellitus: 1120
-    Viral Infection: 928
+Q1. How many females in the dataset: 1454
+Q2. How many adults (Age >= 18): 2297
+Q3. How many obese patients (BMI >= 30) have Chol:HDL > 5: 510
+Q4. How many "Healthy" condition patients: 1139
+Q5. How many patients have "Hyperthyroidism": 7
+Q6. How many patients had "Hyperthyroidism" in 2021: 1
+Q7. How many patients had "Osteoarthritis" in 2023: 32
+Q8. How many patients had "Osteoarthritis" in 2024: 19
+Q9. How many patients had "Osteoarthritis" in 2025: 30
+Q10. How many patients had "Osteoarthritis" in 2026: 28
+Q11. How many patients had "Rheumatoid Arthritis" in 2021: 4
+Q12. How many patients had "Rheumatoid Arthritis" in 2022: 5
+Q13. How many patients had "Rheumatoid Arthritis" in 2023: 4
+Q14. How many patients have a Thiamine medication: 44
+Q15. How many patients have an ACE Inhibitors medication: 135
+Q16. How many patients have a Digoxin medication: 1
+Q17. How many patients have a Statins medication: 361
+Q18. How many patients are on both "ACE Inhibitors" AND "Calcium Channel Blockers": 38
+Q19. How many Fungal Infection patients with foot-related SNOMED Display: 1
+Q20. How many Patients on >1 product containing paracetamol: 1
+Q21. How many Patients with "bilateral" in SNOMED_Display: 34
+Q22. How many Metformin patients with eGFR<30: 8
+Q23. How many Patients with hand/wrist terms in SNOMED_Display: 62
+Q24. How many Females 15-49 prescribed ACE Inhibitors or ARBs: 34
+Q25. How many Females 15-49 prescribed Methotrexate: 2
+Q26. How many Females 50+ prescribed Methotrexate: 11
+Q27. How many pregnant patients prescribed Teratogenic Medicines (ACE inhibitors, ARBs, Methotrexate, Tetracycline, Carbimazole): 8
+Q28. How many female RA patients aged 15-49: 8
+Q29. How many OA/RA on NSAIDs with eGFR < 60 (subclinical renal impairment): 8
+Q30. How many Cirrhosis on NSBB: 10
+Q31. How many patients prescribed digoxin + eGFR<30 + loop diuretic (toxicity risk): 0
+Q32. How many patients prescribed digoxin have hypokalaemia (Potassium <3.5): 0
+Q33. How many pregnant patients have a Glucose 5.1 mmol/L or greater: 11
+Q34. How many patients have a bacterial joint infection not caused by Streptococcus species: 20
 
 ============================================================
-TEST DATA METRICS
+DATA SUMMARY
 ============================================================
 
-Q23. Condition counts across whole test dataset:
-    Alcoholic Liver Disease: 42
-    Bacterial Infection: 73
-    COPD: 45
-    Chronic Kidney Disease (Stage 3-4): 49
-    Chronic Liver Disease / Cirrhosis: 21
-    Essential Hypertension: 253
-    Fungal Infection: 19
-    Healthy: 1186
-    Heart Failure (Chronic): 15
-    Hyperlipidaemia: 180
-    Hyperthyroidism: 6
+Total rows: 2893
+
+Condition counts:
+    Alcoholic Liver Disease: 41
+    Bacterial Infection: 67
+    COPD: 35
+    Chronic Kidney Disease (Stage 3-4): 55
+    Chronic Liver Disease / Cirrhosis: 19
+    Essential Hypertension: 246
+    Fungal Infection: 24
+    Healthy: 1139
+    Heart Failure (Chronic): 12
+    Hyperlipidaemia: 157
+    Hyperthyroidism: 7
     Hypothyroidism: 57
-    Iron Deficiency Anaemia: 153
-    Ischaemic Heart Disease: 67
-    Nonalcoholic Fatty Liver Disease (NAFLD): 233
-    Osteoarthritis: 162
-    Parasitic Infection: 3
-    Rheumatoid Arthritis: 39
-    Type 2 Diabetes Mellitus: 136
-    Viral Infection: 105
-
-============================================================
-ADDITIONAL TRAIN METRICS - MEDICATIONS
-============================================================
-
-Q25. How many patients have a Thiamine medication: 417
-Q26. How many patients have an ACE Inhibitors medication: 1282
-Q27. How many patients have a Digoxin medication: 8
-Q28. How many patients have a Statins medication: 3549
-Q29. How many patients are on both "ACE Inhibitors" AND "Calcium Channel Blockers": 354
+    Inflammatory Conditions: 144
+    Iron Deficiency Anaemia: 149
+    Ischaemic Heart Disease: 59
+    Nonalcoholic Fatty Liver Disease (NAFLD): 236
+    Osteoarthritis: 169
+    Parasitic Infection: 7
+    Pregnancy: 16
+    Rheumatoid Arthritis: 31
+    Type 2 Diabetes Mellitus: 109
+    Viral Infection: 114
