@@ -411,8 +411,8 @@
           "distribution": "lognormal"
         },
         "Creatinine (µmol/L)": {
-          "mean": 140,
-          "sd": 100,
+          "mean": 155,
+          "sd": 115,
           "min": 40,
           "max": 2000,
           "distribution": "lognormal"
@@ -420,8 +420,8 @@
       },
       "Kidney Function": {
         "Creatinine (\u00b5mol/L)": {
-          "mean": 140,
-          "sd": 100,
+          "mean": 155,
+          "sd": 115,
           "min": 40,
           "max": 2000,
           "distribution": "lognormal"

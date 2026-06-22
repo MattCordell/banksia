@@ -286,7 +286,7 @@
       {
         "category": "Digoxin",
         "ecl": "387461009",
-        "probability": 0.15,
+        "probability": 0.25,
         "notes": "Adjunct if AF or persistent symptoms"
       }
     ],
