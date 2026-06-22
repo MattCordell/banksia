@@ -416,6 +416,13 @@
           "min": 40,
           "max": 2000,
           "distribution": "lognormal"
+        },
+        "Potassium (mmol/L)": {
+          "mean": 3.9,
+          "sd": 0.55,
+          "min": 2.5,
+          "max": 7.0,
+          "distribution": "normal"
         }
       },
       "Kidney Function": {
@@ -439,6 +446,13 @@
           "min": 3,
           "max": 200,
           "distribution": "lognormal"
+        },
+        "Potassium (mmol/L)": {
+          "mean": 3.9,
+          "sd": 0.55,
+          "min": 2.5,
+          "max": 7.0,
+          "distribution": "normal"
         }
       },
       "CRP": {
