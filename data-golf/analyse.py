@@ -8,18 +8,36 @@ and sample_submission.csv.
 
 import os
 import random
+import sys
 
 import numpy as np
 import pandas as pd
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_TX_SERVER = "https://r4.ontoserver.csiro.au/fhir"
+
+SNOMED_CODE_COLS = ["SNOMED_Code", "Medicine_1_Code", "Medicine_2_Code", "Medicine_3_Code"]
 
 MED_CATS = ["Medicine_1_Category", "Medicine_2_Category", "Medicine_3_Category"]
 MED_DISPLAYS = ["Medicine_1_Display", "Medicine_2_Display", "Medicine_3_Display"]
 
 
 def load_data():
-    return pd.read_csv(os.path.join(SCRIPT_DIR, "raw_data.csv"))
+    return pd.read_csv(
+        os.path.join(SCRIPT_DIR, "raw_data.csv"),
+        dtype={col: str for col in SNOMED_CODE_COLS},
+    )
+
+
+def ecl_code_set(ecl: str, tx_server: str) -> set:
+    """Expand an ECL expression via Ontoserver and return the set of concept codes."""
+    from conditions.snomed import expand_ecl
+    concepts = expand_ecl(ecl, tx_server=tx_server)
+    return {c["code"] for c in concepts}
 
 
 def add_derived_columns(df):
@@ -75,7 +93,7 @@ def condition_counts(df):
     return "\n".join(lines)
 
 
-def compute_flags(df):
+def compute_flags(df, pregnancy_codes=None, bacterial_joint_codes=None):
     """Compute Q1-Q34 boolean flag columns on the dataframe. Returns dict of {col: Series}."""
     flags = {}
 
@@ -174,7 +192,12 @@ def compute_flags(df):
 
     # Q27: Pregnant patients prescribed teratogenic medicines
     # (ACE Inhibitors, ARBs, Methotrexate, Macrolides/Tetracyclines, Carbimazole by display)
-    pregnant = df["Condition"] == "Pregnancy"
+    # Pregnancy is detected via Condition field OR via SNOMED_Code (ECL-expanded pregnancy codes),
+    # which captures comorbid presentations such as "Transient hypertension of pregnancy".
+    if pregnancy_codes:
+        pregnant = (df["Condition"] == "Pregnancy") | df["SNOMED_Code"].isin(pregnancy_codes)
+    else:
+        pregnant = df["Condition"] == "Pregnancy"
     teratogenic = (
         has_med_category(df, "ACE Inhibitors")
         | has_med_category(df, "ACE Inhibitors / ARBs")
@@ -216,7 +239,7 @@ def compute_flags(df):
 
     # Q33: Pregnant patients with fasting glucose >= 5.1 mmol/L
     gluc_col = "MBAP - Glucose (fasting) (mmol/L)"
-    flags["Q33"] = (df["Condition"] == "Pregnancy") & (df[gluc_col] >= 5.1)
+    flags["Q33"] = pregnant & (df[gluc_col] >= 5.1)
 
     # Q34: Pseudomonadaceae infection not caused by Pseudomonas sp.
     flags["Q34"] = (
@@ -295,14 +318,27 @@ def compute_metrics(df):
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Analyse generated patient data.")
+    parser.add_argument(
+        "--tx-server",
+        default=DEFAULT_TX_SERVER,
+        help=f"FHIR terminology server base URL (default: {DEFAULT_TX_SERVER})",
+    )
+    args = parser.parse_args()
+
     print("Loading data...")
     df = load_data()
 
     print("Computing derived columns...")
     df = add_derived_columns(df)
 
+    print(f"Expanding pregnancy ECL via {args.tx_server}...")
+    pregnancy_codes = ecl_code_set("<<77386006 OR <<118185001", args.tx_server)
+    print(f"  {len(pregnancy_codes)} pregnancy-related SNOMED codes loaded.")
+
     print("Computing Q1-Q34 flags...")
-    flags = compute_flags(df)
+    flags = compute_flags(df, pregnancy_codes=pregnancy_codes)
     flag_df = pd.DataFrame(flags, index=df.index)
     df = pd.concat([df, flag_df], axis=1)
 
