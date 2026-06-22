@@ -9,6 +9,7 @@ and sample_submission.csv.
 import os
 import random
 import sys
+from datetime import date
 
 import numpy as np
 import pandas as pd
@@ -22,6 +23,25 @@ DEFAULT_TX_SERVER = "https://r4.ontoserver.csiro.au/fhir"
 
 SNOMED_CODE_COLS = ["SNOMED_Code", "Medicine_1_Code", "Medicine_2_Code", "Medicine_3_Code"]
 
+# Must stay in sync with generate_data.py PERIODS.
+# Each period covers the active SNOMED CT-AU edition from the day after publication.
+PERIODS = [
+    {"start": date(2021, 2, 1), "end": date(2022, 1, 31), "edition": "20210131"},
+    {"start": date(2022, 2, 1), "end": date(2023, 1, 31), "edition": "20220131"},
+    {"start": date(2023, 2, 1), "end": date(2024, 1, 31), "edition": "20230131"},
+    {"start": date(2024, 2, 1), "end": date(2025, 1, 31), "edition": "20240131"},
+    {"start": date(2025, 2, 1), "end": date(2026, 1, 31), "edition": "20250131"},
+    {"start": date(2026, 2, 1), "end": date(2027, 1, 31), "edition": "20260131"},
+]
+
+
+def edition_for_date(d: date) -> str:
+    """Return the SNOMED CT-AU edition string for a given encounter date."""
+    for period in PERIODS:
+        if period["start"] <= d <= period["end"]:
+            return period["edition"]
+    return PERIODS[-1]["edition"]  # fallback to latest
+
 MED_CATS = ["Medicine_1_Category", "Medicine_2_Category", "Medicine_3_Category"]
 MED_DISPLAYS = ["Medicine_1_Display", "Medicine_2_Display", "Medicine_3_Display"]
 
@@ -33,10 +53,10 @@ def load_data():
     )
 
 
-def ecl_code_set(ecl: str, tx_server: str) -> set:
+def ecl_code_set(ecl: str, tx_server: str, edition: str = None) -> set:
     """Expand an ECL expression via Ontoserver and return the set of concept codes."""
     from conditions.snomed import expand_ecl
-    concepts = expand_ecl(ecl, tx_server=tx_server)
+    concepts = expand_ecl(ecl, tx_server=tx_server, edition=edition)
     return {c["code"] for c in concepts}
 
 
@@ -334,21 +354,37 @@ def main():
     print("Computing derived columns...")
     df = add_derived_columns(df)
 
-    print(f"Expanding pregnancy ECL via {args.tx_server}...")
-    pregnancy_codes = ecl_code_set("<<77386006 OR <<118185001", args.tx_server)
-    print(f"  {len(pregnancy_codes)} pregnancy-related SNOMED codes loaded.")
+    # Map each row to its SNOMED CT-AU edition based on EncounterDate
+    encounter_dates = pd.to_datetime(df["EncounterDate"]).dt.date
+    df["_edition"] = encounter_dates.map(edition_for_date)
 
-    print("Expanding bacterial joint infection ECL...")
-    bacterial_joint_ecl = (
-        "(<<363162000:*=(<<409822003 MINUS <<58800005))"
-    )
-    bacterial_joint_codes = ecl_code_set(bacterial_joint_ecl, args.tx_server)
-    print(f"  {len(bacterial_joint_codes)} bacterial joint infection (non-Streptococcus) codes loaded.")
+    pregnancy_ecl = "<<77386006 OR <<118185001"
+    bacterial_joint_ecl = "(<<363162000:*=(<<409822003 MINUS <<58800005))"
 
-    print("Computing Q1-Q34 flags...")
-    flags = compute_flags(df, pregnancy_codes=pregnancy_codes, bacterial_joint_codes=bacterial_joint_codes)
-    flag_df = pd.DataFrame(flags, index=df.index)
+    # Expand ECLs once per edition (cached by conditions.snomed.expand_ecl)
+    unique_editions = sorted(df["_edition"].unique())
+    edition_pregnancy_codes = {}
+    edition_joint_codes = {}
+    for edition in unique_editions:
+        print(f"  Expanding ECLs for edition {edition}...")
+        edition_pregnancy_codes[edition] = ecl_code_set(pregnancy_ecl, args.tx_server, edition=edition)
+        edition_joint_codes[edition] = ecl_code_set(bacterial_joint_ecl, args.tx_server, edition=edition)
+        print(f"    {len(edition_pregnancy_codes[edition])} pregnancy codes, "
+              f"{len(edition_joint_codes[edition])} bacterial joint codes.")
+
+    print("Computing Q1-Q34 flags per edition...")
+    flag_parts = []
+    for edition, group in df.groupby("_edition"):
+        part_flags = compute_flags(
+            group,
+            pregnancy_codes=edition_pregnancy_codes[edition],
+            bacterial_joint_codes=edition_joint_codes[edition],
+        )
+        flag_parts.append(pd.DataFrame(part_flags, index=group.index))
+
+    flag_df = pd.concat(flag_parts).sort_index()
     df = pd.concat([df, flag_df], axis=1)
+    df = df.drop(columns=["_edition"])
 
     print("Computing metrics...")
     output = compute_metrics(df)
