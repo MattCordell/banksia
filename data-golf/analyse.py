@@ -241,11 +241,12 @@ def compute_flags(df, pregnancy_codes=None, bacterial_joint_codes=None):
     gluc_col = "MBAP - Glucose (fasting) (mmol/L)"
     flags["Q33"] = pregnant & (df[gluc_col] >= 5.1)
 
-    # Q34: Pseudomonadaceae infection not caused by Pseudomonas sp.
-    flags["Q34"] = (
-        df["SNOMED_Display"].str.contains(r"(?i)pseudomonad", na=False)
-        & ~df["SNOMED_Display"].str.contains(r"(?i)pseudomonas", na=False)
-    )
+    # Q34: Bacterial joint infection not caused by Streptococcus species.
+    # ECL: (<<363162000 |Infectious disorder of joint|:*=(<<409822003 |Domain Bacteria| MINUS <<58800005 |Genus Streptococcus|))
+    if bacterial_joint_codes is not None:
+        flags["Q34"] = df["SNOMED_Code"].isin(bacterial_joint_codes)
+    else:
+        flags["Q34"] = pd.Series(False, index=df.index)
 
     return flags
 
@@ -286,7 +287,7 @@ QUESTIONS = {
     31: 'How many patients prescribed digoxin + eGFR<30 + loop diuretic (toxicity risk)',
     32: 'How many patients prescribed digoxin have hypokalaemia (Potassium <3.5)',
     33: 'How many pregnant patients have a Glucose 5.1 mmol/L or greater',
-    34: 'How many patients have a Pseudomonadaceae infection - not caused by Pseudomonas sp.',
+    34: 'How many patients have a bacterial joint infection not caused by Streptococcus species',
 }
 
 
@@ -337,8 +338,15 @@ def main():
     pregnancy_codes = ecl_code_set("<<77386006 OR <<118185001", args.tx_server)
     print(f"  {len(pregnancy_codes)} pregnancy-related SNOMED codes loaded.")
 
+    print("Expanding bacterial joint infection ECL...")
+    bacterial_joint_ecl = (
+        "(<<363162000:*=(<<409822003 MINUS <<58800005))"
+    )
+    bacterial_joint_codes = ecl_code_set(bacterial_joint_ecl, args.tx_server)
+    print(f"  {len(bacterial_joint_codes)} bacterial joint infection (non-Streptococcus) codes loaded.")
+
     print("Computing Q1-Q34 flags...")
-    flags = compute_flags(df, pregnancy_codes=pregnancy_codes)
+    flags = compute_flags(df, pregnancy_codes=pregnancy_codes, bacterial_joint_codes=bacterial_joint_codes)
     flag_df = pd.DataFrame(flags, index=df.index)
     df = pd.concat([df, flag_df], axis=1)
 

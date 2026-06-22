@@ -35,4 +35,4 @@
 | Q31 | How many patients prescribed Digoxin with estimated Glomerular Filtration Rate less than 30 and a Loop Diuretic (toxicity risk) |
 | Q32 | How many patients prescribed Digoxin have hypokalaemia (Potassium less than 3.5) |
 | Q33 | How many pregnant patients have a fasting Glucose of 5.1 mmol/L or greater |
-| Q34 | How many patients have a Pseudomonadaceae infection not caused by Pseudomonas species |
+| Q34 | How many patients have a bacterial joint infection not caused by Streptococcus species |
