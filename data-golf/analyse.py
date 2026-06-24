@@ -113,7 +113,7 @@ def condition_counts(df):
     return "\n".join(lines)
 
 
-def compute_flags(df, pregnancy_codes=None, bacterial_joint_codes=None):
+def compute_flags(df, pregnancy_codes=None, bacterial_joint_codes=None, **kwargs):
     """Compute Q1-Q34 boolean flag columns on the dataframe. Returns dict of {col: Series}."""
     flags = {}
 
@@ -268,6 +268,13 @@ def compute_flags(df, pregnancy_codes=None, bacterial_joint_codes=None):
     else:
         flags["Q34"] = pd.Series(False, index=df.index)
 
+    # Q35: Patients with an infection
+    infection_codes = kwargs.get("infection_codes")
+    if infection_codes is not None:
+        flags["Q35"] = df["SNOMED_Code"].isin(infection_codes)
+    else:
+        flags["Q35"] = pd.Series(False, index=df.index)
+
     return flags
 
 
@@ -308,6 +315,7 @@ QUESTIONS = {
     32: 'How many patients prescribed digoxin have hypokalaemia (Potassium <3.5)',
     33: 'How many pregnant patients have a Glucose 5.1 mmol/L or greater',
     34: 'How many patients have a bacterial joint infection not caused by Streptococcus species',
+    35: 'How many patients have an infection',
 }
 
 
@@ -360,25 +368,36 @@ def main():
 
     pregnancy_ecl = "<<77386006 OR <<118185001"
     bacterial_joint_ecl = "(<<363162000:*=(<<409822003 MINUS <<58800005))"
+    # Infection ECL: Captures infection disorders including:
+    # - <<40733004 (Infection) - root concept
+    # - Conditions with causative organism (<<441862004)
+    # - Conditions with specific bacterial domains (<<409822003 domain, etc.)
+    # - Infectious processes with pyogenic/purulent/suppurative terms
+    # Excludes non-pyogenic conditions, specific non-infection codes, and related exclusions
+    infection_ecl = "(\n  <<40733004\n  OR (<404684003:(*=<<441862004))\n  OR (<404684003:*=(<<409822003 OR <<49872002 OR <<84073006 OR <<441649000))\n  OR (<404684003:42752001=(<404684003:(*=<<441862004)))\n  OR (<404684003 {{term = (\"Pyogenic\" \"Purulent\" \"Suppurative\") }})\n)\n MINUS ( ((<404684003 {{term = (\"non-pyogenic\" \"non-purulent\" \"non-Suppurative\")}}) OR <<200722003 OR <<1149322001 OR <<66091009 OR <<1172608001 OR <<399981008 OR <<235076008) )"
 
     # Expand ECLs once per edition (cached by conditions.snomed.expand_ecl)
     unique_editions = sorted(df["_edition"].unique())
     edition_pregnancy_codes = {}
     edition_joint_codes = {}
+    edition_infection_codes = {}
     for edition in unique_editions:
         print(f"  Expanding ECLs for edition {edition}...")
         edition_pregnancy_codes[edition] = ecl_code_set(pregnancy_ecl, args.tx_server, edition=edition)
         edition_joint_codes[edition] = ecl_code_set(bacterial_joint_ecl, args.tx_server, edition=edition)
+        edition_infection_codes[edition] = ecl_code_set(infection_ecl, args.tx_server, edition=edition)
         print(f"    {len(edition_pregnancy_codes[edition])} pregnancy codes, "
-              f"{len(edition_joint_codes[edition])} bacterial joint codes.")
+              f"{len(edition_joint_codes[edition])} bacterial joint codes, "
+              f"{len(edition_infection_codes[edition])} infection codes.")
 
-    print("Computing Q1-Q34 flags per edition...")
+    print("Computing Q1-Q35 flags per edition...")
     flag_parts = []
     for edition, group in df.groupby("_edition"):
         part_flags = compute_flags(
             group,
             pregnancy_codes=edition_pregnancy_codes[edition],
             bacterial_joint_codes=edition_joint_codes[edition],
+            infection_codes=edition_infection_codes[edition],
         )
         flag_parts.append(pd.DataFrame(part_flags, index=group.index))
 
@@ -396,7 +415,7 @@ def main():
         f.write("\n")
     print(f"Metrics written to {metrics_path}")
 
-    q_cols = [f"Q{i}" for i in range(1, 35)]
+    q_cols = [f"Q{i}" for i in range(1, 36)]
     drop_cols = ["Year", "BMI", "CholHDL_Ratio"]
 
     # Write TrainingDataSet.csv (Episode Number + original data columns, no Q flags)
