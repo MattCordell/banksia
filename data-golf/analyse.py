@@ -113,6 +113,81 @@ def condition_counts(df):
     return "\n".join(lines)
 
 
+def select_questions_interactive(questions_dict):
+    """Prompt user to interactively select which questions to include.
+
+    Args:
+        questions_dict: Dict of {question_num: question_text}
+
+    Returns:
+        List of selected question numbers, sorted numerically
+    """
+    print("\n" + "=" * 60)
+    print("SELECT PRODUCTION QUESTIONS")
+    print("=" * 60)
+    print("\nAvailable questions:\n")
+    for q_num in sorted(questions_dict.keys()):
+        print(f"  Q{q_num}: {questions_dict[q_num]}")
+
+    while True:
+        print("\nEnter question numbers separated by commas (e.g., 1,4,5,17,22):")
+        user_input = input("Selection: ").strip()
+
+        if not user_input:
+            print("  ERROR: Please enter at least one question number.")
+            continue
+
+        try:
+            selected = [int(x.strip()) for x in user_input.split(",")]
+        except ValueError:
+            print("  ERROR: Invalid input. Please enter only numbers separated by commas.")
+            continue
+
+        invalid = [q for q in selected if q not in questions_dict]
+        if invalid:
+            print(f"  ERROR: Invalid question numbers: {invalid}. Valid range: 1-{max(questions_dict.keys())}")
+            continue
+
+        duplicates = [q for q in set(selected) if selected.count(q) > 1]
+        if duplicates:
+            print(f"  ERROR: Duplicate question numbers: {duplicates}")
+            continue
+
+        selected = sorted(set(selected))
+        print(f"\n  Selected {len(selected)} questions: {selected}")
+        return selected
+
+
+def filter_and_renumber_questions(df, selected_question_nums):
+    """Filter dataframe to selected Q columns and renumber sequentially.
+
+    Args:
+        df: DataFrame with Q1-Q35 columns
+        selected_question_nums: List of question numbers to keep (e.g., [1, 4, 5])
+
+    Returns:
+        DataFrame with only selected questions, renumbered to Q1, Q2, Q3...
+        Also returns mapping dict {original_q_num: display_q_num}
+    """
+    q_cols_to_keep = [f"Q{q}" for q in selected_question_nums]
+    q_cols_present = [c for c in q_cols_to_keep if c in df.columns]
+
+    if not q_cols_present:
+        raise ValueError(f"No Q columns found in dataframe. Available columns: {df.columns.tolist()}")
+
+    # Create mapping: original Q num -> display Q num (1, 2, 3, ...)
+    renumber_map = {}
+    for display_idx, original_q in enumerate(selected_question_nums, start=1):
+        renumber_map[original_q] = display_idx
+
+    # Select columns and renumber
+    filtered_df = df[q_cols_present].copy()
+    new_columns = {f"Q{original_q}": f"Q{renumber_map[original_q]}" for original_q in selected_question_nums}
+    filtered_df = filtered_df.rename(columns=new_columns)
+
+    return filtered_df, renumber_map
+
+
 def compute_flags(df, pregnancy_codes=None, bacterial_joint_codes=None, **kwargs):
     """Compute Q1-Q34 boolean flag columns on the dataframe. Returns dict of {col: Series}."""
     flags = {}
@@ -319,8 +394,16 @@ QUESTIONS = {
 }
 
 
-def compute_metrics(df):
-    """Produce metrics text from the flagged dataframe."""
+def compute_metrics(df, questions_dict=None):
+    """Produce metrics text from the flagged dataframe.
+
+    Args:
+        df: DataFrame with Q1-Qn boolean flag columns
+        questions_dict: Optional dict of {question_num: question_text}. If None, uses global QUESTIONS.
+    """
+    if questions_dict is None:
+        questions_dict = QUESTIONS
+
     lines = []
 
     lines.append("=" * 60)
@@ -328,10 +411,10 @@ def compute_metrics(df):
     lines.append("=" * 60)
     lines.append("")
 
-    for q_num in sorted(QUESTIONS):
+    for q_num in sorted(questions_dict):
         col = f"Q{q_num}"
         count = int(df[col].sum())
-        lines.append(f"Q{q_num}. {QUESTIONS[q_num]}: {count}")
+        lines.append(f"Q{q_num}. {questions_dict[q_num]}: {count}")
 
     lines.append("")
     lines.append("=" * 60)
@@ -349,6 +432,12 @@ def compute_metrics(df):
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Analyse generated patient data.")
+    parser.add_argument(
+        "--mode",
+        choices=["exploratory", "production"],
+        default="exploratory",
+        help="Pipeline mode: exploratory (all Q1-Q35) or production (select subset)",
+    )
     parser.add_argument(
         "--tx-server",
         default=DEFAULT_TX_SERVER,
@@ -405,8 +494,22 @@ def main():
     df = pd.concat([df, flag_df], axis=1)
     df = df.drop(columns=["_edition"])
 
+    # Handle production mode: select subset of questions and renumber
+    if args.mode == "production":
+        selected_questions = select_questions_interactive(QUESTIONS)
+        q_filtered_df, renumber_map = filter_and_renumber_questions(df, selected_questions)
+        # Create filtered QUESTIONS dict with renumbered keys
+        questions_to_use = {i: QUESTIONS[selected_questions[i-1]] for i in range(1, len(selected_questions) + 1)}
+        q_cols = [f"Q{i}" for i in range(1, len(selected_questions) + 1)]
+        # Replace Q columns in df with filtered/renumbered versions
+        df = df.drop(columns=[f"Q{i}" for i in range(1, 36)])
+        df = pd.concat([df, q_filtered_df], axis=1)
+    else:
+        questions_to_use = QUESTIONS
+        q_cols = [f"Q{i}" for i in range(1, 36)]
+
     print("Computing metrics...")
-    output = compute_metrics(df)
+    output = compute_metrics(df, questions_dict=questions_to_use)
 
     # Write metrics.txt
     metrics_path = os.path.join(SCRIPT_DIR, "metrics.txt")
@@ -415,11 +518,11 @@ def main():
         f.write("\n")
     print(f"Metrics written to {metrics_path}")
 
-    q_cols = [f"Q{i}" for i in range(1, 36)]
     drop_cols = ["Year", "BMI", "CholHDL_Ratio"]
 
     # Write TrainingDataSet.csv (Episode Number + original data columns, no Q flags)
-    training_exclude = q_cols + drop_cols + [
+    all_q_cols = [f"Q{i}" for i in range(1, 36)]
+    training_exclude = all_q_cols + drop_cols + [
         "Age", "LifestyleFactors", "Condition",
         "Medicine_1_Category", "Medicine_2_Category", "Medicine_3_Category",
     ]
