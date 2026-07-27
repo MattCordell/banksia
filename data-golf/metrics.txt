@@ -3,42 +3,23 @@ Analytics Questions
 ============================================================
 
 Q1. The patient's recorded sex is female.: 293
-Q2. The patient is aged 18 years or over at the encounter date.: 447
-Q3. The patient has a BMI of 30 or more (from recorded height and weight) and a total cholesterol to HDL ratio greater than 5.: 98
-Q4. The clinical note records the patient as healthy or free of current problems.: 222
-Q5. The clinical note codes a hyperthyroid disorder, or the thyroid panel shows biochemical thyrotoxicosis (TSH below 0.4 mIU/L with free T4 above 20 pmol/L).: 1
-Q6. [Uses withheld Condition column] The patient has hyperthyroidism and the encounter occurred in 2021.: 0
-Q7. [Uses withheld Condition column] The patient has osteoarthritis and the encounter occurred in 2023.: 6
-Q8. The clinical note codes an osteoarthritis (excluding gout and chondrocalcinosis) and the encounter occurred in 2024.: 4
-Q9. [Uses withheld Condition column] The patient has osteoarthritis and the encounter occurred in 2025.: 8
-Q10. [Uses withheld Condition column] The patient has osteoarthritis and the encounter occurred in 2026.: 3
-Q11. [Uses withheld Condition column] The patient has rheumatoid arthritis and the encounter occurred in 2021.: 1
-Q12. [Uses withheld Condition column] The patient has rheumatoid arthritis and the encounter occurred in 2022.: 2
-Q13. [Uses withheld Condition column] The patient has rheumatoid arthritis and the encounter occurred in 2023.: 2
-Q14. [Uses withheld Medicine Category column] The patient is prescribed thiamine.: 7
-Q15. The patient is prescribed a product containing an ACE inhibitor, including fixed-dose combination products.: 43
-Q16. The patient is prescribed a product containing a cardiac (digitalis) glycoside.: 1
-Q17. [Uses withheld Medicine Category column] The patient is prescribed a statin.: 79
-Q18. [Uses withheld Medicine Category column] The patient is prescribed both an ACE inhibitor and a calcium channel blocker.: 6
-Q19. The clinical note codes a fungal infection with a foot finding site, or tinea pedis.: 0
-Q20. The patient is prescribed two or more distinct products containing paracetamol.: 0
-Q21. The clinical note codes a bilateral condition.: 7
-Q22. [Uses withheld Medicine Category column] The patient is prescribed metformin and has an eGFR below 30.: 2
-Q23. The clinical note display contains a hand or wrist term.: 11
-Q24. [Uses withheld Medicine Category column] The patient is female, aged 15 to 49, and prescribed an ACE inhibitor or an angiotensin receptor blocker.: 12
-Q25. The patient is female, aged 15 to 49, and prescribed a product containing methotrexate.: 2
-Q26. [Uses withheld Medicine Category column] The patient is female, aged 50 or over, and prescribed methotrexate.: 1
-Q27. The clinical note codes a current pregnancy (postnatal states excluded) and the patient is prescribed a teratogenic medicine: an ACE inhibitor, angiotensin receptor blocker, methotrexate, tetracycline, carbimazole, statin, warfarin, valproate, or isotretinoin.: 4
-Q28. [Uses withheld Condition column] The patient is female, aged 15 to 49, with rheumatoid arthritis.: 3
-Q29. The clinical note codes osteoarthritis or rheumatoid arthritis, the patient is prescribed an oral NSAID (aspirin and salicylates included), and the eGFR is below 60.: 5
-Q30. [Uses withheld Condition and Medicine Category columns] The patient has cirrhosis and is prescribed a non-selective beta-blocker.: 1
-Q31. The patient is prescribed digoxin, has an eGFR below 30, and is prescribed a loop diuretic.: 0
-Q32. [Uses withheld Medicine Category column] The patient is prescribed digoxin and has a potassium below 3.5 mmol/L.: 0
-Q33. The clinical note codes a current pregnancy (postnatal states excluded) and the fasting glucose is 5.1 mmol/L or greater.: 2
-Q34. The clinical note codes a joint infection whose causative agent is a bacterium other than a Streptococcus species.: 3
-Q35. The clinical note codes an infection.: 43
-Q36. The patient is prescribed an oral product containing iron.: 27
-Q37. The patient is prescribed a product containing a mineral providing a chemical element, other than sodium, potassium or chloride.: 28
+Q2. The patient has a BMI of 30 or more (from recorded height and weight) and a total cholesterol to HDL ratio greater than 5.: 98
+Q3. The clinical note records the patient as healthy or free of current problems.: 222
+Q4. The clinical note codes a hyperthyroid disorder, or the thyroid panel shows biochemical thyrotoxicosis (TSH below 0.4 mIU/L with free T4 above 20 pmol/L).: 1
+Q5. The clinical note codes an osteoarthritis (excluding gout and chondrocalcinosis) and the encounter occurred in 2024.: 4
+Q6. The patient is prescribed a product containing an ACE inhibitor, including fixed-dose combination products.: 43
+Q7. The patient is prescribed a product containing a cardiac (digitalis) glycoside.: 1
+Q8. The clinical note codes a fungal infection with a foot finding site, or tinea pedis.: 0
+Q9. The patient is prescribed two or more distinct products containing paracetamol.: 0
+Q10. The clinical note codes a bilateral condition.: 7
+Q11. The patient is female, aged 15 to 49, and prescribed a product containing methotrexate.: 2
+Q12. The clinical note codes a current pregnancy (postnatal states excluded) and the patient is prescribed a teratogenic medicine: an ACE inhibitor, angiotensin receptor blocker, methotrexate, tetracycline, carbimazole, statin, warfarin, valproate, or isotretinoin.: 4
+Q13. The clinical note codes osteoarthritis or rheumatoid arthritis, the patient is prescribed an oral NSAID (aspirin and salicylates included), and the eGFR is below 60.: 5
+Q14. The patient is prescribed digoxin, has an eGFR below 30, and is prescribed a loop diuretic.: 0
+Q15. The clinical note codes a current pregnancy (postnatal states excluded) and the fasting glucose is 5.1 mmol/L or greater.: 2
+Q16. The clinical note codes a joint infection whose causative agent is a bacterium other than a Streptococcus species.: 3
+Q17. The patient is prescribed an oral product containing iron.: 27
+Q18. The patient is prescribed a product containing a mineral providing a chemical element, other than sodium, potassium or chloride.: 28
 
 ============================================================
 DATA SUMMARY

@@ -2,7 +2,7 @@
 Orchestrator script: runs data generation then analysis sequentially.
 
 Usage:
-    python data-golf/run.py --n 10 --seed 42 [--mode exploratory|production]
+    python data-golf/run.py --n 10 --seed 42
 """
 
 import argparse
@@ -15,8 +15,6 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def main():
     parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument("--mode", choices=["exploratory", "production"], default="exploratory",
-                        help="Pipeline mode: exploratory (all Q1-Q35) or production (select subset)")
     parser.add_argument("--n", type=int, help="Target patients per period (for generate_data.py)")
     parser.add_argument("--seed", type=int, help="Random seed (for generate_data.py)")
     parser.add_argument("--tx-server", help="FHIR terminology server (for analyse.py)")
@@ -32,8 +30,8 @@ def main():
         gen_args.extend(["--tx-server", args.tx_server])
     gen_args.extend(remaining)
 
-    # Build args for analyse.py (includes --mode and --tx-server only)
-    analyse_args = ["--mode", args.mode]
+    # Build args for analyse.py (--tx-server only)
+    analyse_args = []
     if args.tx_server:
         analyse_args.extend(["--tx-server", args.tx_server])
 
