@@ -209,3 +209,6 @@ data-golf/kaggle.ipynb
 
 # Generated images
 image_generation/output/
+
+# ECL expansion size cache (data-golf/compare_editions.py)
+data-golf/.ecl_expansion_cache.json
