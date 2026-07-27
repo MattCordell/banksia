@@ -1,17 +1,30 @@
 """
 Analyse generated patient data and produce a metrics summary.
 
-Reads raw_data.csv from the same directory, computes Q1-Q34 boolean flag
+Reads raw_data.csv from the same directory, computes Q1-Q37 boolean flag
 columns, and writes metrics.txt, TrainingDataSet.csv, solution.csv,
 and sample_submission.csv.
+
+Each question has a dedicated ``q<nn>_*`` function that takes the dataframe
+and a per-edition :class:`CodeSets` and returns a boolean Series. The
+``QUESTION_FUNCS`` registry maps question number to function, and ``QUESTIONS``
+holds the criterion-phrased description of what each flag means.
+
+Criteria are expressed against the columns that are actually published in
+TrainingDataSet.csv (Clinical_Note_Code/Display, Medicine_*_Code/Display, labs
+and demographics). ``Condition`` and ``Medicine_*_Category`` are generator
+bookkeeping and are withheld from competitors, so questions that still rely on
+them are marked in the notes below and cannot be answered from the released
+data.
 """
 
 import os
 import random
 import sys
+from dataclasses import dataclass, field
 from datetime import date
+from typing import Callable, Dict, Optional, Set
 
-import numpy as np
 import pandas as pd
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -44,6 +57,7 @@ def edition_for_date(d: date) -> str:
 
 MED_CATS = ["Medicine_1_Category", "Medicine_2_Category", "Medicine_3_Category"]
 MED_DISPLAYS = ["Medicine_1_Display", "Medicine_2_Display", "Medicine_3_Display"]
+MED_CODES = ["Medicine_1_Code", "Medicine_2_Code", "Medicine_3_Code"]
 
 
 def load_data():
@@ -60,14 +74,32 @@ def ecl_code_set(ecl: str, tx_server: str, edition: str = None) -> set:
     return {c["code"] for c in concepts}
 
 
+def resolve_ecl_template(template_key: str) -> str:
+    """Look up a named product ECL template from medicines/ecl_templates.json."""
+    from medicines.generator import resolve_ecl_template as _resolve
+    return _resolve(template_key)
+
+
+def best_cholesterol(df):
+    """Return total cholesterol, preferring the Lipid Panel, falling back to MBAP.
+
+    The lipid panel is absent on a minority of rows; MBAP carries a total
+    cholesterol for most of them, so the fallback widens Q3's coverage.
+    """
+    lipid = "Lipid Panel - Total Cholesterol (mmol/L)"
+    mbap = "MBAP - Cholesterol (mmol/L)"
+    if lipid not in df.columns:
+        return df[mbap]
+    return df[lipid].fillna(df[mbap]) if mbap in df.columns else df[lipid]
+
+
 def add_derived_columns(df):
     """Add Year, BMI, and CholHDL_Ratio columns."""
     df["Year"] = pd.to_datetime(df["EncounterDate"]).dt.year
     df["BMI"] = df["Weight_kg"] / (df["Height_cm"] / 100) ** 2
-    chol_col = "Lipid Panel - Total Cholesterol (mmol/L)"
     hdl_col = "Lipid Panel - HDL (mmol/L)"
-    if chol_col in df.columns and hdl_col in df.columns:
-        df["CholHDL_Ratio"] = df[chol_col] / df[hdl_col]
+    if hdl_col in df.columns:
+        df["CholHDL_Ratio"] = best_cholesterol(df) / df[hdl_col]
     return df
 
 
@@ -76,18 +108,196 @@ def has_med_category(df, category):
     return df[MED_CATS].eq(category).any(axis=1)
 
 
-def has_med_display(df, pattern):
-    """Return boolean mask for patients with pattern in any Medicine Display."""
-    return pd.DataFrame(
-        {col: df[col].str.contains(pattern, case=False, na=False) for col in MED_DISPLAYS}
-    ).any(axis=1)
+def product_ecl_template_for_edition(edition):
+    """Return the ecl_templates.json key matching the product model used for edition.
+
+    Must stay in sync with generate_data.py PERIODS: "product" (SNOMED CT international
+    medicinal product hierarchy) pre-2025, "amt-tpuu" (AMT Trade Product Unit of Use) from
+    2025 onwards.
+    """
+    return "amt-tpuu" if edition >= "20250131" else "product"
 
 
-def count_med_display_matches(df, pattern):
-    """Count how many medicine slots contain pattern in Display (case-insensitive)."""
-    return pd.DataFrame(
-        {col: df[col].str.contains(pattern, case=False, na=False) for col in MED_DISPLAYS}
-    ).sum(axis=1)
+# ---------------------------------------------------------------------------
+# ECL definitions
+#
+# Condition criteria are matched against SNOMED_Code (published as
+# Clinical_Note_Code) rather than the withheld Condition label, because the
+# label is a sampling bucket and the coded concept is often only loosely
+# related to it (e.g. a "Hyperthyroidism" row coded as
+# |Dysprealbuminaemic euthyroidal hyperthyroxinaemia|).
+# ---------------------------------------------------------------------------
+
+CONDITION_ECLS = {
+    # Q4. |Healthy| plus |No current problems or disability|, which is not a
+    # descendant of |Healthy| but carries the same meaning here.
+    "healthy": "(<<102499006) OR (<<160245001)",
+    # Q5. |Hyperthyroidism|.
+    "hyperthyroidism": "<<34486009",
+    # Q8 (and the other osteoarthritis-year questions, if switched over).
+    # SNOMED classifies |Gout| and |Chondrocalcinosis| beneath |Osteoarthritis|;
+    # both are excluded so the criterion means degenerative OA.
+    "osteoarthritis": "(<<396275006) MINUS ((<<90560007) OR (<<239838005))",
+    "rheumatoid_arthritis": "<<69896004",
+    # Q19. Mycosis with a foot finding site, plus |Tinea pedis| explicitly
+    # (its finding site is a skin structure that is not subsumed by
+    # |Foot structure|). Returns 0 on small cohorts.
+    "fungal_foot": "(<<3218000) AND ((<404684003:363698007=(<<56459004)) OR (<<6020002))",
+    # Q21. Laterality is not modelled on these disorders, so an attribute-based
+    # ECL expands to nothing; a term filter is the terminology-native
+    # equivalent of scanning the display string.
+    "bilateral": '<<404684003 {{ term = "bilateral" }}',
+    # Q27, Q33. |Pregnant| minus postnatal/puerperal states. |Pregnancy|
+    # (77386006) is deliberately omitted: it contributes no rows the |Pregnant|
+    # hierarchy does not already cover.
+    "pregnancy": (
+        "(<<118185001) MINUS ("
+        '(<<118185001 {{term = "postpartum"}}) OR '
+        '(<<118185001 {{term = "postnatal"}}) OR '
+        '(<<118185001 {{term = "puerper"}}))'
+    ),
+    # Q34. |Causative agent| rather than a wildcard attribute, so the criterion
+    # means "caused by" instead of "mentions a bacterium in any role".
+    "bacterial_joint_non_strep": "(<<363162000:246075003=((<<409822003) MINUS (<<58800005)))",
+    # Q35. Infection disorders: the |Infection| root, anything with a causative
+    # organism, specific pathogen domains, and pyogenic/purulent/suppurative
+    # terms; minus non-pyogenic and other known false positives.
+    "infection": (
+        "(\n  <<40733004\n  OR (<404684003:(*=<<441862004))\n"
+        "  OR (<404684003:*=(<<409822003 OR <<49872002 OR <<84073006 OR <<441649000))\n"
+        "  OR (<404684003:42752001=(<404684003:(*=<<441862004)))\n"
+        '  OR (<404684003 {{term = ("Pyogenic" "Purulent" "Suppurative") }})\n)\n'
+        ' MINUS ( ((<404684003 {{term = ("non-pyogenic" "non-purulent" "non-Suppurative")}})'
+        " OR <<200722003 OR <<1149322001 OR <<66091009 OR <<1172608001 OR <<399981008"
+        " OR <<235076008) )"
+    ),
+}
+
+
+@dataclass(frozen=True)
+class MedicineEcl:
+    """A medicine criterion: an ingredient ECL plus a display-text fallback.
+
+    ``ingredients`` is substituted into the product ECL template for the row's
+    SNOMED CT-AU edition. ``display_regex`` catches products whose code is
+    missing or falls outside the expansion; a row matches if either hits.
+    ``oral_only`` swaps in the product-oral template, constraining the
+    manufactured dose form to |Oral dose form|.
+    """
+
+    ingredients: str
+    display_regex: Optional[str] = None
+    oral_only: bool = False
+
+
+MEDICINE_ECLS = {
+    # Q15, Q27. Any product containing an ACE inhibitor, combinations included.
+    "acei": MedicineEcl("<<372733002", r"pril"),
+    # Q27. |Angiotensin II receptor antagonist|.
+    "arb": MedicineEcl("<<372913009", r"sartan"),
+    # Q16. |Digitalis glycoside| covers digoxin, digitoxin, medigoxin etc.
+    "cardiac_glycoside": MedicineEcl("<<406759007", r"digoxin|digitoxin|lanoxin|sigmaxin"),
+    # Q31. Digoxin specifically, as the question names it.
+    "digoxin": MedicineEcl("<<387461009", r"digoxin|lanoxin|sigmaxin"),
+    # Q20.
+    "paracetamol": MedicineEcl("<<387517004", r"paracetamol|acetaminophen|panadol|dymadon"),
+    # Q25, Q27.
+    "methotrexate": MedicineEcl("<<387381009", r"methotrexate"),
+    # Q27 teratogens.
+    "tetracycline": MedicineEcl("<<372809001", r"cycline"),
+    "carbimazole": MedicineEcl("<<395831005", r"carbimazole|neo-mercazole"),
+    "statin": MedicineEcl("<<372912004", r"statin"),
+    "warfarin": MedicineEcl("<<372756006", r"warfarin|coumadin|marevan"),
+    "valproate": MedicineEcl("<<264325000", r"valpro|epilim"),
+    "isotretinoin": MedicineEcl("<<387208003", r"isotretinoin|roaccutane"),
+    # Q29. Oral NSAIDs, aspirin and salicylates included.
+    "nsaid_oral": MedicineEcl(
+        "<<372665008",
+        r"ibuprofen|naproxen|diclofenac|celecoxib|meloxicam|indometh|ketoprofen|piroxicam|aspirin",
+        oral_only=True,
+    ),
+    # Q31.
+    "loop_diuretic": MedicineEcl("<<372691009", r"frusemide|furosemide|bumetanide|ethacrynic|lasix"),
+    # Q36. |Iron and/or iron compound| under an oral-only product template.
+    # An earlier version navigated ingredients out of |Iron-containing product in
+    # oral dose form| ("(<13790009.<<762951001) AND <<767270007"); that resolved
+    # to a single ingredient in the 2021-2024 editions and 8 in 2025+, so it
+    # silently under-counted every pre-2025 row. The substance grouper is stable
+    # across editions (78-87 members).
+    "oral_iron": MedicineEcl("<<767270007", oral_only=True),
+    # Q37. |Mineral| minus sodium and potassium (both descendants) and chloride
+    # (not a descendant, excluded defensively).
+    "mineral": MedicineEcl("<<87918000 MINUS (<<39972003 OR <<88480006 OR <<50213009)"),
+}
+
+# Q27. Medicines contraindicated or of concern in pregnancy.
+TERATOGENIC_MEDICINES = (
+    "acei",
+    "arb",
+    "methotrexate",
+    "tetracycline",
+    "carbimazole",
+    "statin",
+    "warfarin",
+    "valproate",
+    "isotretinoin",
+)
+
+
+@dataclass
+class CodeSets:
+    """Expanded SNOMED code sets for a single SNOMED CT-AU edition."""
+
+    edition: str
+    conditions: Dict[str, Set[str]] = field(default_factory=dict)
+    medicines: Dict[str, Set[str]] = field(default_factory=dict)
+
+
+def build_code_sets(edition, tx_server, verbose=True):
+    """Expand every condition and medicine ECL for one edition."""
+    sets = CodeSets(edition=edition)
+
+    for key, ecl in CONDITION_ECLS.items():
+        sets.conditions[key] = ecl_code_set(ecl, tx_server, edition=edition)
+
+    product_template = resolve_ecl_template(product_ecl_template_for_edition(edition))
+    oral_template = resolve_ecl_template("product-oral")
+    for key, spec in MEDICINE_ECLS.items():
+        template = oral_template if spec.oral_only else product_template
+        sets.medicines[key] = ecl_code_set(
+            template.format(ingredients=spec.ingredients), tx_server, edition=edition
+        )
+
+    if verbose:
+        conditions = ", ".join(f"{k}={len(v)}" for k, v in sorted(sets.conditions.items()))
+        medicines = ", ".join(f"{k}={len(v)}" for k, v in sorted(sets.medicines.items()))
+        print(f"    conditions: {conditions}")
+        print(f"    medicines:  {medicines}")
+
+    return sets
+
+
+def has_condition(df, sets, key):
+    """Return boolean mask for rows whose clinical note code is in the code set."""
+    return df["SNOMED_Code"].isin(sets.conditions[key])
+
+
+def count_med_matches(df, sets, key):
+    """Count medicine slots matching a MEDICINE_ECLS key (code set OR display regex)."""
+    codes = sets.medicines[key]
+    pattern = MEDICINE_ECLS[key].display_regex
+    matches = {}
+    for code_col, display_col in zip(MED_CODES, MED_DISPLAYS):
+        hit = df[code_col].isin(codes)
+        if pattern:
+            hit = hit | df[display_col].str.contains(pattern, case=False, na=False)
+        matches[code_col] = hit
+    return pd.DataFrame(matches).sum(axis=1)
+
+
+def has_med(df, sets, key):
+    """Return boolean mask for rows with a medicine matching a MEDICINE_ECLS key."""
+    return count_med_matches(df, sets, key) > 0
 
 
 def best_egfr(df):
@@ -158,11 +368,40 @@ def select_questions_interactive(questions_dict):
         return selected
 
 
+def parse_question_selection(selection_str, questions_dict):
+    """Parse and validate a comma-separated question selection string.
+
+    Same validation rules as select_questions_interactive, for non-interactive use
+    (e.g. --questions "1,4,5,17,22").
+
+    Args:
+        selection_str: Comma-separated question numbers, e.g. "1,4,5,17,22"
+        questions_dict: Dict of {question_num: question_text}
+
+    Returns:
+        List of selected question numbers, sorted numerically
+    """
+    try:
+        selected = [int(x.strip()) for x in selection_str.split(",")]
+    except ValueError:
+        raise ValueError("Invalid --questions value. Please enter only numbers separated by commas.")
+
+    invalid = [q for q in selected if q not in questions_dict]
+    if invalid:
+        raise ValueError(f"Invalid question numbers: {invalid}. Valid range: 1-{max(questions_dict.keys())}")
+
+    duplicates = [q for q in set(selected) if selected.count(q) > 1]
+    if duplicates:
+        raise ValueError(f"Duplicate question numbers: {duplicates}")
+
+    return sorted(set(selected))
+
+
 def filter_and_renumber_questions(df, selected_question_nums):
     """Filter dataframe to selected Q columns and renumber sequentially.
 
     Args:
-        df: DataFrame with Q1-Q35 columns
+        df: DataFrame with Q1-Q37 columns
         selected_question_nums: List of question numbers to keep (e.g., [1, 4, 5])
 
     Returns:
@@ -188,209 +427,348 @@ def filter_and_renumber_questions(df, selected_question_nums):
     return filtered_df, renumber_map
 
 
-def compute_flags(df, pregnancy_codes=None, bacterial_joint_codes=None, **kwargs):
-    """Compute Q1-Q34 boolean flag columns on the dataframe. Returns dict of {col: Series}."""
-    flags = {}
+# ---------------------------------------------------------------------------
+# Question functions
+#
+# Each takes (df, sets) and returns a boolean Series aligned to df.index.
+# Functions marked "NOT ANSWERABLE" still read the withheld Condition or
+# Medicine_*_Category columns and were out of scope for the current tuning pass.
+# ---------------------------------------------------------------------------
 
-    # Q1: Female
-    flags["Q1"] = df["Sex"] == "female"
 
-    # Q2: Adult (Age >= 18)
-    flags["Q2"] = df["Age"] >= 18
+def female(df):
+    """Shared helper: recorded sex is female (excludes non-binary)."""
+    return df["Sex"] == "female"
 
-    # Q3: Obese (BMI >= 30) with Chol:HDL > 5
-    flags["Q3"] = (df["BMI"] >= 30) & (df["CholHDL_Ratio"] > 5)
 
-    # Q4: Healthy condition
-    flags["Q4"] = df["Condition"] == "Healthy"
+def q01_female(df, sets):
+    return female(df)
 
-    # Q5: Hyperthyroidism
-    flags["Q5"] = df["Condition"] == "Hyperthyroidism"
 
-    # Q6: Hyperthyroidism in 2021
-    flags["Q6"] = (df["Condition"] == "Hyperthyroidism") & (df["Year"] == 2021)
+def q02_adult(df, sets):
+    return df["Age"] >= 18
 
-    # Q7: Osteoarthritis in 2023
-    flags["Q7"] = (df["Condition"] == "Osteoarthritis") & (df["Year"] == 2023)
 
-    # Q8: Osteoarthritis in 2024
-    flags["Q8"] = (df["Condition"] == "Osteoarthritis") & (df["Year"] == 2024)
+def q03_obese_high_chol_hdl(df, sets):
+    """BMI from recorded height/weight; ratio uses lipid panel then MBAP cholesterol."""
+    return (df["BMI"] >= 30) & (df["CholHDL_Ratio"] > 5)
 
-    # Q9: Osteoarthritis in 2025
-    flags["Q9"] = (df["Condition"] == "Osteoarthritis") & (df["Year"] == 2025)
 
-    # Q10: Osteoarthritis in 2026
-    flags["Q10"] = (df["Condition"] == "Osteoarthritis") & (df["Year"] == 2026)
+def q04_healthy(df, sets):
+    return has_condition(df, sets, "healthy")
 
-    # Q11: Rheumatoid Arthritis in 2021
-    flags["Q11"] = (df["Condition"] == "Rheumatoid Arthritis") & (df["Year"] == 2021)
 
-    # Q12: Rheumatoid Arthritis in 2022
-    flags["Q12"] = (df["Condition"] == "Rheumatoid Arthritis") & (df["Year"] == 2022)
+def q05_hyperthyroidism(df, sets):
+    """Coded hyperthyroid disorder, or biochemical thyrotoxicosis on the thyroid panel."""
+    tsh = df["Thyroid Panel - TSH (mIU/L)"]
+    free_t4 = df["Thyroid Panel - Free T4 (pmol/L)"]
+    biochemical = (tsh < 0.4) & (free_t4 > 20)
+    return has_condition(df, sets, "hyperthyroidism") | biochemical
 
-    # Q13: Rheumatoid Arthritis in 2023
-    flags["Q13"] = (df["Condition"] == "Rheumatoid Arthritis") & (df["Year"] == 2023)
 
-    # Q14: Thiamine medication
-    flags["Q14"] = has_med_category(df, "Thiamine")
+def q06_hyperthyroidism_2021(df, sets):
+    # NOT ANSWERABLE: uses Condition. Q5 was tuned to ECL; this was not.
+    return (df["Condition"] == "Hyperthyroidism") & (df["Year"] == 2021)
 
-    # Q15: ACE Inhibitors medication
-    flags["Q15"] = has_med_category(df, "ACE Inhibitors")
 
-    # Q16: Digoxin medication
-    flags["Q16"] = has_med_category(df, "Digoxin")
+def q07_osteoarthritis_2023(df, sets):
+    # NOT ANSWERABLE: uses Condition. Q8 was tuned to ECL; this was not.
+    return (df["Condition"] == "Osteoarthritis") & (df["Year"] == 2023)
 
-    # Q17: Statins medication
-    flags["Q17"] = has_med_category(df, "Statins (HMG-CoA reductase inhibitor)")
 
-    # Q18: Both ACE Inhibitors AND Calcium Channel Blockers
-    flags["Q18"] = (
+def q08_osteoarthritis_2024(df, sets):
+    return has_condition(df, sets, "osteoarthritis") & (df["Year"] == 2024)
+
+
+def q09_osteoarthritis_2025(df, sets):
+    # NOT ANSWERABLE: uses Condition. Q8 was tuned to ECL; this was not.
+    return (df["Condition"] == "Osteoarthritis") & (df["Year"] == 2025)
+
+
+def q10_osteoarthritis_2026(df, sets):
+    # NOT ANSWERABLE: uses Condition. Q8 was tuned to ECL; this was not.
+    return (df["Condition"] == "Osteoarthritis") & (df["Year"] == 2026)
+
+
+def q11_rheumatoid_2021(df, sets):
+    # NOT ANSWERABLE: uses Condition.
+    return (df["Condition"] == "Rheumatoid Arthritis") & (df["Year"] == 2021)
+
+
+def q12_rheumatoid_2022(df, sets):
+    # NOT ANSWERABLE: uses Condition.
+    return (df["Condition"] == "Rheumatoid Arthritis") & (df["Year"] == 2022)
+
+
+def q13_rheumatoid_2023(df, sets):
+    # NOT ANSWERABLE: uses Condition.
+    return (df["Condition"] == "Rheumatoid Arthritis") & (df["Year"] == 2023)
+
+
+def q14_thiamine(df, sets):
+    # NOT ANSWERABLE: uses Medicine_*_Category.
+    return has_med_category(df, "Thiamine")
+
+
+def q15_ace_inhibitor(df, sets):
+    """Any product containing an ACE inhibitor, fixed-dose combinations included."""
+    return has_med(df, sets, "acei")
+
+
+def q16_cardiac_glycoside(df, sets):
+    return has_med(df, sets, "cardiac_glycoside")
+
+
+def q17_statins(df, sets):
+    # NOT ANSWERABLE: uses Medicine_*_Category. A "statin" code set exists in
+    # MEDICINE_ECLS if this is switched over.
+    return has_med_category(df, "Statins (HMG-CoA reductase inhibitor)")
+
+
+def q18_acei_and_ccb(df, sets):
+    # NOT ANSWERABLE: uses Medicine_*_Category.
+    return (
         has_med_category(df, "ACE Inhibitors")
         & has_med_category(df, "Calcium Channel Blockers")
     )
 
-    # Q19: Fungal Infection with foot-related SNOMED Display
-    foot_pattern = r"(?i)(?:pedis|foot|feet|plantar|toe[\s,]|toenail|hallux)"
-    flags["Q19"] = (
-        (df["Condition"] == "Fungal Infection")
-        & df["SNOMED_Display"].str.contains(foot_pattern, na=False)
-    )
 
-    # Q20: >1 product containing paracetamol
-    flags["Q20"] = count_med_display_matches(df, r"paracetamol") >= 2
+def q19_fungal_foot(df, sets):
+    return has_condition(df, sets, "fungal_foot")
 
-    # Q21: "bilateral" in SNOMED_Display
-    flags["Q21"] = df["SNOMED_Display"].str.contains(r"(?i)bilateral", na=False)
 
-    # Q22: Metformin (Biguanide) with eGFR < 30
-    flags["Q22"] = has_med_category(df, "Biguanide hypoglycaemic agent") & (best_egfr(df) < 30)
+def q20_multiple_paracetamol(df, sets):
+    """Two or more distinct prescribed products containing paracetamol."""
+    return count_med_matches(df, sets, "paracetamol") >= 2
 
-    # Q23: Hand/wrist terms in SNOMED_Display
+
+def q21_bilateral(df, sets):
+    return has_condition(df, sets, "bilateral")
+
+
+def q22_metformin_low_egfr(df, sets):
+    # NOT ANSWERABLE: uses Medicine_*_Category.
+    return has_med_category(df, "Biguanide hypoglycaemic agent") & (best_egfr(df) < 30)
+
+
+def q23_hand_wrist(df, sets):
     hand_wrist_pattern = r"(?i)(?:hand|wrist|carpal|metacarpo|finger|digit|phalanx|phalangeal)"
-    flags["Q23"] = df["SNOMED_Display"].str.contains(hand_wrist_pattern, na=False)
+    return df["SNOMED_Display"].str.contains(hand_wrist_pattern, na=False)
 
-    # Q24: Females 15-49 prescribed ACE Inhibitors or ARBs
-    female_15_49 = (df["Sex"] == "female") & (df["Age"] >= 15) & (df["Age"] <= 49)
+
+def q24_female_15_49_acei_arb(df, sets):
+    # NOT ANSWERABLE: uses Medicine_*_Category. Q25 was tuned; this was not.
     acei_or_arb = (
         has_med_category(df, "ACE Inhibitors")
         | has_med_category(df, "Angiotensin Receptor Blockers")
         | has_med_category(df, "ACE Inhibitors / ARBs")
     )
-    flags["Q24"] = female_15_49 & acei_or_arb
+    return female(df) & (df["Age"] >= 15) & (df["Age"] <= 49) & acei_or_arb
 
-    # Q25: Females 15-49 prescribed Methotrexate
-    flags["Q25"] = female_15_49 & has_med_category(df, "Methotrexate")
 
-    # Q26: Females 50+ prescribed Methotrexate
-    female_50_plus = (df["Sex"] == "female") & (df["Age"] >= 50)
-    flags["Q26"] = female_50_plus & has_med_category(df, "Methotrexate")
-
-    # Q27: Pregnant patients prescribed teratogenic medicines
-    # (ACE Inhibitors, ARBs, Methotrexate, Macrolides/Tetracyclines, Carbimazole by display)
-    # Pregnancy is detected via Condition field OR via SNOMED_Code (ECL-expanded pregnancy codes),
-    # which captures comorbid presentations such as "Transient hypertension of pregnancy".
-    if pregnancy_codes:
-        pregnant = (df["Condition"] == "Pregnancy") | df["SNOMED_Code"].isin(pregnancy_codes)
-    else:
-        pregnant = df["Condition"] == "Pregnancy"
-    teratogenic = (
-        has_med_category(df, "ACE Inhibitors")
-        | has_med_category(df, "ACE Inhibitors / ARBs")
-        | has_med_category(df, "Angiotensin Receptor Blockers")
-        | has_med_category(df, "Methotrexate")
-        | has_med_category(df, "Macrolides / Tetracyclines")
-        | has_med_display(df, r"carbimazole")
+def q25_female_15_49_methotrexate(df, sets):
+    return (
+        female(df)
+        & (df["Age"] >= 15)
+        & (df["Age"] <= 49)
+        & has_med(df, sets, "methotrexate")
     )
-    flags["Q27"] = pregnant & teratogenic
 
-    # Q28: Female RA patients aged 15-49
-    flags["Q28"] = (
+
+def q26_female_50_plus_methotrexate(df, sets):
+    # NOT ANSWERABLE: uses Medicine_*_Category. Q25 was tuned; this was not.
+    return female(df) & (df["Age"] >= 50) & has_med_category(df, "Methotrexate")
+
+
+def q27_pregnant_teratogenic(df, sets):
+    """Currently pregnant (postnatal states excluded) and on a teratogenic medicine."""
+    teratogenic = pd.Series(False, index=df.index)
+    for key in TERATOGENIC_MEDICINES:
+        teratogenic = teratogenic | has_med(df, sets, key)
+    return has_condition(df, sets, "pregnancy") & teratogenic
+
+
+def q28_female_ra_15_49(df, sets):
+    # NOT ANSWERABLE: uses Condition. A "rheumatoid_arthritis" code set exists
+    # in CONDITION_ECLS if this is switched over.
+    return (
         (df["Condition"] == "Rheumatoid Arthritis")
-        & (df["Sex"] == "female")
+        & female(df)
         & (df["Age"] >= 15)
         & (df["Age"] <= 49)
     )
 
-    # Q29: OA/RA on NSAIDs with eGFR < 60
-    oa_ra = df["Condition"].isin(["Osteoarthritis", "Rheumatoid Arthritis"])
-    on_nsaids = has_med_category(df, "Oral NSAIDs")
-    flags["Q29"] = oa_ra & on_nsaids & (best_egfr(df) < 60)
 
-    # Q30: Cirrhosis on NSBB
-    flags["Q30"] = (
+def q29_oa_ra_nsaid_low_egfr(df, sets):
+    """Coded OA or RA, on an oral NSAID (aspirin included), with eGFR below 60."""
+    oa_ra = has_condition(df, sets, "osteoarthritis") | has_condition(
+        df, sets, "rheumatoid_arthritis"
+    )
+    return oa_ra & has_med(df, sets, "nsaid_oral") & (best_egfr(df) < 60)
+
+
+def q30_cirrhosis_nsbb(df, sets):
+    # NOT ANSWERABLE: uses Condition and Medicine_*_Category.
+    return (
         (df["Condition"] == "Chronic Liver Disease / Cirrhosis")
         & has_med_category(df, "Non-Selective Beta-Blockers")
     )
 
-    # Q31: Digoxin + eGFR<30 + loop diuretic (toxicity risk)
-    flags["Q31"] = (
-        has_med_category(df, "Digoxin")
+
+def q31_digoxin_toxicity_risk(df, sets):
+    """Digoxin plus eGFR below 30 plus a loop diuretic."""
+    return (
+        has_med(df, sets, "digoxin")
         & (best_egfr(df) < 30)
-        & has_med_category(df, "Loop Diuretics")
+        & has_med(df, sets, "loop_diuretic")
     )
 
-    # Q32: Digoxin with hypokalaemia (Potassium < 3.5)
-    flags["Q32"] = has_med_category(df, "Digoxin") & (best_potassium(df) < 3.5)
 
-    # Q33: Pregnant patients with fasting glucose >= 5.1 mmol/L
+def q32_digoxin_hypokalaemia(df, sets):
+    # NOT ANSWERABLE: uses Medicine_*_Category. Q31 was tuned; this was not.
+    return has_med_category(df, "Digoxin") & (best_potassium(df) < 3.5)
+
+
+def q33_pregnant_high_glucose(df, sets):
     gluc_col = "MBAP - Glucose (fasting) (mmol/L)"
-    flags["Q33"] = pregnant & (df[gluc_col] >= 5.1)
+    return has_condition(df, sets, "pregnancy") & (df[gluc_col] >= 5.1)
 
-    # Q34: Bacterial joint infection not caused by Streptococcus species.
-    # ECL: (<<363162000 |Infectious disorder of joint|:*=(<<409822003 |Domain Bacteria| MINUS <<58800005 |Genus Streptococcus|))
-    if bacterial_joint_codes is not None:
-        flags["Q34"] = df["SNOMED_Code"].isin(bacterial_joint_codes)
-    else:
-        flags["Q34"] = pd.Series(False, index=df.index)
 
-    # Q35: Patients with an infection
-    infection_codes = kwargs.get("infection_codes")
-    if infection_codes is not None:
-        flags["Q35"] = df["SNOMED_Code"].isin(infection_codes)
-    else:
-        flags["Q35"] = pd.Series(False, index=df.index)
+def q34_bacterial_joint_non_strep(df, sets):
+    return has_condition(df, sets, "bacterial_joint_non_strep")
 
+
+def q35_infection(df, sets):
+    return has_condition(df, sets, "infection")
+
+
+def q36_oral_iron(df, sets):
+    return has_med(df, sets, "oral_iron")
+
+
+def q37_mineral_supplement(df, sets):
+    return has_med(df, sets, "mineral")
+
+
+QUESTION_FUNCS: Dict[int, Callable] = {
+    1: q01_female,
+    2: q02_adult,
+    3: q03_obese_high_chol_hdl,
+    4: q04_healthy,
+    5: q05_hyperthyroidism,
+    6: q06_hyperthyroidism_2021,
+    7: q07_osteoarthritis_2023,
+    8: q08_osteoarthritis_2024,
+    9: q09_osteoarthritis_2025,
+    10: q10_osteoarthritis_2026,
+    11: q11_rheumatoid_2021,
+    12: q12_rheumatoid_2022,
+    13: q13_rheumatoid_2023,
+    14: q14_thiamine,
+    15: q15_ace_inhibitor,
+    16: q16_cardiac_glycoside,
+    17: q17_statins,
+    18: q18_acei_and_ccb,
+    19: q19_fungal_foot,
+    20: q20_multiple_paracetamol,
+    21: q21_bilateral,
+    22: q22_metformin_low_egfr,
+    23: q23_hand_wrist,
+    24: q24_female_15_49_acei_arb,
+    25: q25_female_15_49_methotrexate,
+    26: q26_female_50_plus_methotrexate,
+    27: q27_pregnant_teratogenic,
+    28: q28_female_ra_15_49,
+    29: q29_oa_ra_nsaid_low_egfr,
+    30: q30_cirrhosis_nsbb,
+    31: q31_digoxin_toxicity_risk,
+    32: q32_digoxin_hypokalaemia,
+    33: q33_pregnant_high_glucose,
+    34: q34_bacterial_joint_non_strep,
+    35: q35_infection,
+    36: q36_oral_iron,
+    37: q37_mineral_supplement,
+}
+
+
+def compute_flags(df, sets):
+    """Run every question function against df. Returns dict of {"Qn": Series}."""
+    flags = {}
+    for q_num, func in QUESTION_FUNCS.items():
+        result = func(df, sets)
+        flags[f"Q{q_num}"] = result.fillna(False).astype(bool)
     return flags
 
 
-# Question text for metrics output
+# Criterion phrasing: what it means for a row to be flagged True, stated against
+# the columns published in TrainingDataSet.csv. Questions still reading withheld
+# columns (Condition, Medicine_*_Category) are marked; they cannot be answered
+# from the released data.
 QUESTIONS = {
-    1: 'How many females in the dataset',
-    2: 'How many adults (Age >= 18)',
-    3: 'How many obese patients (BMI >= 30) have Chol:HDL > 5',
-    4: 'How many "Healthy" condition patients',
-    5: 'How many patients have "Hyperthyroidism"',
-    6: 'How many patients had "Hyperthyroidism" in 2021',
-    7: 'How many patients had "Osteoarthritis" in 2023',
-    8: 'How many patients had "Osteoarthritis" in 2024',
-    9: 'How many patients had "Osteoarthritis" in 2025',
-    10: 'How many patients had "Osteoarthritis" in 2026',
-    11: 'How many patients had "Rheumatoid Arthritis" in 2021',
-    12: 'How many patients had "Rheumatoid Arthritis" in 2022',
-    13: 'How many patients had "Rheumatoid Arthritis" in 2023',
-    14: 'How many patients have a Thiamine medication',
-    15: 'How many patients have an ACE Inhibitors medication',
-    16: 'How many patients have a Digoxin medication',
-    17: 'How many patients have a Statins medication',
-    18: 'How many patients are on both "ACE Inhibitors" AND "Calcium Channel Blockers"',
-    19: 'How many Fungal Infection patients with foot-related SNOMED Display',
-    20: 'How many Patients on >1 product containing paracetamol',
-    21: 'How many Patients with "bilateral" in SNOMED_Display',
-    22: 'How many Metformin patients with eGFR<30',
-    23: 'How many Patients with hand/wrist terms in SNOMED_Display',
-    24: 'How many Females 15-49 prescribed ACE Inhibitors or ARBs',
-    25: 'How many Females 15-49 prescribed Methotrexate',
-    26: 'How many Females 50+ prescribed Methotrexate',
-    27: 'How many pregnant patients prescribed Teratogenic Medicines '
-        '(ACE inhibitors, ARBs, Methotrexate, Tetracycline, Carbimazole)',
-    28: 'How many female RA patients aged 15-49',
-    29: 'How many OA/RA on NSAIDs with eGFR < 60 (subclinical renal impairment)',
-    30: 'How many Cirrhosis on NSBB',
-    31: 'How many patients prescribed digoxin + eGFR<30 + loop diuretic (toxicity risk)',
-    32: 'How many patients prescribed digoxin have hypokalaemia (Potassium <3.5)',
-    33: 'How many pregnant patients have a Glucose 5.1 mmol/L or greater',
-    34: 'How many patients have a bacterial joint infection not caused by Streptococcus species',
-    35: 'How many patients have an infection',
+    1: "The patient's recorded sex is female.",
+    2: 'The patient is aged 18 years or over at the encounter date.',
+    3: 'The patient has a BMI of 30 or more (from recorded height and weight) and a '
+       'total cholesterol to HDL ratio greater than 5.',
+    4: 'The clinical note records the patient as healthy or free of current problems.',
+    5: 'The clinical note codes a hyperthyroid disorder, or the thyroid panel shows '
+       'biochemical thyrotoxicosis (TSH below 0.4 mIU/L with free T4 above 20 pmol/L).',
+    6: '[Uses withheld Condition column] The patient has hyperthyroidism and the '
+       'encounter occurred in 2021.',
+    7: '[Uses withheld Condition column] The patient has osteoarthritis and the '
+       'encounter occurred in 2023.',
+    8: 'The clinical note codes an osteoarthritis (excluding gout and chondrocalcinosis) '
+       'and the encounter occurred in 2024.',
+    9: '[Uses withheld Condition column] The patient has osteoarthritis and the '
+       'encounter occurred in 2025.',
+    10: '[Uses withheld Condition column] The patient has osteoarthritis and the '
+        'encounter occurred in 2026.',
+    11: '[Uses withheld Condition column] The patient has rheumatoid arthritis and the '
+        'encounter occurred in 2021.',
+    12: '[Uses withheld Condition column] The patient has rheumatoid arthritis and the '
+        'encounter occurred in 2022.',
+    13: '[Uses withheld Condition column] The patient has rheumatoid arthritis and the '
+        'encounter occurred in 2023.',
+    14: '[Uses withheld Medicine Category column] The patient is prescribed thiamine.',
+    15: 'The patient is prescribed a product containing an ACE inhibitor, including '
+        'fixed-dose combination products.',
+    16: 'The patient is prescribed a product containing a cardiac (digitalis) glycoside.',
+    17: '[Uses withheld Medicine Category column] The patient is prescribed a statin.',
+    18: '[Uses withheld Medicine Category column] The patient is prescribed both an ACE '
+        'inhibitor and a calcium channel blocker.',
+    19: 'The clinical note codes a fungal infection with a foot finding site, or tinea pedis.',
+    20: 'The patient is prescribed two or more distinct products containing paracetamol.',
+    21: 'The clinical note codes a bilateral condition.',
+    22: '[Uses withheld Medicine Category column] The patient is prescribed metformin and '
+        'has an eGFR below 30.',
+    23: 'The clinical note display contains a hand or wrist term.',
+    24: '[Uses withheld Medicine Category column] The patient is female, aged 15 to 49, '
+        'and prescribed an ACE inhibitor or an angiotensin receptor blocker.',
+    25: 'The patient is female, aged 15 to 49, and prescribed a product containing methotrexate.',
+    26: '[Uses withheld Medicine Category column] The patient is female, aged 50 or over, '
+        'and prescribed methotrexate.',
+    27: 'The clinical note codes a current pregnancy (postnatal states excluded) and the '
+        'patient is prescribed a teratogenic medicine: an ACE inhibitor, angiotensin '
+        'receptor blocker, methotrexate, tetracycline, carbimazole, statin, warfarin, '
+        'valproate, or isotretinoin.',
+    28: '[Uses withheld Condition column] The patient is female, aged 15 to 49, with '
+        'rheumatoid arthritis.',
+    29: 'The clinical note codes osteoarthritis or rheumatoid arthritis, the patient is '
+        'prescribed an oral NSAID (aspirin and salicylates included), and the eGFR is '
+        'below 60.',
+    30: '[Uses withheld Condition and Medicine Category columns] The patient has cirrhosis '
+        'and is prescribed a non-selective beta-blocker.',
+    31: 'The patient is prescribed digoxin, has an eGFR below 30, and is prescribed a loop '
+        'diuretic.',
+    32: '[Uses withheld Medicine Category column] The patient is prescribed digoxin and has '
+        'a potassium below 3.5 mmol/L.',
+    33: 'The clinical note codes a current pregnancy (postnatal states excluded) and the '
+        'fasting glucose is 5.1 mmol/L or greater.',
+    34: 'The clinical note codes a joint infection whose causative agent is a bacterium '
+        'other than a Streptococcus species.',
+    35: 'The clinical note codes an infection.',
+    36: 'The patient is prescribed an oral product containing iron.',
+    37: 'The patient is prescribed a product containing a mineral providing a chemical '
+        'element, other than sodium, potassium or chloride.',
 }
 
 
@@ -399,7 +777,7 @@ def compute_metrics(df, questions_dict=None):
 
     Args:
         df: DataFrame with Q1-Qn boolean flag columns
-        questions_dict: Optional dict of {question_num: question_text}. If None, uses global QUESTIONS.
+        questions_dict: Optional dict of {question_num: criterion_text}. If None, uses global QUESTIONS.
     """
     if questions_dict is None:
         questions_dict = QUESTIONS
@@ -436,12 +814,18 @@ def main():
         "--mode",
         choices=["exploratory", "production"],
         default="exploratory",
-        help="Pipeline mode: exploratory (all Q1-Q35) or production (select subset)",
+        help="Pipeline mode: exploratory (all Q1-Q37) or production (select subset)",
     )
     parser.add_argument(
         "--tx-server",
         default=DEFAULT_TX_SERVER,
         help=f"FHIR terminology server base URL (default: {DEFAULT_TX_SERVER})",
+    )
+    parser.add_argument(
+        "--questions",
+        default=None,
+        help="Comma-separated question numbers for production mode (e.g. '1,4,5,17,22'). "
+             "Skips the interactive prompt. Ignored in exploratory mode.",
     )
     args = parser.parse_args()
 
@@ -455,39 +839,16 @@ def main():
     encounter_dates = pd.to_datetime(df["EncounterDate"]).dt.date
     df["_edition"] = encounter_dates.map(edition_for_date)
 
-    pregnancy_ecl = "<<77386006 OR <<118185001"
-    bacterial_joint_ecl = "(<<363162000:*=(<<409822003 MINUS <<58800005))"
-    # Infection ECL: Captures infection disorders including:
-    # - <<40733004 (Infection) - root concept
-    # - Conditions with causative organism (<<441862004)
-    # - Conditions with specific bacterial domains (<<409822003 domain, etc.)
-    # - Infectious processes with pyogenic/purulent/suppurative terms
-    # Excludes non-pyogenic conditions, specific non-infection codes, and related exclusions
-    infection_ecl = "(\n  <<40733004\n  OR (<404684003:(*=<<441862004))\n  OR (<404684003:*=(<<409822003 OR <<49872002 OR <<84073006 OR <<441649000))\n  OR (<404684003:42752001=(<404684003:(*=<<441862004)))\n  OR (<404684003 {{term = (\"Pyogenic\" \"Purulent\" \"Suppurative\") }})\n)\n MINUS ( ((<404684003 {{term = (\"non-pyogenic\" \"non-purulent\" \"non-Suppurative\")}}) OR <<200722003 OR <<1149322001 OR <<66091009 OR <<1172608001 OR <<399981008 OR <<235076008) )"
-
-    # Expand ECLs once per edition (cached by conditions.snomed.expand_ecl)
-    unique_editions = sorted(df["_edition"].unique())
-    edition_pregnancy_codes = {}
-    edition_joint_codes = {}
-    edition_infection_codes = {}
-    for edition in unique_editions:
+    # Expand every ECL once per edition (cached by conditions.snomed.expand_ecl)
+    edition_code_sets = {}
+    for edition in sorted(df["_edition"].unique()):
         print(f"  Expanding ECLs for edition {edition}...")
-        edition_pregnancy_codes[edition] = ecl_code_set(pregnancy_ecl, args.tx_server, edition=edition)
-        edition_joint_codes[edition] = ecl_code_set(bacterial_joint_ecl, args.tx_server, edition=edition)
-        edition_infection_codes[edition] = ecl_code_set(infection_ecl, args.tx_server, edition=edition)
-        print(f"    {len(edition_pregnancy_codes[edition])} pregnancy codes, "
-              f"{len(edition_joint_codes[edition])} bacterial joint codes, "
-              f"{len(edition_infection_codes[edition])} infection codes.")
+        edition_code_sets[edition] = build_code_sets(edition, args.tx_server)
 
-    print("Computing Q1-Q35 flags per edition...")
+    print("Computing Q1-Q37 flags per edition...")
     flag_parts = []
     for edition, group in df.groupby("_edition"):
-        part_flags = compute_flags(
-            group,
-            pregnancy_codes=edition_pregnancy_codes[edition],
-            bacterial_joint_codes=edition_joint_codes[edition],
-            infection_codes=edition_infection_codes[edition],
-        )
+        part_flags = compute_flags(group, edition_code_sets[edition])
         flag_parts.append(pd.DataFrame(part_flags, index=group.index))
 
     flag_df = pd.concat(flag_parts).sort_index()
@@ -496,17 +857,21 @@ def main():
 
     # Handle production mode: select subset of questions and renumber
     if args.mode == "production":
-        selected_questions = select_questions_interactive(QUESTIONS)
+        if args.questions:
+            selected_questions = parse_question_selection(args.questions, QUESTIONS)
+            print(f"\nSelected {len(selected_questions)} questions: {selected_questions}")
+        else:
+            selected_questions = select_questions_interactive(QUESTIONS)
         q_filtered_df, renumber_map = filter_and_renumber_questions(df, selected_questions)
         # Create filtered QUESTIONS dict with renumbered keys
         questions_to_use = {i: QUESTIONS[selected_questions[i-1]] for i in range(1, len(selected_questions) + 1)}
         q_cols = [f"Q{i}" for i in range(1, len(selected_questions) + 1)]
         # Replace Q columns in df with filtered/renumbered versions
-        df = df.drop(columns=[f"Q{i}" for i in range(1, 36)])
+        df = df.drop(columns=[f"Q{i}" for i in range(1, 38)])
         df = pd.concat([df, q_filtered_df], axis=1)
     else:
         questions_to_use = QUESTIONS
-        q_cols = [f"Q{i}" for i in range(1, 36)]
+        q_cols = [f"Q{i}" for i in range(1, 38)]
 
     print("Computing metrics...")
     output = compute_metrics(df, questions_dict=questions_to_use)
@@ -521,9 +886,13 @@ def main():
     drop_cols = ["Year", "BMI", "CholHDL_Ratio"]
 
     # Write TrainingDataSet.csv (Episode Number + original data columns, no Q flags)
-    all_q_cols = [f"Q{i}" for i in range(1, 36)]
+    all_q_cols = [f"Q{i}" for i in range(1, 38)]
     training_exclude = all_q_cols + drop_cols + [
         "Age", "LifestyleFactors", "Condition",
+        # BirthDate contradicted DateOfBirth (see formatters/csv_writer.py).
+        # Dropped here so existing raw_data.csv files stop publishing it;
+        # regenerated data will not contain the column at all.
+        "BirthDate",
         "Medicine_1_Category", "Medicine_2_Category", "Medicine_3_Category",
     ]
     training_cols = [c for c in df.columns if c not in training_exclude]

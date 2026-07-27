@@ -28,7 +28,11 @@ def contexts_to_dataframe(
             "Weight_kg": ctx.weight_kg,
             "GivenName": ctx.given_name,
             "FamilyName": ctx.family_name,
-            "BirthDate": ctx.birth_date,
+            # ctx.birth_date is deliberately not emitted. identity.generator
+            # computes it against date.today(), while data-golf/generate_data.py
+            # derives its own DateOfBirth from the encounter date, so the two
+            # disagreed by up to six years in the same row. The FHIR writer still
+            # uses ctx.birth_date for Patient.birthDate.
             "StreetAddress": ctx.street_address,
             "City": ctx.city,
             "Postcode": ctx.postcode,

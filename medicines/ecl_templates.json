@@ -22,6 +22,10 @@
   "product": {
     "template": "<<373873005:<<127489000=({ingredients}),411116001=*",
     "description": "SNOMED CT international medicinal product hierarchy"
+  },
+  "product-oral": {
+    "template": "<<373873005:<<127489000=({ingredients}),411116001=<<385268001",
+    "description": "SNOMED CT medicinal products constrained to an oral dose form. Matches AMT trade products too, since AMT TPUUs are descendants of 373873005 with a manufactured dose form."
   }
 }
 

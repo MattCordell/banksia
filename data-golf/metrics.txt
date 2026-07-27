@@ -2,67 +2,69 @@
 Analytics Questions
 ============================================================
 
-Q1. How many females in the dataset: 1454
-Q2. How many adults (Age >= 18): 2297
-Q3. How many obese patients (BMI >= 30) have Chol:HDL > 5: 510
-Q4. How many "Healthy" condition patients: 1139
-Q5. How many patients have "Hyperthyroidism": 7
-Q6. How many patients had "Hyperthyroidism" in 2021: 1
-Q7. How many patients had "Osteoarthritis" in 2023: 32
-Q8. How many patients had "Osteoarthritis" in 2024: 19
-Q9. How many patients had "Osteoarthritis" in 2025: 30
-Q10. How many patients had "Osteoarthritis" in 2026: 28
-Q11. How many patients had "Rheumatoid Arthritis" in 2021: 4
-Q12. How many patients had "Rheumatoid Arthritis" in 2022: 5
-Q13. How many patients had "Rheumatoid Arthritis" in 2023: 4
-Q14. How many patients have a Thiamine medication: 44
-Q15. How many patients have an ACE Inhibitors medication: 135
-Q16. How many patients have a Digoxin medication: 1
-Q17. How many patients have a Statins medication: 361
-Q18. How many patients are on both "ACE Inhibitors" AND "Calcium Channel Blockers": 38
-Q19. How many Fungal Infection patients with foot-related SNOMED Display: 1
-Q20. How many Patients on >1 product containing paracetamol: 1
-Q21. How many Patients with "bilateral" in SNOMED_Display: 34
-Q22. How many Metformin patients with eGFR<30: 8
-Q23. How many Patients with hand/wrist terms in SNOMED_Display: 62
-Q24. How many Females 15-49 prescribed ACE Inhibitors or ARBs: 34
-Q25. How many Females 15-49 prescribed Methotrexate: 2
-Q26. How many Females 50+ prescribed Methotrexate: 11
-Q27. How many pregnant patients prescribed Teratogenic Medicines (ACE inhibitors, ARBs, Methotrexate, Tetracycline, Carbimazole): 8
-Q28. How many female RA patients aged 15-49: 8
-Q29. How many OA/RA on NSAIDs with eGFR < 60 (subclinical renal impairment): 8
-Q30. How many Cirrhosis on NSBB: 10
-Q31. How many patients prescribed digoxin + eGFR<30 + loop diuretic (toxicity risk): 0
-Q32. How many patients prescribed digoxin have hypokalaemia (Potassium <3.5): 0
-Q33. How many pregnant patients have a Glucose 5.1 mmol/L or greater: 11
-Q34. How many patients have a bacterial joint infection not caused by Streptococcus species: 20
+Q1. The patient's recorded sex is female.: 293
+Q2. The patient is aged 18 years or over at the encounter date.: 447
+Q3. The patient has a BMI of 30 or more (from recorded height and weight) and a total cholesterol to HDL ratio greater than 5.: 98
+Q4. The clinical note records the patient as healthy or free of current problems.: 222
+Q5. The clinical note codes a hyperthyroid disorder, or the thyroid panel shows biochemical thyrotoxicosis (TSH below 0.4 mIU/L with free T4 above 20 pmol/L).: 1
+Q6. [Uses withheld Condition column] The patient has hyperthyroidism and the encounter occurred in 2021.: 0
+Q7. [Uses withheld Condition column] The patient has osteoarthritis and the encounter occurred in 2023.: 6
+Q8. The clinical note codes an osteoarthritis (excluding gout and chondrocalcinosis) and the encounter occurred in 2024.: 4
+Q9. [Uses withheld Condition column] The patient has osteoarthritis and the encounter occurred in 2025.: 8
+Q10. [Uses withheld Condition column] The patient has osteoarthritis and the encounter occurred in 2026.: 3
+Q11. [Uses withheld Condition column] The patient has rheumatoid arthritis and the encounter occurred in 2021.: 1
+Q12. [Uses withheld Condition column] The patient has rheumatoid arthritis and the encounter occurred in 2022.: 2
+Q13. [Uses withheld Condition column] The patient has rheumatoid arthritis and the encounter occurred in 2023.: 2
+Q14. [Uses withheld Medicine Category column] The patient is prescribed thiamine.: 7
+Q15. The patient is prescribed a product containing an ACE inhibitor, including fixed-dose combination products.: 43
+Q16. The patient is prescribed a product containing a cardiac (digitalis) glycoside.: 1
+Q17. [Uses withheld Medicine Category column] The patient is prescribed a statin.: 79
+Q18. [Uses withheld Medicine Category column] The patient is prescribed both an ACE inhibitor and a calcium channel blocker.: 6
+Q19. The clinical note codes a fungal infection with a foot finding site, or tinea pedis.: 0
+Q20. The patient is prescribed two or more distinct products containing paracetamol.: 0
+Q21. The clinical note codes a bilateral condition.: 7
+Q22. [Uses withheld Medicine Category column] The patient is prescribed metformin and has an eGFR below 30.: 2
+Q23. The clinical note display contains a hand or wrist term.: 11
+Q24. [Uses withheld Medicine Category column] The patient is female, aged 15 to 49, and prescribed an ACE inhibitor or an angiotensin receptor blocker.: 12
+Q25. The patient is female, aged 15 to 49, and prescribed a product containing methotrexate.: 2
+Q26. [Uses withheld Medicine Category column] The patient is female, aged 50 or over, and prescribed methotrexate.: 1
+Q27. The clinical note codes a current pregnancy (postnatal states excluded) and the patient is prescribed a teratogenic medicine: an ACE inhibitor, angiotensin receptor blocker, methotrexate, tetracycline, carbimazole, statin, warfarin, valproate, or isotretinoin.: 4
+Q28. [Uses withheld Condition column] The patient is female, aged 15 to 49, with rheumatoid arthritis.: 3
+Q29. The clinical note codes osteoarthritis or rheumatoid arthritis, the patient is prescribed an oral NSAID (aspirin and salicylates included), and the eGFR is below 60.: 5
+Q30. [Uses withheld Condition and Medicine Category columns] The patient has cirrhosis and is prescribed a non-selective beta-blocker.: 1
+Q31. The patient is prescribed digoxin, has an eGFR below 30, and is prescribed a loop diuretic.: 0
+Q32. [Uses withheld Medicine Category column] The patient is prescribed digoxin and has a potassium below 3.5 mmol/L.: 0
+Q33. The clinical note codes a current pregnancy (postnatal states excluded) and the fasting glucose is 5.1 mmol/L or greater.: 2
+Q34. The clinical note codes a joint infection whose causative agent is a bacterium other than a Streptococcus species.: 3
+Q35. The clinical note codes an infection.: 43
+Q36. The patient is prescribed an oral product containing iron.: 27
+Q37. The patient is prescribed a product containing a mineral providing a chemical element, other than sodium, potassium or chloride.: 28
 
 ============================================================
 DATA SUMMARY
 ============================================================
 
-Total rows: 2893
+Total rows: 567
 
 Condition counts:
-    Alcoholic Liver Disease: 41
-    Bacterial Infection: 67
-    COPD: 35
-    Chronic Kidney Disease (Stage 3-4): 55
-    Chronic Liver Disease / Cirrhosis: 19
-    Essential Hypertension: 246
-    Fungal Infection: 24
-    Healthy: 1139
-    Heart Failure (Chronic): 12
-    Hyperlipidaemia: 157
-    Hyperthyroidism: 7
-    Hypothyroidism: 57
-    Inflammatory Conditions: 144
-    Iron Deficiency Anaemia: 149
-    Ischaemic Heart Disease: 59
-    Nonalcoholic Fatty Liver Disease (NAFLD): 236
-    Osteoarthritis: 169
-    Parasitic Infection: 7
-    Pregnancy: 16
-    Rheumatoid Arthritis: 31
-    Type 2 Diabetes Mellitus: 109
-    Viral Infection: 114
+    Alcoholic Liver Disease: 8
+    Bacterial Infection: 10
+    COPD: 10
+    Chronic Kidney Disease (Stage 3-4): 13
+    Chronic Liver Disease / Cirrhosis: 1
+    Essential Hypertension: 48
+    Fungal Infection: 7
+    Healthy: 222
+    Heart Failure (Chronic): 4
+    Hyperlipidaemia: 34
+    Hyperthyroidism: 1
+    Hypothyroidism: 9
+    Inflammatory Conditions: 23
+    Iron Deficiency Anaemia: 17
+    Ischaemic Heart Disease: 15
+    Nonalcoholic Fatty Liver Disease (NAFLD): 52
+    Osteoarthritis: 35
+    Pregnancy: 6
+    Rheumatoid Arthritis: 10
+    Type 2 Diabetes Mellitus: 20
+    Viral Infection: 22
