@@ -22,6 +22,18 @@ ECLs are expanded once per SNOMED CT-AU edition and applied to the rows whose
 encounter falls in that edition's period, so a flag reflects the terminology
 active at the time of the encounter.
 
+Because of that, a code can be valid when recorded and inactive by the latest
+edition. ``inactive_concept_report`` quantifies the drift, counting inactive
+concepts in each of the four SNOMED-coded columns against ``REFERENCE_EDITION``.
+It uses an explicit-concept ValueSet/$expand rather than an ECL, since inactive
+concepts have no relationships and no ECL can reach them.
+
+solution.csv's ``Usage`` column is assigned by ``assign_usage``, which stratifies
+the public/private split on all 18 flags rather than splitting rows blindly. The
+scoring metric is macro-F1 weighting every question equally, so the rare
+questions carry the same 5.6 points as Q1's tens of thousands of positives and
+must not be left to land lopsidedly. See ``MIN_POSITIVES_PER_SPLIT``.
+
 This question set was selected and tuned from an earlier 37-question set. The
 originals are in the git history; the mapping is:
 
@@ -44,6 +56,7 @@ from datetime import date
 from typing import Callable, Dict, Optional, Set
 
 import pandas as pd
+import requests
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
@@ -54,10 +67,36 @@ DEFAULT_TX_SERVER = "https://r4.ontoserver.csiro.au/fhir"
 
 SNOMED_CODE_COLS = ["SNOMED_Code", "Medicine_1_Code", "Medicine_2_Code", "Medicine_3_Code"]
 
+# What each SNOMED-coded column is called in TrainingDataSet.csv, so the metrics
+# report names the columns competitors actually see.
+PUBLISHED_CODE_COLS = {
+    "SNOMED_Code": "Clinical_Note_Code",
+    "Medicine_1_Code": "Medicine_1_Code",
+    "Medicine_2_Code": "Medicine_2_Code",
+    "Medicine_3_Code": "Medicine_3_Code",
+}
+
+# Codes per ValueSet/$expand call when checking concept activity. 1000 keeps the
+# request comfortably inside Ontoserver's limits at ~20 calls for a 250k dataset.
+CONCEPT_STATUS_BATCH = 1000
+
 MED_DISPLAYS = ["Medicine_1_Display", "Medicine_2_Display", "Medicine_3_Display"]
 MED_CODES = ["Medicine_1_Code", "Medicine_2_Code", "Medicine_3_Code"]
 
 QUESTION_COUNT = 18
+
+# Kaggle public/private leaderboard split. Rows are stratified on every question
+# flag independently, so this ratio holds per question rather than just overall.
+PUBLIC_FRACTION = 0.5
+SPLIT_SEED = 20260730
+
+# Warn when a question lands fewer positives than this in either split. Scoring
+# is macro-F1 over all 18 questions equally, so each is worth 100/18 = 5.6 points
+# regardless of how many positives it has. With k positives in a split, missing
+# one gives F1 = 2(k-1)/(2k-1), so a single row is worth (1 - that)/18 of the
+# final score: 0.06 points at k=50, 0.43 at k=7, and at k=1 the question becomes
+# an all-or-nothing 5.6-point coin flip.
+MIN_POSITIVES_PER_SPLIT = 5
 
 # Must stay in sync with generate_data.py PERIODS.
 # Each period covers the active SNOMED CT-AU edition from the day after publication.
@@ -69,6 +108,12 @@ PERIODS = [
     {"start": date(2025, 2, 1), "end": date(2026, 1, 31), "edition": "20250131"},
     {"start": date(2026, 2, 1), "end": date(2027, 1, 31), "edition": "20260131"},
 ]
+
+# Edition the inactive-concept report measures against: the latest edition in
+# PERIODS (January 2026). Flags are computed per-encounter against the edition
+# current at the time, so a code can be perfectly valid when it was recorded and
+# still be inactive today -- this report quantifies that drift.
+REFERENCE_EDITION = PERIODS[-1]["edition"]
 
 
 def edition_for_date(d: date) -> str:
@@ -91,6 +136,134 @@ def ecl_code_set(ecl: str, tx_server: str, edition: str = None) -> set:
     from conditions.snomed import expand_ecl
     concepts = expand_ecl(ecl, tx_server=tx_server, edition=edition)
     return {c["code"] for c in concepts}
+
+
+def concept_status(codes, tx_server: str, edition: str) -> Dict[str, str]:
+    """Classify SNOMED codes as active/inactive/absent in one SNOMED CT-AU edition.
+
+    Batches the codes through ValueSet/$expand as an explicit ``compose.include.
+    concept`` list with ``activeOnly=false``, reading the ``inactive`` flag off
+    each returned concept.
+
+    An ECL cannot answer this. Inactive concepts carry no relationships, so
+    ``<<X`` never reaches them and an ECL expansion looks fully active no matter
+    what activeOnly is set to. Listing the codes explicitly sidesteps the
+    transitive closure and asks about each concept directly.
+
+    Returns {code: "active" | "inactive" | "absent"}, where absent means the
+    server did not echo the code back at all -- not in this edition in any state.
+    """
+    from conditions.snomed import AU_MODULE
+
+    version = f"{AU_MODULE}/version/{edition}"
+    ordered = sorted(codes)
+    status: Dict[str, str] = {}
+
+    for start in range(0, len(ordered), CONCEPT_STATUS_BATCH):
+        batch = ordered[start:start + CONCEPT_STATUS_BATCH]
+        body = {
+            "resourceType": "Parameters",
+            "parameter": [
+                {"name": "valueSet", "resource": {
+                    "resourceType": "ValueSet",
+                    "compose": {"include": [{
+                        "system": "http://snomed.info/sct",
+                        "version": version,
+                        "concept": [{"code": code} for code in batch],
+                    }]},
+                }},
+                {"name": "activeOnly", "valueBoolean": False},
+                {"name": "count", "valueInteger": CONCEPT_STATUS_BATCH * 5},
+                {"name": "includeDesignations", "valueBoolean": False},
+            ],
+        }
+        resp = requests.post(
+            f"{tx_server}/ValueSet/$expand",
+            json=body,
+            headers={
+                "Accept": "application/fhir+json",
+                "Content-Type": "application/fhir+json",
+            },
+            timeout=180,
+        )
+        resp.raise_for_status()
+
+        returned = set()
+        for entry in resp.json().get("expansion", {}).get("contains", []):
+            code = entry.get("code")
+            if code is None:
+                continue
+            status[code] = "inactive" if entry.get("inactive") else "active"
+            returned.add(code)
+        for code in batch:
+            if code not in returned:
+                status[code] = "absent"
+
+    return status
+
+
+def inactive_concept_report(df, tx_server: str, edition: str) -> str:
+    """Per-column inactive concept counts for the four SNOMED-coded columns.
+
+    Counts both distinct concepts and affected rows: a single retired concept
+    reused across thousands of rows and a thousand one-off retirements are very
+    different problems, and the distinct count alone cannot tell them apart.
+
+    Propagates requests.RequestException so the caller can degrade to a note
+    instead of losing a run that has already done all the ECL expansion work.
+    """
+    populated = {}
+    for col in SNOMED_CODE_COLS:
+        series = df[col].dropna().astype(str).str.strip()
+        populated[col] = series[series != ""]
+
+    codes = set()
+    for series in populated.values():
+        codes |= set(series.unique())
+
+    status = concept_status(codes, tx_server, edition)
+    inactive_codes = {c for c, s in status.items() if s == "inactive"}
+    absent_codes = {c for c, s in status.items() if s == "absent"}
+
+    lines = [
+        f"Concept activity against SNOMED CT-AU {edition}. Flags are computed per",
+        "encounter against the edition current at the time, so an inactive code here",
+        "was still valid when it was recorded.",
+        "",
+        "\"concepts\" counts distinct codes in the column, \"rows\" the rows where it is",
+        "populated. Column counts overlap -- the medicine slots draw on one another's",
+        "products -- so they sum to more than the deduplicated total below.",
+        "",
+        f"{'Field':<20}{'concepts':>9}{'inactive':>9}{'pct':>7}"
+        f"{'rows':>10}{'inactive':>9}{'pct':>7}",
+    ]
+
+    for col in SNOMED_CODE_COLS:
+        series = populated[col]
+        distinct = series.nunique()
+        col_inactive = {c for c in series.unique() if c in inactive_codes}
+        rows = len(series)
+        rows_inactive = int(series.isin(col_inactive).sum())
+        concept_pct = f"{len(col_inactive) / distinct * 100:.1f}%" if distinct else "n/a"
+        row_pct = f"{rows_inactive / rows * 100:.1f}%" if rows else "n/a"
+        lines.append(
+            f"{PUBLISHED_CODE_COLS[col]:<20}{distinct:>9}{len(col_inactive):>9}"
+            f"{concept_pct:>7}{rows:>10}{rows_inactive:>9}{row_pct:>7}"
+        )
+
+    total_pct = f"{len(inactive_codes) / len(codes) * 100:.1f}%" if codes else "n/a"
+    lines.append("")
+    lines.append(
+        f"Across all four fields: {len(codes)} distinct concepts, "
+        f"{len(inactive_codes)} inactive ({total_pct})."
+    )
+    if absent_codes:
+        lines.append(
+            f"NOTE: {len(absent_codes)} code(s) are not in edition {edition} at all, "
+            "in any state."
+        )
+
+    return "\n".join(lines)
 
 
 def resolve_ecl_template(template_key: str) -> str:
@@ -159,35 +332,29 @@ CONDITION_ECLS = {
     # descendant of |Healthy| but carries the same meaning here.
     "healthy": "(<<102499006) OR (<<160245001)",
     # Q4. |Hyperthyroidism|.
-    "hyperthyroidism": "<<34486009",
+    "hyperthyroidism": "( (<<34486009 OR <<237498007 OR <<722941003 OR <<73064001 OR <<1163454006 OR <<13795004 OR <<22350004 OR <<237505003 OR <<29028009 OR <<237506002 ) ) MINUS ( (<<237547004 OR <<237549001 OR <<762294003 OR <<137421000119106 ) )",
     # Q5, Q13. SNOMED classifies |Gout| and |Chondrocalcinosis| beneath
     # |Osteoarthritis|; both are excluded so the criterion means degenerative OA.
-    "osteoarthritis": "(<<396275006) MINUS ((<<90560007) OR (<<239838005))",
+    "osteoarthritis": " (<<396275006 MINUS (<<90560007 OR <<239838005 OR <<785808002))",
     # Q13.
     "rheumatoid_arthritis": "<<69896004",
     # Q8. Mycosis with a foot finding site, plus |Tinea pedis| explicitly (its
     # finding site is a skin structure not subsumed by |Foot structure|).
     # Expands to only ~10 concepts, so it returns 0 on small cohorts.
-    "fungal_foot": "(<<3218000) AND ((<404684003:363698007=(<<56459004)) OR (<<6020002))",
+    "fungal_foot": " (<3218000 AND <299990002 )",
     # Q10. Laterality is not modelled on these disorders, so an attribute-based
     # ECL expands to nothing; a term filter is the terminology-native equivalent
     # of scanning the display string, and matches on synonyms too.
-    "bilateral": '<<404684003 {{ term = "bilateral" }}',
+    "bilateral": " ((<<404684003:363698007 = <<31156008 ,363698007=<<85421007) OR (<<404684003:<47429007=(<<404684003:363698007 = <<31156008 ,363698007=<<85421007)))",
     # Q12, Q15. |Pregnant| minus postnatal/puerperal states, so postpartum
     # patients do not count as currently pregnant. |Pregnancy| (77386006) is
     # deliberately omitted: it contributes no rows the |Pregnant| hierarchy does
     # not already cover.
-    "pregnancy": (
-        "(<<118185001) MINUS ("
-        '(<<118185001 {{term = "postpartum"}}) OR '
-        '(<<118185001 {{term = "postnatal"}}) OR '
-        '(<<118185001 {{term = "puerper"}}))'
-    ),
+    "pregnancy": '( (<248982007 ) ) MINUS ( (<<118213005 OR <<304598004 OR <<366343003 OR <<60001007 OR <<363681007 OR <<118215003 OR <<364826005 OR <<237036002 OR <<127362006 OR <<275306006 OR <<200138003 OR <<152231000119106 OR <<404684003 {{term = (wild:"postpartum*" wild:"*postnatal*" wild:"*puerper*")}} OR <<1264158007 OR <<1264159004 OR <<1204036002 OR <<371374003 OR <<44216000 OR <<609516006 OR <<126920004 ) )',
     # Q16. |Causative agent| rather than a wildcard attribute, so the criterion
     # means "caused by" instead of "mentions a bacterium in any role".
-    "bacterial_joint_non_strep": "(<<363162000:246075003=((<<409822003) MINUS (<<58800005)))",
+    "bacterial_joint_non_strep": "( (<404684003:{246075003=<<409822003,363698007=<<39352004}) ) MINUS ( ((<<278544002) OR (<404684003:{246075003=<<58800005,363698007=<<39352004})) )",
 }
-
 
 @dataclass(frozen=True)
 class MedicineEcl:
@@ -206,33 +373,34 @@ class MedicineEcl:
 
 
 MEDICINE_ECLS = {
-    # Q6, Q12. Any product containing an ACE inhibitor, combinations included.
-    "acei": MedicineEcl("<<372733002", r"pril"),
+    # Q6. Any product containing an ACE inhibitor, combinations included.
+    "acei": MedicineEcl("<<372733002", r"captopril|enalapril|lisinopril|perindopril|ramipril|quinapril|fosinopril|benazepril|trandolapril|cilazapril|moexipril|imidapril|spirapril|temocapril|delapril|zofenopril"),
     # Q12. |Angiotensin II receptor antagonist|.
-    "arb": MedicineEcl("<<372913009", r"sartan"),
+    "arb": MedicineEcl("<<372913009", r"losartan|valsartan|irbesartan|candesartan|telmisartan|olmesartan|eprosartan|azilsartan|fimasartan"),
     # Q7. |Digitalis glycoside| covers digoxin, digitoxin, medigoxin etc.
-    "cardiac_glycoside": MedicineEcl("<<406759007", r"digoxin|digitoxin|lanoxin|sigmaxin"),
-    # Q14. Digoxin specifically, as the question names it.
-    "digoxin": MedicineEcl("<<387461009", r"digoxin|lanoxin|sigmaxin"),
-    # Q9.
-    "paracetamol": MedicineEcl("<<387517004", r"paracetamol|acetaminophen|panadol|dymadon"),
-    # Q11, Q12.
-    "methotrexate": MedicineEcl("<<387381009", r"methotrexate"),
-    # Q12 teratogens.
-    "tetracycline": MedicineEcl("<<372809001", r"cycline"),
-    "carbimazole": MedicineEcl("<<395831005", r"carbimazole|neo-mercazole"),
-    "statin": MedicineEcl("<<372912004", r"statin"),
-    "warfarin": MedicineEcl("<<372756006", r"warfarin|coumadin|marevan"),
-    "valproate": MedicineEcl("<<264325000", r"valpro|epilim"),
-    "isotretinoin": MedicineEcl("<<387208003", r"isotretinoin|roaccutane"),
+    "cardiac_glycoside": MedicineEcl("<<(<373247007 AND <372707005) OR (<105590001 :738774007 =<<(<373247007 AND <372707005))", r"digoxin|digitoxin|ouabain|lanatoside|proscillaridin|peruvoside|bufalin"),
+    # Q14. Digoxin specifically, as the question names it. 
+    "digoxin": MedicineEcl("<<387461009 OR (<105590001 :738774007 =<<387461009)", r"digoxin"),
+    # Q9. products containing paracetamol.
+    "paracetamol": MedicineEcl("<<387517004 OR (<105590001 :738774007 =<<387517004)", r"paracetamol|acetaminophen"),
+    # Q11 methotrexate
+    "methotrexate": MedicineEcl("<<387381009 OR (<105590001 :738774007 =<<387381009)", r"methotrexate"),
+    # Q12. Any product containing a substance with a teratogenic disposition or
+    # mechanism of action (thalidomide, retinoids, antiepileptics, ACEI/ARB,
+    # antimetabolites, tetracyclines and others), plus salts/modifications of the
+    # same substances.
+    "teratogen": MedicineEcl(
+        "(<<(<<395831005 OR <<734816000 OR <<78702007 OR <<387208003 OR <<386938006 OR <<264325000 OR <<387220006 OR <<387222003 OR <<372756006 OR <<387381009 OR <<6790004 OR <<767300005 OR <<387242007 OR <<396026002 OR <<372733002 OR <<372913009 OR <<764438001 OR <<387223008 OR <<126124009 OR <<386844006 OR <<387203007 OR <<409330005 OR <<386981009 OR <<387188005 OR <<387420009 OR <<421471009 OR <<387080000) OR (<105590001 :738774007 =<<(<<395831005 OR <<734816000 OR <<78702007 OR <<387208003 OR <<386938006 OR <<264325000 OR <<387220006 OR <<387222003 OR <<372756006 OR <<387381009 OR <<6790004 OR <<767300005 OR <<387242007 OR <<396026002 OR <<372733002 OR <<372913009 OR <<764438001 OR <<387223008 OR <<126124009 OR <<386844006 OR <<387203007 OR <<409330005 OR <<386981009 OR <<387188005 OR <<387420009 OR <<421471009 OR <<387080000))) MINUS 372478003",
+        r"Carbimazole|thalidomide|isotretinoin|acitretin|valproate|phenytoin|carbamazepine|warfarin|methotrexate|aminopterin|lithium|misoprostol|diethylstilbestrol|enalapril|captopril|lisinopril|losartan|valsartan|doxycycline|tetracycline|streptomycin|danazol|topiramate|propylthiouracil|carbimazole|methimazole|mycophenolate|leflunomide|ribavirin|cyclophosphamide|lenalidomide|pomalidomide",
+    ),
     # Q13. Oral NSAIDs, aspirin and salicylates included.
     "nsaid_oral": MedicineEcl(
         "<<372665008",
-        r"ibuprofen|naproxen|diclofenac|celecoxib|meloxicam|indometh|ketoprofen|piroxicam|aspirin",
+        r"aspirin|diflunisal|salsalate|ibuprofen|naproxen|ketoprofen|fenoprofen|flurbiprofen|tiaprofenic|dexibuprofen|dexketoprofen|diclofenac|indomethacin|sulindac|etodolac|tolmetin|ketorolac|aceclofenac|nabumetone|mefenamic acid|meclofenamate|piroxicam|meloxicam|tenoxicam|lornoxicam|celecoxib|etoricoxib|parecoxib|rofecoxib|valdecoxib|lumiracoxib|phenylbutazone|metamizole|nimesulide",
         oral_only=True,
     ),
     # Q14.
-    "loop_diuretic": MedicineEcl("<<372691009", r"frusemide|furosemide|bumetanide|ethacrynic|lasix"),
+    "loop_diuretic": MedicineEcl("<<372691009", r"frusemide|furosemide|bumetanide|torsemide|ethacrynic|piretanide|azosemide|lasix"),
     # Q17. |Iron and/or iron compound| under an oral-only product template.
     # An earlier version navigated ingredients out of |Iron-containing product in
     # oral dose form| ("(<13790009.<<762951001) AND <<767270007"); that resolved
@@ -242,21 +410,8 @@ MEDICINE_ECLS = {
     "oral_iron": MedicineEcl("<<767270007", oral_only=True),
     # Q18. |Mineral| minus sodium and potassium (both descendants) and chloride
     # (not a descendant, excluded defensively).
-    "mineral": MedicineEcl("<<87918000 MINUS (<<39972003 OR <<88480006 OR <<50213009)"),
+    "mineral": MedicineEcl("(5540006 OR 387019008 OR 387307005 OR 52209008 OR 32445001 OR 387292008 OR 22362000 OR 12930006 OR 387217003 OR 395935002 OR 44044007 OR 418016005 OR 50213009 OR 725782004 OR 111070004 OR 54808007 OR 255839000 OR 66925006 OR 31034011000036102 OR 70168001 OR 31051011000036101 OR 31054011000036103 OR 396055005 OR 763035003 OR 27594003 OR 1373854004 OR 1382771000168104 OR 387289009 OR 387147005 OR 419846004 OR 387402000 OR 372639009 OR 75905011000036107 OR 256579008 OR 44588005 OR 3829006 OR 32954005 OR 708805001 OR 72717003 OR 417987009 OR 421363009 OR 387401007 OR 45733002 OR 387052002 OR 494851000221102 OR 425212004 OR 66389008 OR 31517011000036103 OR 31518011000036102 OR 31731008 OR 735077006 OR 387202002 OR 31524011000036101 OR 87869004 OR 31530011000036109 OR 71128006 OR 30820000 OR 88480006 OR 8631001 OR 387450001 OR 89351005 OR 494961000221105 OR 22038003 OR 39972003 OR 387390002 OR 6910009 OR 62754006 OR 395880000 OR 86739005 OR 395952003 OR 708658008 OR 421881000 OR 42841002 OR 387367007) MINUS (<<767403008 OR <<767364003 OR <<767205003)"),
 }
-
-# Q12. Medicines contraindicated or of concern in pregnancy.
-TERATOGENIC_MEDICINES = (
-    "acei",
-    "arb",
-    "methotrexate",
-    "tetracycline",
-    "carbimazole",
-    "statin",
-    "warfarin",
-    "valproate",
-    "isotretinoin",
-)
 
 
 @dataclass
@@ -358,7 +513,7 @@ def q04_hyperthyroidism(df, sets):
     tsh = df["Thyroid Panel - TSH (mIU/L)"]
     free_t4 = df["Thyroid Panel - Free T4 (pmol/L)"]
     biochemical = (tsh < 0.4) & (free_t4 > 20)
-    return has_condition(df, sets, "hyperthyroidism") | biochemical
+    return has_condition(df, sets, "hyperthyroidism") #| biochemical
 
 
 def q05_osteoarthritis_2024(df, sets):
@@ -398,10 +553,7 @@ def q11_female_15_49_methotrexate(df, sets):
 
 def q12_pregnant_teratogenic(df, sets):
     """Currently pregnant (postnatal states excluded) and on a teratogenic medicine."""
-    teratogenic = pd.Series(False, index=df.index)
-    for key in TERATOGENIC_MEDICINES:
-        teratogenic = teratogenic | has_med(df, sets, key)
-    return has_condition(df, sets, "pregnancy") & teratogenic
+    return has_condition(df, sets, "pregnancy") & has_med(df, sets, "teratogen")
 
 
 def q13_oa_ra_nsaid_low_egfr(df, sets):
@@ -461,38 +613,27 @@ QUESTION_FUNCS: Dict[int, Callable] = {
 
 # The criterion each flag encodes: the flag is True when this holds for the row.
 QUESTIONS = {
-    1: "The patient's recorded sex is female.",
-    2: 'The patient has a BMI of 30 or more (from recorded height and weight) and a '
-       'total cholesterol to HDL ratio greater than 5.',
-    3: 'The clinical note records the patient as healthy or free of current problems.',
-    4: 'The clinical note codes a hyperthyroid disorder, or the thyroid panel shows '
-       'biochemical thyrotoxicosis (TSH below 0.4 mIU/L with free T4 above 20 pmol/L).',
-    5: 'The clinical note codes an osteoarthritis (excluding gout and chondrocalcinosis) '
-       'and the encounter occurred in 2024.',
-    6: 'The patient is prescribed a product containing an ACE inhibitor, including '
-       'fixed-dose combination products.',
-    7: 'The patient is prescribed a product containing a cardiac (digitalis) glycoside.',
-    8: 'The clinical note codes a fungal infection with a foot finding site, or tinea pedis.',
-    9: 'The patient is prescribed two or more distinct products containing paracetamol.',
-    10: 'The clinical note codes a bilateral condition.',
-    11: 'The patient is female, aged 15 to 49, and prescribed a product containing '
-        'methotrexate.',
-    12: 'The clinical note codes a current pregnancy (postnatal states excluded) and the '
-        'patient is prescribed a teratogenic medicine: an ACE inhibitor, angiotensin '
-        'receptor blocker, methotrexate, tetracycline, carbimazole, statin, warfarin, '
-        'valproate, or isotretinoin.',
-    13: 'The clinical note codes osteoarthritis or rheumatoid arthritis, the patient is '
-        'prescribed an oral NSAID (aspirin and salicylates included), and the eGFR is '
-        'below 60.',
-    14: 'The patient is prescribed digoxin, has an eGFR below 30, and is prescribed a loop '
-        'diuretic.',
-    15: 'The clinical note codes a current pregnancy (postnatal states excluded) and the '
-        'fasting glucose is 5.1 mmol/L or greater.',
-    16: 'The clinical note codes a joint infection whose causative agent is a bacterium '
-        'other than a Streptococcus species.',
-    17: 'The patient is prescribed an oral product containing iron.',
-    18: 'The patient is prescribed a product containing a mineral providing a chemical '
-        'element, other than sodium, potassium or chloride.',
+    1: 'Patients with female as their recorded sex.',
+    2: 'Patients with a BMI of 30 or more and a total cholesterol to HDL ratio greater '
+       'than 5.',
+    3: 'Patients documented as being healthy or free of current problems.',
+    4: 'Patients with hyperthyroidism according to their clinical note.',
+    5: 'Patients with osteoarthritis in 2024.',
+    6: 'Patients taking an ACE inhibitor.',
+    7: 'Patients taking a product containing a cardiac (digitalis) glycoside.',
+    8: 'Patients with a fungal foot infection.',
+    9: 'Patients taking more than one product that contains paracetamol.',
+    10: 'Patients with a bilateral condition.',
+    11: 'Female patients aged 15 to 49 taking methotrexate.',
+    12: 'Pregnant patients prescribed a teratogenic medicine.',
+    13: 'Patients with osteoarthritis or rheumatoid arthritis taking an oral NSAID, and '
+        'their eGFR is below 60.',
+    14: 'Patients prescribed digoxin and a loop diuretic, who have an eGFR below 30.',
+    15: 'Pregnant patients with a fasting glucose of 5.1 mmol/L or greater.',
+    16: 'Patients with a non-Streptococcal bacterial joint infection.',
+    17: 'Patients taking an oral iron supplement.',
+    18: 'Patients taking mineral supplement excluding the electrolytes sodium, potassium '
+        'or chloride.',
 }
 
 
@@ -505,8 +646,111 @@ def compute_flags(df, sets):
     return flags
 
 
-def compute_metrics(df):
-    """Produce metrics text from the flagged dataframe."""
+def assign_usage(flag_df, q_cols, public_fraction=PUBLIC_FRACTION, seed=SPLIT_SEED):
+    """Split rows into Public/Private, stratified on every question flag.
+
+    Iterative stratification: repeatedly take the question with the fewest
+    unplaced positives and hand each of its rows to whichever split is furthest
+    short of its target for that question.
+
+    Taking the rarest question first is the whole point. The low-prevalence
+    questions are the ones a naive split ruins -- Q14 (digoxin + loop diuretic +
+    eGFR < 30) is a triple conjunction with single-digit positives, and an
+    unstratified split can strand nearly all of them on one side. That is not
+    just noisy: F1 = 2TP/(2TP+FP+FN) is 0 for *every* submission when a split
+    has no true positives to find, so the question silently stops discriminating
+    and caps everyone's macro-F1 at 17/18. Placing the rare questions while all
+    rows are still free avoids this; by the time the common questions are placed
+    there are plenty of rows left to balance them either way.
+
+    Overlapping questions stay balanced because placing a row decrements the
+    counters of every question it is positive for -- Q14's rows are all Q7 rows
+    too, so Q7's remaining target absorbs whatever Q14 already consumed.
+
+    Returns a list of "Public"/"Private" aligned to flag_df's row order.
+    """
+    splits = ("Public", "Private")
+    fractions = {"Public": public_fraction, "Private": 1.0 - public_fraction}
+    n = len(flag_df)
+
+    # Work in Python lists: this is a per-row loop, and numpy scalar indexing is
+    # markedly slower than list indexing at 250k rows.
+    columns = {q: flag_df[q].tolist() for q in q_cols}
+    row_labels = [[q for q in q_cols if columns[q][i]] for i in range(n)]
+
+    unplaced = {q: set() for q in q_cols}
+    for row, labels in enumerate(row_labels):
+        for q in labels:
+            unplaced[q].add(row)
+
+    # How many rows each split still wants, overall and per question.
+    want_rows = {s: fractions[s] * n for s in splits}
+    want_q = {q: {s: fractions[s] * len(unplaced[q]) for s in splits} for q in q_cols}
+
+    usage = [None] * n
+
+    def place(row, split):
+        usage[row] = split
+        want_rows[split] -= 1
+        for q in row_labels[row]:
+            unplaced[q].discard(row)
+            want_q[q][split] -= 1
+
+    # Each pass empties one question. Re-picking the rarest between passes
+    # accounts for the rows the previous pass already consumed.
+    while True:
+        pending = [q for q in q_cols if unplaced[q]]
+        if not pending:
+            break
+        rarest = min(pending, key=lambda k: len(unplaced[k]))
+        # sorted() snapshots the set, which place() mutates as we go.
+        for row in sorted(unplaced[rarest]):
+            split = max(splits, key=lambda s: (want_q[rarest][s], want_rows[s]))
+            place(row, split)
+
+    # Rows positive for no question carry no stratification constraint; they only
+    # even out the overall row counts. Shuffled so the leftovers are not dealt out
+    # in Episode Number order.
+    leftover = [row for row in range(n) if usage[row] is None]
+    random.Random(seed).shuffle(leftover)
+    for row in leftover:
+        place(row, max(splits, key=lambda s: want_rows[s]))
+
+    return usage
+
+
+def split_balance(df, q_cols, usage):
+    """Per-question split counts. Returns (table_text, alerts).
+
+    ``alerts`` lists questions under MIN_POSITIVES_PER_SPLIT in either split --
+    the guard against a regenerated dataset quietly reintroducing a question too
+    rare to score meaningfully.
+    """
+    is_public = pd.Series(usage, index=df.index) == "Public"
+
+    lines = [f"{'Q':<6}{'total':>8}{'public':>8}{'private':>9}{'private %':>11}"]
+    alerts = []
+    for q in q_cols:
+        total = int(df[q].sum())
+        public = int((df[q] & is_public).sum())
+        private = total - public
+        share = f"{private / total * 100:.1f}%" if total else "n/a"
+        lines.append(f"{q:<6}{total:>8}{public:>8}{private:>9}{share:>11}")
+        for name, count in (("public", public), ("private", private)):
+            if count < MIN_POSITIVES_PER_SPLIT:
+                alerts.append(
+                    f"{q} has only {count} positive(s) in {name} of {total} total "
+                    f"(floor is {MIN_POSITIVES_PER_SPLIT})"
+                )
+    return "\n".join(lines), alerts
+
+
+def compute_metrics(df, usage=None, inactive_text=None):
+    """Produce metrics text from the flagged dataframe.
+
+    ``inactive_text`` is built in main() rather than here so this stays free of
+    terminology server calls.
+    """
     lines = []
 
     lines.append("=" * 60)
@@ -528,6 +772,39 @@ def compute_metrics(df):
     lines.append("Condition counts:")
     lines.append(condition_counts(df))
 
+    if usage is not None:
+        q_cols = [f"Q{i}" for i in range(1, QUESTION_COUNT + 1)]
+        table, alerts = split_balance(df, q_cols, usage)
+        public_rows = sum(1 for u in usage if u == "Public")
+
+        lines.append("")
+        lines.append("=" * 60)
+        lines.append("PUBLIC / PRIVATE SPLIT")
+        lines.append("=" * 60)
+        lines.append("")
+        lines.append(
+            f"Stratified per question at {PUBLIC_FRACTION:.0%} public. "
+            f"Rows: {public_rows} public / {len(usage) - public_rows} private."
+        )
+        lines.append("")
+        lines.append(table)
+        if alerts:
+            lines.append("")
+            lines.append(
+                f"WARNING: {len(alerts)} question(s) below the "
+                f"{MIN_POSITIVES_PER_SPLIT}-positive floor:"
+            )
+            for alert in alerts:
+                lines.append(f"    {alert}")
+
+    if inactive_text is not None:
+        lines.append("")
+        lines.append("=" * 60)
+        lines.append("INACTIVE CONCEPTS")
+        lines.append("=" * 60)
+        lines.append("")
+        lines.append(inactive_text)
+
     return "\n".join(lines)
 
 
@@ -538,6 +815,17 @@ def main():
         "--tx-server",
         default=DEFAULT_TX_SERVER,
         help=f"FHIR terminology server base URL (default: {DEFAULT_TX_SERVER})",
+    )
+    parser.add_argument(
+        "--reference-edition",
+        default=REFERENCE_EDITION,
+        help="SNOMED CT-AU edition the inactive-concept report measures against "
+             f"(default: {REFERENCE_EDITION})",
+    )
+    parser.add_argument(
+        "--no-inactive-check",
+        action="store_true",
+        help="Skip the inactive-concept report and its terminology server calls.",
     )
     args = parser.parse_args()
 
@@ -569,8 +857,35 @@ def main():
 
     q_cols = [f"Q{i}" for i in range(1, QUESTION_COUNT + 1)]
 
+    print(f"Assigning stratified {PUBLIC_FRACTION:.0%}/{1 - PUBLIC_FRACTION:.0%} "
+          "public/private split...")
+    usage = assign_usage(df[q_cols], q_cols)
+    alerts = split_balance(df, q_cols, usage)[1]
+    if alerts:
+        print(
+            f"  WARNING: {len(alerts)} question(s) below the "
+            f"{MIN_POSITIVES_PER_SPLIT}-positive floor -- see metrics.txt",
+            file=sys.stderr,
+        )
+
+    inactive_text = None
+    if not args.no_inactive_check:
+        print(f"Checking concept activity against SNOMED CT-AU {args.reference_edition}...")
+        try:
+            inactive_text = inactive_concept_report(
+                df, args.tx_server, args.reference_edition
+            )
+        except requests.RequestException as e:
+            # The expensive ECL work is already done; a failed activity check
+            # should annotate the report, not discard the run.
+            inactive_text = (
+                f"Concept activity against SNOMED CT-AU {args.reference_edition} "
+                f"could not be determined: {e}"
+            )
+            print(f"  WARNING: inactive-concept check failed: {e}", file=sys.stderr)
+
     print("Computing metrics...")
-    output = compute_metrics(df)
+    output = compute_metrics(df, usage, inactive_text)
 
     # Write metrics.txt
     metrics_path = os.path.join(SCRIPT_DIR, "metrics.txt")
@@ -601,7 +916,7 @@ def main():
     # Write solution.csv (Episode Number + Q flag columns only + Usage for Kaggle)
     solution_path = os.path.join(SCRIPT_DIR, "solution.csv")
     solution_df = df[["Episode Number"] + q_cols].copy()
-    solution_df["Usage"] = ["Public" if i % 2 == 0 else "Private" for i in range(len(solution_df))]
+    solution_df["Usage"] = usage
     solution_df.to_csv(solution_path, index=False)
     print(f"Solution written to {solution_path}")
 

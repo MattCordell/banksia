@@ -2,50 +2,97 @@
 Analytics Questions
 ============================================================
 
-Q1. The patient's recorded sex is female.: 293
-Q2. The patient has a BMI of 30 or more (from recorded height and weight) and a total cholesterol to HDL ratio greater than 5.: 98
-Q3. The clinical note records the patient as healthy or free of current problems.: 222
-Q4. The clinical note codes a hyperthyroid disorder, or the thyroid panel shows biochemical thyrotoxicosis (TSH below 0.4 mIU/L with free T4 above 20 pmol/L).: 1
-Q5. The clinical note codes an osteoarthritis (excluding gout and chondrocalcinosis) and the encounter occurred in 2024.: 4
-Q6. The patient is prescribed a product containing an ACE inhibitor, including fixed-dose combination products.: 43
-Q7. The patient is prescribed a product containing a cardiac (digitalis) glycoside.: 1
-Q8. The clinical note codes a fungal infection with a foot finding site, or tinea pedis.: 0
-Q9. The patient is prescribed two or more distinct products containing paracetamol.: 0
-Q10. The clinical note codes a bilateral condition.: 7
-Q11. The patient is female, aged 15 to 49, and prescribed a product containing methotrexate.: 2
-Q12. The clinical note codes a current pregnancy (postnatal states excluded) and the patient is prescribed a teratogenic medicine: an ACE inhibitor, angiotensin receptor blocker, methotrexate, tetracycline, carbimazole, statin, warfarin, valproate, or isotretinoin.: 4
-Q13. The clinical note codes osteoarthritis or rheumatoid arthritis, the patient is prescribed an oral NSAID (aspirin and salicylates included), and the eGFR is below 60.: 5
-Q14. The patient is prescribed digoxin, has an eGFR below 30, and is prescribed a loop diuretic.: 0
-Q15. The clinical note codes a current pregnancy (postnatal states excluded) and the fasting glucose is 5.1 mmol/L or greater.: 2
-Q16. The clinical note codes a joint infection whose causative agent is a bacterium other than a Streptococcus species.: 3
-Q17. The patient is prescribed an oral product containing iron.: 27
-Q18. The patient is prescribed a product containing a mineral providing a chemical element, other than sodium, potassium or chloride.: 28
+Q1. Patients with female as their recorded sex.: 127938
+Q2. Patients with a BMI of 30 or more and a total cholesterol to HDL ratio greater than 5.: 45388
+Q3. Patients documented as being healthy or free of current problems.: 100433
+Q4. Patients with hyperthyroidism according to their clinical note.: 476
+Q5. Patients with osteoarthritis in 2024.: 1760
+Q6. Patients taking an ACE inhibitor.: 17393
+Q7. Patients taking a product containing a cardiac (digitalis) glycoside.: 130
+Q8. Patients with a fungal foot infection.: 24
+Q9. Patients taking more than one product that contains paracetamol.: 90
+Q10. Patients with a bilateral condition.: 2908
+Q11. Female patients aged 15 to 49 taking methotrexate.: 555
+Q12. Pregnant patients prescribed a teratogenic medicine.: 729
+Q13. Patients with osteoarthritis or rheumatoid arthritis taking an oral NSAID, and their eGFR is below 60.: 812
+Q14. Patients prescribed digoxin and a loop diuretic, who have an eGFR below 30.: 16
+Q15. Pregnant patients with a fasting glucose of 5.1 mmol/L or greater.: 793
+Q16. Patients with a non-Streptococcal bacterial joint infection.: 1552
+Q17. Patients taking an oral iron supplement.: 13318
+Q18. Patients taking mineral supplement excluding the electrolytes sodium, potassium or chloride.: 20243
 
 ============================================================
 DATA SUMMARY
 ============================================================
 
-Total rows: 567
+Total rows: 256515
 
 Condition counts:
-    Alcoholic Liver Disease: 8
-    Bacterial Infection: 10
-    COPD: 10
-    Chronic Kidney Disease (Stage 3-4): 13
-    Chronic Liver Disease / Cirrhosis: 1
-    Essential Hypertension: 48
-    Fungal Infection: 7
-    Healthy: 222
-    Heart Failure (Chronic): 4
-    Hyperlipidaemia: 34
-    Hyperthyroidism: 1
-    Hypothyroidism: 9
-    Inflammatory Conditions: 23
-    Iron Deficiency Anaemia: 17
-    Ischaemic Heart Disease: 15
-    Nonalcoholic Fatty Liver Disease (NAFLD): 52
-    Osteoarthritis: 35
-    Pregnancy: 6
-    Rheumatoid Arthritis: 10
-    Type 2 Diabetes Mellitus: 20
-    Viral Infection: 22
+    Alcoholic Liver Disease: 3775
+    Bacterial Infection: 6446
+    COPD: 3671
+    Chronic Kidney Disease (Stage 3-4): 3999
+    Chronic Liver Disease / Cirrhosis: 1435
+    Essential Hypertension: 22193
+    Fungal Infection: 2444
+    Healthy: 100433
+    Heart Failure (Chronic): 1449
+    Hyperlipidaemia: 14915
+    Hyperthyroidism: 575
+    Hypothyroidism: 4987
+    Inflammatory Conditions: 12248
+    Iron Deficiency Anaemia: 13414
+    Ischaemic Heart Disease: 5126
+    Nonalcoholic Fatty Liver Disease (NAFLD): 20991
+    Osteoarthritis: 14144
+    Parasitic Infection: 417
+    Pregnancy: 1090
+    Rheumatoid Arthritis: 3167
+    Type 2 Diabetes Mellitus: 10068
+    Viral Infection: 9528
+
+============================================================
+PUBLIC / PRIVATE SPLIT
+============================================================
+
+Stratified per question at 50% public. Rows: 128258 public / 128257 private.
+
+Q        total  public  private  private %
+Q1      127938   63969    63969      50.0%
+Q2       45388   22694    22694      50.0%
+Q3      100433   50217    50216      50.0%
+Q4         476     238      238      50.0%
+Q5        1760     880      880      50.0%
+Q6       17393    8697     8696      50.0%
+Q7         130      65       65      50.0%
+Q8          24      12       12      50.0%
+Q9          90      45       45      50.0%
+Q10       2908    1454     1454      50.0%
+Q11        555     278      277      49.9%
+Q12        729     365      364      49.9%
+Q13        812     406      406      50.0%
+Q14         16       8        8      50.0%
+Q15        793     396      397      50.1%
+Q16       1552     776      776      50.0%
+Q17      13318    6659     6659      50.0%
+Q18      20243   10122    10121      50.0%
+
+============================================================
+INACTIVE CONCEPTS
+============================================================
+
+Concept activity against SNOMED CT-AU 20260131. Flags are computed per
+encounter against the edition current at the time, so an inactive code here
+was still valid when it was recorded.
+
+"concepts" counts distinct codes in the column, "rows" the rows where it is
+populated. Column counts overlap -- the medicine slots draw on one another's
+products -- so they sum to more than the deduplicated total below.
+
+Field                concepts inactive    pct      rows inactive    pct
+Clinical_Note_Code       8666      353   4.1%    256515     5262   2.1%
+Medicine_1_Code         11186      198   1.8%    147463     3101   2.1%
+Medicine_2_Code          8855      162   1.8%     68679     1287   1.9%
+Medicine_3_Code          5225      111   2.1%     27342      535   2.0%
+
+Across all four fields: 21435 distinct concepts, 593 inactive (2.8%).
