@@ -45,9 +45,23 @@ Add an entry to `conditions/epidemiology.json`. The condition name must match ex
 ### Field reference
 
 - **ecl**: SNOMED CT Expression Constraint Language query. Use `<<` for descendants-or-self. You can test ECL expressions against the CSIRO Ontoserver at `https://r4.ontoserver.csiro.au/fhir`.
+  Do **not** include `|Term|` annotations after concept IDs. The ECL is sent as part of the `fhir_vs=ecl/...` canonical URL, where a `|` is read as the version separator, so any annotated expression fails with HTTP 422 (`Invalid version format for SNOMED`). Strip the pipes and put the readable concept name in `notes` instead.
 - **base_prevalence**: Point prevalence as a decimal (e.g., 0.03 = 3%). This is the overall population probability before age/sex/lifestyle adjustments. For acute conditions (infections, injuries), use point prevalence, not lifetime prevalence.
 - **sex_ratio**: Multipliers relative to 1.0. Values >1 increase likelihood for that sex. The ratios do not need to sum to any particular value.
 - **age_prevalence**: Array of age bands with multipliers. Must cover 0-200 with no gaps. The multiplier scales the base prevalence for that age range (1.0 = baseline rate).
+- **age_prevalence[].sex_ratio** (optional): A band may carry its own `sex_ratio`, which replaces the condition-level one for that age range only. Use this when the sex skew is confined to certain ages rather than applying across the whole lifespan — for example a male-dominated adolescent and young-adult peak in an otherwise sex-neutral condition:
+
+  ```json
+  "sex_ratio": { "male": 1.0, "female": 1.0, "other": 1.0 },
+  "age_prevalence": [
+    { "min_age": 0, "max_age": 11, "multiplier": 1.0 },
+    { "min_age": 12, "max_age": 28, "multiplier": 1.4,
+      "sex_ratio": { "male": 1.8, "female": 1.0, "other": 1.0 } },
+    { "min_age": 29, "max_age": 200, "multiplier": 1.0 }
+  ]
+  ```
+
+  Bands without a `sex_ratio` fall back to the condition-level value, so existing conditions are unaffected. See "Limb Injury" for a worked example.
 - **lifestyle_multipliers**: Optional multipliers for lifestyle factors. Available factors: `smoker`, `heavy_drinker`, `high_bmi`, `sedentary`, `athlete`.
 - **notes**: Brief description of data sources. Include specific statistics that informed your choices.
 
@@ -186,9 +200,13 @@ Named templates are defined in `medicines/ecl_templates.json`. Available templat
 | `amt-mpuu` | AMT Medicinal Product Unit of Use |
 | `amt-tp` | AMT Trade Product |
 | `amt-mp` | AMT Medicinal Product |
+| `clinical-drug` | SNOMED CT medicinal products narrowed to strength-bearing concepts (`732943007 \|Has basis of strength substance\|`), falling back to `product` |
 | `product` | SNOMED CT international medicinal product hierarchy |
+| `product-oral` | As `product`, constrained to an oral dose form |
 
 You can also pass a raw ECL template string with `{ingredients}` as the placeholder. To add new named templates, add entries to `medicines/ecl_templates.json`.
+
+A named template may declare a `"fallback"` key naming another template. If the preferred template expands to nothing for a given ingredient ECL — common when a substance has no strength-bearing product in an older edition — the fallback is expanded instead, so the category still yields a code rather than an empty one. Fallbacks chain, and are followed in order until an expansion is non-empty.
 
 The ingredient ECL from `prescriptions.json` is substituted into the template's `{ingredients}` placeholder. This keeps the config portable across different drug terminology extensions.
 

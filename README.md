@@ -67,7 +67,9 @@ Produces demographic records (age, sex, state, lifestyle, anthropometrics) witho
 | `--tx-server` | FHIR terminology server URL | Ontoserver |
 | `--snomed-edition` | SNOMED CT edition version (e.g. `20250131`) | — |
 | `--no-snomed` | Skip SNOMED CT code resolution (offline mode) | `false` |
-| `--med-ecl-template` | Medicine ECL template name (e.g. `amt-tpuu`, `amt-mpuu`) or raw template string | — |
+| `--med-ecl-template` | Medicine ECL template name (e.g. `amt-tpuu`, `amt-mpuu`, `clinical-drug`) or raw template string | — |
+| `--inactive-rate` | Probability of biasing SNOMED CT code selection toward concepts active in `--snomed-edition` but inactive in `--inactive-reference-edition` | `0.0` |
+| `--inactive-reference-edition` | SNOMED CT edition concepts are classified against for `--inactive-rate` | `20260731` |
 
 ## How it works
 

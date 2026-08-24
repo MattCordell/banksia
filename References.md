@@ -109,6 +109,24 @@ Prevalence rates used in `conditions/epidemiology.json` for demographic-weighted
   Iron deficiency anaemia ~8-12% women reproductive age; <5% men.
   https://pmc.ncbi.nlm.nih.gov/articles/PMC9809261/
 
+## Injury Epidemiology
+
+- **AIHW -- Injury in Australia (Body parts injured / Types of injury)**
+  Limbs are the most commonly injured body region. Fractures of the shoulder or upper limb 36% of fractures (11,600 cases); hip or lower limb 23% (7,300 cases). Ages 15-24 have the highest hip and lower limb hospitalisation rate (145 per 100,000) and the highest fracture rate (235 per 100,000). Basis for the Limb Injury age bands and the secondary rise in older age groups.
+  https://www.aihw.gov.au/reports/injury/injury-in-australia/contents/body-parts-injured
+
+- **AIHW -- Sports Injury in Australia (Nature of injuries)**
+  Sport is the most common specified setting for hospitalised fracture in males from mid-childhood into early adulthood (over 45% at ages 10-19, over 25% at ages 10-34). Basis for the band-level male skew applied to the Limb Injury 12-28 age range.
+  https://www.aihw.gov.au/reports/sports-injury/sports-injury-in-australia/contents/nature-of-injuries
+
+- **ABS -- Injury in Australia: A Snapshot (4825.0.55.001)**
+  12% of the population (2.3 million people) sustained an injury in the previous four weeks; males 13%, females 11%. Basis for the Limb Injury base prevalence (0.030) and for treating overall sex distribution as near-even.
+  https://www.abs.gov.au/ausstats/abs@.nsf/mf/4825.0.55.001
+
+- **Safe Work Australia -- Key Work Health and Safety Statistics Australia**
+  Serious work-related claims 2023-24: upper limb 33.2% (48,700 claims), lower limb 22.3% (32,700 claims), i.e. limbs account for ~55% of injuries. Used to scale total injury prevalence down to the limb subset.
+  https://data.safeworkaustralia.gov.au/insights/key-whs-statistics-australia/latest-release
+
 ## Pregnancy Lab Parameters
 
 - **HAPO Study Cooperative Research Group (2008) — Hyperglycemia and Adverse Pregnancy Outcomes**
@@ -300,6 +318,10 @@ Sources for condition-to-medicine mappings in `medicines/prescriptions.json`, al
   Paracetamol, topical and oral NSAIDs, PPI gastroprotection.
   https://australianprescriber.tg.org.au/articles/managing-osteoarthritis.html
 
+- **Therapeutic Guidelines -- Acute Pain (Musculoskeletal Injury)**
+  Stepped analgesia for acute limb injury: paracetamol and NSAIDs first-line, opioids as a short-course adjunct only. Basis for the Limb Injury prescribing probabilities and for keeping opioid categories in the minority.
+  https://www.tg.org.au/
+
 - **TGA — Removal of Prescribing Restrictions for Ivermectin (June 2023)**
   GP prescribing restored for scabies, strongyloides.
   https://www.tga.gov.au/news/media-releases/removal-prescribing-restrictions-ivermectin
@@ -313,3 +335,7 @@ Sources for condition-to-medicine mappings in `medicines/prescriptions.json`, al
 - **CSIRO Ontoserver (Terminology Server)**
   Used for runtime SNOMED CT ECL expansion via FHIR ValueSet/$expand in the conditions module.
   https://tx.ontoserver.csiro.au/fhir
+
+- **SNOMED CT Expression Constraint Language — 6.11 History Supplements**
+  Defines the `{{ + HISTORY-MIN | HISTORY-MOD | HISTORY-MAX }}` syntax and the historical association reference sets each profile follows (MIN: `SAME AS`; MOD: adds `REPLACED BY`, `WAS A`, `PARTIALLY EQUIVALENT TO`; MAX: all). Basis for the concept-recovery measurements in `data-golf/analyse.py` and `data-golf/TerminologyDrift.md`.
+  https://docs.snomed.org/snomed-ct-specifications/snomed-ct-expression-constraint-language/behaviour-specification-with-examples/6.11-history-supplements
