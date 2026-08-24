@@ -1,6 +1,6 @@
 {
   "profile": {
-    "template": "A headshot (front facing or profile - left or right) of a {family_name} ({animal_hint}), named {given_name}, who is {age} years old and {sex}. The image has the style and quality of a 70s polaroid. Plain neutral background. The image must be of an animal, but anthropomorphised (including age appropriate clothing, and various facial expressions) to show the personality and variety. Favour artistic expression over realism.",
+    "template": "An fun headshot of an anthropomorphised {sex} {family_name} ({animal_hint}). The image has the style and quality of a 80s polaroid. Plain neutral background. The image must be of an animal, but  (including age appropriate clothing, and various facial expressions) to suggest their age ({age}) and {given_name} personality.",
     "animal_hints": {
       "Bettong": "Small Australian native marsupial - also known as rat kangaroo",
       "Flying Fox": "Australian native bat - also known as a fruit bat",
@@ -13,7 +13,6 @@
       "Goanna": "Australian native lizard - a type of Monitor lizard",
       "Magpie": "Australian native bird - NOT the European Magpie. The Australia Magpie - also known as Gymnorhina tibicen",
       "Blue-tongued Lizard": "Australian native lizard- a type of skink a prominent characteristic of the genus is a large blue tongue",
-      "Cassowary": "Australian native bird - bristly black plumage, a blue face and a long neck, red on the cape and two red wattles hanging down around its throat, with a prominent horn-like brown casque",
       "Taipan": "Australian native snake"
     },
     "model": "runware:101@1",
