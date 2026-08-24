@@ -1326,6 +1326,76 @@
     },
     "notes": "Elevated CRP, reactive thrombocytosis, mild anaemia of chronic disease, hypoalbuminaemia, elevated ferritin (acute phase). WBC mildly elevated."
   },
+  "Limb Injury": {
+    "inherits": "Healthy",
+    "panel_overrides": {
+      "FBC": {
+        "WBC (×10^9/L)": {
+          "mean": 9.5,
+          "sd": 3.0,
+          "min": 3.5,
+          "max": 25,
+          "distribution": "lognormal"
+        },
+        "Haemoglobin (g/L)": {
+          "mean": 136,
+          "sd": 16,
+          "min": 75,
+          "max": 180,
+          "distribution": "normal"
+        },
+        "Platelets (×10^9/L)": {
+          "mean": 300,
+          "sd": 90,
+          "min": 60,
+          "max": 800,
+          "distribution": "lognormal"
+        },
+        "differential_props": {
+          "neutrophils": 0.68,
+          "lymphocytes": 0.21,
+          "monocytes": 0.07,
+          "eosinophils": 0.02,
+          "basophils": 0.02
+        }
+      },
+      "CRP": {
+        "CRP (mg/L)": {
+          "mean": 25,
+          "sd": 35,
+          "min": 0.5,
+          "max": 300,
+          "distribution": "lognormal"
+        }
+      },
+      "Bone Profile": {
+        "ALP (U/L)": {
+          "mean": 120,
+          "sd": 55,
+          "min": 25,
+          "max": 400,
+          "distribution": "lognormal"
+        }
+      },
+      "MBAP": {
+        "ALP (U/L)": {
+          "mean": 120,
+          "sd": 55,
+          "min": 25,
+          "max": 400,
+          "distribution": "lognormal"
+        },
+        "LDH (U/L)": {
+          "mean": 230,
+          "sd": 80,
+          "min": 80,
+          "max": 800,
+          "distribution": "lognormal"
+        }
+      }
+    },
+    "notes": "Acute-phase response scaled to injury severity: mild-moderate CRP rise with neutrophil-predominant leukocytosis, peaking 2-3 days post-injury. ALP rises during fracture callus formation and stays elevated for weeks. Mild normocytic anaemia from haematoma or blood loss in significant long-bone injury. LDH mildly raised from soft tissue damage. Minor injuries stay within reference range, so overrides sit only modestly above the healthy baseline."
+  },
   "Pregnancy": {
     "inherits": "Healthy",
     "panel_overrides": {
