@@ -19,6 +19,11 @@
     "template": "^929360051000036108:774160008=((<<(<<763158003:<<762951001=({ingredients}))) AND (^929360031000036100))",
     "description": "AMT Medicinal Product"
   },
+  "clinical-drug": {
+    "template": "<<373873005:<<127489000=({ingredients}),411116001=*,732943007=*",
+    "description": "SNOMED CT medicinal products narrowed to strength-bearing concepts by requiring 732943007 |Has basis of strength substance|. Falls back to 'product' when an ingredient yields no strength-bearing concept in the requested edition.",
+    "fallback": "product"
+  },
   "product": {
     "template": "<<373873005:<<127489000=({ingredients}),411116001=*",
     "description": "SNOMED CT international medicinal product hierarchy"

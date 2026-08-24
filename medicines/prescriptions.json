@@ -647,6 +647,41 @@
     "notes": "Broad inflammatory category. NSAIDs and PPIs most common. Corticosteroids for flares/severe disease. Urate-lowering for gout subset. DMARDs/biologics for autoimmune subset."
   },
 
+  "Limb Injury": {
+    "medicines": [
+      {
+        "category": "Non-opioid analgesic",
+        "ecl": "90332006",
+        "probability": 0.75,
+        "notes": "Paracetamol; first-line simple analgesia for musculoskeletal injury (Therapeutic Guidelines: Pain)"
+      },
+      {
+        "category": "Oral NSAIDs",
+        "ecl": "<372665008 AND (<440131009.<<762951001)",
+        "probability": 0.55,
+        "notes": "Ibuprofen or naproxen; short course for soft tissue injury and fracture pain"
+      },
+      {
+        "category": "Weak opioid",
+        "ecl": "387494007 OR 386858008",
+        "probability": 0.22,
+        "notes": "Codeine or tramadol; added when simple analgesia is inadequate. Short course only per RACGP/PBS opioid stewardship"
+      },
+      {
+        "category": "Strong opioid",
+        "ecl": "55452001 OR 441757005",
+        "probability": 0.1,
+        "notes": "Oxycodone or tapentadol; reserved for severe injury, typically post-fracture or post-operative"
+      },
+      {
+        "category": "Proton Pump Inhibitors",
+        "ecl": "<372525000 AND (<440131009.<<762951001)",
+        "probability": 0.12,
+        "notes": "Gastroprotection for the subset on NSAIDs with risk factors; not routine for short courses"
+      }
+    ],
+    "notes": "Analgesia-only profile, stepped per Therapeutic Guidelines: Pain and RACGP acute pain guidance. Paracetamol and NSAIDs dominate; opioids are a minority short-course adjunct reflecting Australian opioid stewardship. No disease-modifying therapy applies to an acute injury."
+  },
   "Pregnancy": {
     "medicines": [
       {
