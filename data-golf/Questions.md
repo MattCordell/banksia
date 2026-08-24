@@ -5,21 +5,21 @@ True when the criterion holds for that episode.
 
 | # | Criterion |
 |---|-----------|
-| Q1 | The patient's recorded sex is female. |
-| Q2 | The patient has a BMI of 30 or more (from recorded height and weight) and a total cholesterol to HDL ratio greater than 5. |
-| Q3 | The clinical note records the patient as healthy or free of current problems. |
-| Q4 | The clinical note codes a hyperthyroid disorder, or the thyroid panel shows biochemical thyrotoxicosis (TSH below 0.4 mIU/L with free T4 above 20 pmol/L). |
-| Q5 | The clinical note codes an osteoarthritis (excluding gout and chondrocalcinosis) and the encounter occurred in 2024. |
-| Q6 | The patient is prescribed a product containing an ACE inhibitor, including fixed-dose combination products. |
-| Q7 | The patient is prescribed a product containing a cardiac (digitalis) glycoside. |
-| Q8 | The clinical note codes a fungal infection with a foot finding site, or tinea pedis. |
-| Q9 | The patient is prescribed two or more distinct products containing paracetamol. |
-| Q10 | The clinical note codes a bilateral condition. |
-| Q11 | The patient is female, aged 15 to 49, and prescribed a product containing methotrexate. |
-| Q12 | The clinical note codes a current pregnancy (postnatal states excluded) and the patient is prescribed a teratogenic medicine: an ACE inhibitor, angiotensin receptor blocker, methotrexate, tetracycline, carbimazole, statin, warfarin, valproate, or isotretinoin. |
-| Q13 | The clinical note codes osteoarthritis or rheumatoid arthritis, the patient is prescribed an oral NSAID (aspirin and salicylates included), and the eGFR is below 60. |
-| Q14 | The patient is prescribed digoxin, has an eGFR below 30, and is prescribed a loop diuretic. |
-| Q15 | The clinical note codes a current pregnancy (postnatal states excluded) and the fasting glucose is 5.1 mmol/L or greater. |
-| Q16 | The clinical note codes a joint infection whose causative agent is a bacterium other than a Streptococcus species. |
-| Q17 | The patient is prescribed an oral product containing iron. |
-| Q18 | The patient is prescribed a product containing a mineral providing a chemical element, other than sodium, potassium or chloride. |
+| Q1 | Patients with female as their recorded sex. |
+| Q2 | Patients with a BMI of 30 or more and a total cholesterol to HDL ratio greater than 5. |
+| Q3 | Patients documented as being healthy or free of current problems. |
+| Q4 | Patients with hyperthyroidism according to their clinical note. |
+| Q5 | Patients with osteoarthritis in 2024. |
+| Q6 | Patients taking an ACE inhibitor. |
+| Q7 | Patients taking a product containing a cardiac (digitalis) glycoside. |
+| Q8 | Patients with a fungal foot infection. |
+| Q9 | Patients taking more than one product that contains paracetamol. |
+| Q10 | Patients with a bilateral condition. |
+| Q11 | Female patients aged 15 to 49 taking methotrexate. |
+| Q12 | Pregnant patients prescribed a teratogenic medicine. |
+| Q13 | Patients with osteoarthritis or rheumatoid arthritis taking an oral NSAID, and their eGFR is below 60. |
+| Q14 | Patients prescribed digoxin and a loop diuretic, who have an eGFR below 30. |
+| Q15 | Pregnant patients with a fasting glucose of 5.1 mmol/L or greater. |
+| Q16 | Patients with a non-Streptococcal bacterial joint infection. |
+| Q17 | Patients taking an oral iron supplement. |
+| Q18 | Patients taking mineral supplement excluding the electrolytes sodium, potassium or chloride. |

@@ -23,10 +23,32 @@ encounter falls in that edition's period, so a flag reflects the terminology
 active at the time of the encounter.
 
 Because of that, a code can be valid when recorded and inactive by the latest
-edition. ``inactive_concept_report`` quantifies the drift, counting inactive
-concepts in each of the four SNOMED-coded columns against ``REFERENCE_EDITION``.
-It uses an explicit-concept ValueSet/$expand rather than an ECL, since inactive
-concepts have no relationships and no ECL can reach them.
+edition. Three reports quantify the drift, all measured against
+``REFERENCE_EDITION``:
+
+``inactive_concept_report`` counts inactive concepts in each of the four
+SNOMED-coded columns. It uses an explicit-concept ValueSet/$expand rather than an
+ECL, since inactive concepts have no relationships and no ECL can reach them.
+
+``question_scope_report`` narrows that to the concepts a question's ECLs actually
+reach -- a retirement no question refers to is harmless -- and asks whether an
+ECL history supplement could recover each one. The concepts even HISTORY-MAX
+cannot reach were retired without a historical association, which is the one
+failure mode a latest-edition solution cannot mitigate. Which criteria each
+question consults is observed by running the question functions against a
+recording view of the code sets (``question_criteria``), so it cannot drift out
+of sync with the functions themselves.
+
+``edition_delta_report`` recomputes every flag against ``REFERENCE_EDITION``
+under each history profile and reports what would move. It reports the switch
+without making it: the flags written to solution.csv remain the per-encounter
+ones.
+
+Both reference reports expand the medicine criteria under both product models
+(``REFERENCE_PRODUCT_TEMPLATES``). The dataset carries SNOMED CT international
+clinical drug codes pre-2025 and AMT TPUU codes from 2025, and expanding the
+reference edition under its own model alone would strand every pre-2025 medicine
+row -- reporting the product-model switch as if it were terminology drift.
 
 solution.csv's ``Usage`` column is assigned by ``assign_usage``, which stratifies
 the public/private split on all 18 flags rather than splitting rows blindly. The
@@ -62,6 +84,8 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
+from conditions.snomed import concept_status  # noqa: E402
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TX_SERVER = "https://r4.ontoserver.csiro.au/fhir"
 
@@ -75,10 +99,6 @@ PUBLISHED_CODE_COLS = {
     "Medicine_2_Code": "Medicine_2_Code",
     "Medicine_3_Code": "Medicine_3_Code",
 }
-
-# Codes per ValueSet/$expand call when checking concept activity. 1000 keeps the
-# request comfortably inside Ontoserver's limits at ~20 calls for a 250k dataset.
-CONCEPT_STATUS_BATCH = 1000
 
 MED_DISPLAYS = ["Medicine_1_Display", "Medicine_2_Display", "Medicine_3_Display"]
 MED_CODES = ["Medicine_1_Code", "Medicine_2_Code", "Medicine_3_Code"]
@@ -115,6 +135,43 @@ PERIODS = [
 # still be inactive today -- this report quantifies that drift.
 REFERENCE_EDITION = PERIODS[-1]["edition"]
 
+# ECL history supplement profiles, used to expand the criteria against
+# REFERENCE_EDITION as an alternative to the per-encounter editions. None means
+# no supplement -- the naive "just use the current release" behaviour.
+#
+#   HISTORY-MIN  SAME AS only
+#   HISTORY-MOD  SAME AS, REPLACED BY, WAS A, PARTIALLY EQUIVALENT TO
+#   HISTORY-MAX  every historical association
+#
+# MAX is the yardstick for recoverability: a retired concept MAX cannot reach has
+# no historical association at all, which is the failure mode the latest-edition
+# approach cannot mitigate.
+HISTORY_PROFILES = [None, "HISTORY-MIN", "HISTORY-MOD", "HISTORY-MAX"]
+
+# Column label for each profile in the report tables.
+PROFILE_LABELS = {
+    None: "latest",
+    "HISTORY-MIN": "+HIST-MIN",
+    "HISTORY-MOD": "+HIST-MOD",
+    "HISTORY-MAX": "+HIST-MAX",
+}
+
+# How many unrecoverable concepts to list individually before truncating.
+UNRECOVERABLE_LIST_LIMIT = 40
+
+
+def with_history(ecl: str, profile: Optional[str]) -> str:
+    """Append an ECL history supplement to a constraint.
+
+    The constraint is parenthesised so the supplement binds to the whole
+    expression. Verified against Ontoserver on the three shapes in this file that
+    could plausibly reject it: MINUS compounds, constraints already carrying a
+    ``{{ term = ... }}`` filter, and the AMT refset templates.
+    """
+    if profile is None:
+        return ecl
+    return f"({ecl}) {{{{ + {profile} }}}}"
+
 
 def edition_for_date(d: date) -> str:
     """Return the SNOMED CT-AU edition string for a given encounter date."""
@@ -138,90 +195,31 @@ def ecl_code_set(ecl: str, tx_server: str, edition: str = None) -> set:
     return {c["code"] for c in concepts}
 
 
-def concept_status(codes, tx_server: str, edition: str) -> Dict[str, str]:
-    """Classify SNOMED codes as active/inactive/absent in one SNOMED CT-AU edition.
-
-    Batches the codes through ValueSet/$expand as an explicit ``compose.include.
-    concept`` list with ``activeOnly=false``, reading the ``inactive`` flag off
-    each returned concept.
-
-    An ECL cannot answer this. Inactive concepts carry no relationships, so
-    ``<<X`` never reaches them and an ECL expansion looks fully active no matter
-    what activeOnly is set to. Listing the codes explicitly sidesteps the
-    transitive closure and asks about each concept directly.
-
-    Returns {code: "active" | "inactive" | "absent"}, where absent means the
-    server did not echo the code back at all -- not in this edition in any state.
-    """
-    from conditions.snomed import AU_MODULE
-
-    version = f"{AU_MODULE}/version/{edition}"
-    ordered = sorted(codes)
-    status: Dict[str, str] = {}
-
-    for start in range(0, len(ordered), CONCEPT_STATUS_BATCH):
-        batch = ordered[start:start + CONCEPT_STATUS_BATCH]
-        body = {
-            "resourceType": "Parameters",
-            "parameter": [
-                {"name": "valueSet", "resource": {
-                    "resourceType": "ValueSet",
-                    "compose": {"include": [{
-                        "system": "http://snomed.info/sct",
-                        "version": version,
-                        "concept": [{"code": code} for code in batch],
-                    }]},
-                }},
-                {"name": "activeOnly", "valueBoolean": False},
-                {"name": "count", "valueInteger": CONCEPT_STATUS_BATCH * 5},
-                {"name": "includeDesignations", "valueBoolean": False},
-            ],
-        }
-        resp = requests.post(
-            f"{tx_server}/ValueSet/$expand",
-            json=body,
-            headers={
-                "Accept": "application/fhir+json",
-                "Content-Type": "application/fhir+json",
-            },
-            timeout=180,
-        )
-        resp.raise_for_status()
-
-        returned = set()
-        for entry in resp.json().get("expansion", {}).get("contains", []):
-            code = entry.get("code")
-            if code is None:
-                continue
-            status[code] = "inactive" if entry.get("inactive") else "active"
-            returned.add(code)
-        for code in batch:
-            if code not in returned:
-                status[code] = "absent"
-
-    return status
+def populated_codes(df):
+    """The non-blank code series for each SNOMED-coded column."""
+    populated = {}
+    for col in SNOMED_CODE_COLS:
+        series = df[col].dropna().astype(str).str.strip()
+        populated[col] = series[series != ""]
+    return populated
 
 
-def inactive_concept_report(df, tx_server: str, edition: str) -> str:
+def inactive_concept_report(df, status: Dict[str, str], edition: str) -> str:
     """Per-column inactive concept counts for the four SNOMED-coded columns.
 
     Counts both distinct concepts and affected rows: a single retired concept
     reused across thousands of rows and a thousand one-off retirements are very
     different problems, and the distinct count alone cannot tell them apart.
 
-    Propagates requests.RequestException so the caller can degrade to a note
-    instead of losing a run that has already done all the ECL expansion work.
+    ``status`` comes from concept_status(); it is passed in rather than fetched
+    here so the question-scope report can share the same round trips.
     """
-    populated = {}
-    for col in SNOMED_CODE_COLS:
-        series = df[col].dropna().astype(str).str.strip()
-        populated[col] = series[series != ""]
+    populated = populated_codes(df)
 
     codes = set()
     for series in populated.values():
         codes |= set(series.unique())
 
-    status = concept_status(codes, tx_server, edition)
     inactive_codes = {c for c, s in status.items() if s == "inactive"}
     absent_codes = {c for c, s in status.items() if s == "absent"}
 
@@ -275,9 +273,15 @@ def resolve_ecl_template(template_key: str) -> str:
 def product_ecl_template_for_edition(edition):
     """Return the ecl_templates.json key matching the product model used for edition.
 
-    Must stay in sync with generate_data.py PERIODS: "product" (SNOMED CT international
-    medicinal product hierarchy) pre-2025, "amt-tpuu" (AMT Trade Product Unit of Use) from
-    2025 onwards.
+    Tracks generate_data.py PERIODS: SNOMED CT international medicinal product
+    hierarchy pre-2025, "amt-tpuu" (AMT Trade Product Unit of Use) from 2025 onwards.
+
+    Deliberately returns the broader "product" for the pre-2025 editions even though
+    generation uses "clinical-drug". "clinical-drug" is "product" plus a
+    732943007 |Has basis of strength substance| refinement, so its expansion is a
+    subset, and generation falls back to "product" when it is empty. Matching on the
+    superset therefore covers every code generation can emit; narrowing this to
+    "clinical-drug" would silently drop the fallback rows.
     """
     return "amt-tpuu" if edition >= "20250131" else "product"
 
@@ -423,20 +427,43 @@ class CodeSets:
     medicines: Dict[str, Set[str]] = field(default_factory=dict)
 
 
-def build_code_sets(edition, tx_server, verbose=True):
-    """Expand every condition and medicine ECL for one edition."""
+def build_code_sets(
+    edition, tx_server, history=None, product_templates=None, verbose=True
+):
+    """Expand every condition and medicine ECL for one edition.
+
+    ``history`` optionally names an ECL history supplement profile, applied to
+    each expression *after* template substitution so the supplement sits at the
+    top level of the constraint. ``None`` reproduces the unsupplemented
+    behaviour exactly.
+
+    ``product_templates`` overrides the product model, which defaults to the one
+    matching the edition. Pass both models when expanding a single edition that
+    has to match codes generated under either -- see reference_code_sets().
+    """
     sets = CodeSets(edition=edition)
 
     for key, ecl in CONDITION_ECLS.items():
-        sets.conditions[key] = ecl_code_set(ecl, tx_server, edition=edition)
-
-    product_template = resolve_ecl_template(product_ecl_template_for_edition(edition))
-    oral_template = resolve_ecl_template("product-oral")
-    for key, spec in MEDICINE_ECLS.items():
-        template = oral_template if spec.oral_only else product_template
-        sets.medicines[key] = ecl_code_set(
-            template.format(ingredients=spec.ingredients), tx_server, edition=edition
+        sets.conditions[key] = ecl_code_set(
+            with_history(ecl, history), tx_server, edition=edition
         )
+
+    if product_templates is None:
+        product_templates = [product_ecl_template_for_edition(edition)]
+    templates = [resolve_ecl_template(name) for name in product_templates]
+    # "product-oral" is model-agnostic: AMT trade products are descendants of
+    # 373873005 with a manufactured dose form, so it matches both models already.
+    oral_template = resolve_ecl_template("product-oral")
+
+    for key, spec in MEDICINE_ECLS.items():
+        chosen = [oral_template] if spec.oral_only else templates
+        codes = set()
+        for template in chosen:
+            ecl = template.format(ingredients=spec.ingredients)
+            codes |= ecl_code_set(
+                with_history(ecl, history), tx_server, edition=edition
+            )
+        sets.medicines[key] = codes
 
     if verbose:
         conditions = ", ".join(f"{k}={len(v)}" for k, v in sorted(sets.conditions.items()))
@@ -445,6 +472,67 @@ def build_code_sets(edition, tx_server, verbose=True):
         print(f"    medicines:  {medicines}")
 
     return sets
+
+
+class _RecordingDict(dict):
+    """dict that notes every key read, so criterion use can be observed."""
+
+    def __init__(self, source, seen):
+        super().__init__(source)
+        self._seen = seen
+
+    def __getitem__(self, key):
+        self._seen.add(key)
+        return super().__getitem__(key)
+
+
+def question_criteria(sets):
+    """Map each question to the condition and medicine criteria it consults.
+
+    Returns {q_num: (condition_keys, medicine_keys)}.
+
+    Derived by running each question function against a recording view of the
+    code sets rather than from a hand-maintained table, which would drift out of
+    sync with the functions the moment a criterion is added or swapped.
+
+    Sound because pandas ``&``/``|`` do not short-circuit: every has_condition /
+    has_med call in a question function is evaluated regardless of what the other
+    operands produce. Questions resting purely on demographics or lab values
+    (Q1, Q2) correctly report no terminology scope.
+
+    Condition and medicine keys are kept apart because they are matched against
+    different columns -- conditions against SNOMED_Code, medicines against the
+    three Medicine_*_Code columns.
+    """
+    # One row is enough to exercise every lookup, and keeps this off the hot path.
+    probe = _probe_frame()
+
+    criteria = {}
+    for q_num, func in QUESTION_FUNCS.items():
+        conditions, medicines = set(), set()
+        recorder = CodeSets(
+            edition=sets.edition,
+            conditions=_RecordingDict(sets.conditions, conditions),
+            medicines=_RecordingDict(sets.medicines, medicines),
+        )
+        func(probe, recorder)
+        criteria[q_num] = (conditions, medicines)
+    return criteria
+
+
+def _probe_frame():
+    """A single-row frame carrying every column the question functions read."""
+    columns = {
+        "Sex": "female", "Age": 30, "Year": 2024, "BMI": 25.0, "CholHDL_Ratio": 3.0,
+        "SNOMED_Code": "", "Thyroid Panel - TSH (mIU/L)": 1.0,
+        "Thyroid Panel - Free T4 (pmol/L)": 15.0,
+        "MBAP - eGFR (mL/min/1.73m²)": 90.0,
+        "Kidney Function - eGFR (mL/min/1.73m²)": 90.0,
+        "MBAP - Glucose (fasting) (mmol/L)": 5.0,
+    }
+    for col in MED_CODES + MED_DISPLAYS:
+        columns[col] = ""
+    return pd.DataFrame([columns])
 
 
 def has_condition(df, sets, key):
@@ -745,11 +833,272 @@ def split_balance(df, q_cols, usage):
     return "\n".join(lines), alerts
 
 
-def compute_metrics(df, usage=None, inactive_text=None):
+def question_scope_sets(criteria, sets, q_num):
+    """The condition and medicine code sets one question draws on, in one edition."""
+    cond_keys, med_keys = criteria[q_num]
+    cond = set().union(*(sets.conditions[k] for k in cond_keys)) if cond_keys else set()
+    med = set().union(*(sets.medicines[k] for k in med_keys)) if med_keys else set()
+    return cond, med
+
+
+def display_lookup(df):
+    """Map code -> display, harvested from the paired display columns."""
+    lookup = {}
+    pairs = [("SNOMED_Code", "SNOMED_Display")] + list(zip(MED_CODES, MED_DISPLAYS))
+    for code_col, display_col in pairs:
+        if display_col not in df.columns:
+            continue
+        pair = df[[code_col, display_col]].dropna()
+        for code, display in zip(pair[code_col], pair[display_col]):
+            lookup.setdefault(str(code).strip(), display)
+    return lookup
+
+
+# Both product models, unioned, for the reference-edition expansions. The dataset
+# carries codes from both: generation uses the SNOMED CT international product
+# hierarchy pre-2025 and AMT TPUU from 2025 (product_ecl_template_for_edition).
+#
+# Expanding the reference edition under its own model alone would make every
+# pre-2025 medicine row unmatchable -- amt-tpuu cannot contain an international
+# clinical drug code -- and the resulting "loss" would be the product-model
+# switch masquerading as terminology drift. Unioning both isolates the drift,
+# which is what these reports are measuring.
+REFERENCE_PRODUCT_TEMPLATES = ["product", "amt-tpuu"]
+
+
+def reference_code_sets(edition, tx_server, verbose=False):
+    """Expand every criterion against one edition, under each history profile."""
+    return {
+        profile: build_code_sets(
+            edition, tx_server, history=profile,
+            product_templates=REFERENCE_PRODUCT_TEMPLATES, verbose=verbose,
+        )
+        for profile in HISTORY_PROFILES
+    }
+
+
+def check_history_sets(ref_sets):
+    """Flag supplemented expansions that lost members. Returns warning strings.
+
+    A history supplement can only add concepts, so a supplemented set smaller
+    than its unsupplemented counterpart means the expansion did not do what was
+    asked. This matters because expand_ecl logs and returns partial results on a
+    request failure rather than raising, which would otherwise surface as a
+    confident "0 recovered" instead of an error.
+    """
+    warnings = []
+    base = ref_sets[None]
+    for profile in HISTORY_PROFILES[1:]:
+        sets = ref_sets[profile]
+        for kind in ("conditions", "medicines"):
+            plain, supplemented = getattr(base, kind), getattr(sets, kind)
+            for key, codes in plain.items():
+                if len(supplemented[key]) < len(codes):
+                    warnings.append(
+                        f"{profile} expansion of {kind[:-1]} '{key}' returned "
+                        f"{len(supplemented[key])} concepts, fewer than the "
+                        f"{len(codes)} without a supplement -- recovery counts for "
+                        "this criterion are unreliable"
+                    )
+    return warnings
+
+
+def question_scope_report(
+    df, edition_code_sets, ref_sets, status, criteria, edition=REFERENCE_EDITION
+) -> str:
+    """How much of the dataset's terminology drift lands inside a question.
+
+    The dataset-wide inactive count says nothing about impact: a retired concept
+    no question refers to is harmless. This narrows it to the codes each
+    question's ECLs actually reach, then asks whether a history supplement could
+    recover them from the reference edition. An in-scope inactive concept that
+    even HISTORY-MAX cannot reach has no historical association at all -- the one
+    failure mode a latest-edition solution has no way to mitigate.
+    """
+    inactive = {c for c, s in status.items() if s == "inactive"}
+    populated = populated_codes(df)
+    note_present = set(populated["SNOMED_Code"].unique())
+    med_present = set()
+    for col in MED_CODES:
+        med_present |= set(populated[col].unique())
+
+    profiles = HISTORY_PROFILES[1:]  # the supplemented ones
+
+    # Scope is the union across the encounter editions, since a flag may have
+    # been set through any of them. Restricted to codes present in the data, so
+    # the counts describe this dataset rather than the size of the ECLs.
+    scope = {}
+    for q_num in QUESTION_FUNCS:
+        cond, med = set(), set()
+        for sets in edition_code_sets.values():
+            c, m = question_scope_sets(criteria, sets, q_num)
+            cond |= c
+            med |= m
+        scope[q_num] = (cond & note_present, med & med_present)
+
+    # Row counts are evaluated per encounter edition rather than against the
+    # union, so a code that was only in scope in 2021 is not credited to a 2024
+    # row that happens to carry it.
+    rows_inactive = {q_num: 0 for q_num in QUESTION_FUNCS}
+    for row_edition, group in df.groupby("_edition"):
+        sets = edition_code_sets[row_edition]
+        for q_num in QUESTION_FUNCS:
+            cond, med = question_scope_sets(criteria, sets, q_num)
+            cond &= inactive
+            med &= inactive
+            if not cond and not med:
+                continue
+            hit = group["SNOMED_Code"].isin(cond)
+            for col in MED_CODES:
+                hit = hit | group[col].isin(med)
+            rows_inactive[q_num] += int((group[f"Q{q_num}"] & hit).sum())
+
+    lines = [
+        "Of the inactive concepts above, which fall inside a question's ECLs. Scope is",
+        "the union across encounter editions, restricted to codes present in the data.",
+        "",
+        "MIN/MOD/MAX count the in-scope inactive concepts each ECL history supplement",
+        f"recovers when the criteria are expanded against {edition} instead;",
+        "\"unrecov\" are those even HISTORY-MAX cannot reach, meaning SNOMED International",
+        "retired them without a historical association. \"rows\" are positive rows whose",
+        "matching code is inactive, counted against each row's own encounter edition.",
+        "",
+        "The reference expansions union both product models, so a concept is not called",
+        "unrecoverable merely for belonging to the model the reference edition dropped.",
+        "",
+        f"{'Q':<6}{'scope':>8}{'inactive':>9}{'MIN':>6}{'MOD':>6}{'MAX':>6}"
+        f"{'unrecov':>9}{'positives':>11}{'rows':>8}",
+    ]
+
+    unrecoverable = {}  # code -> questions it is in scope for
+    total_in_scope = set()
+    for q_num in sorted(QUESTION_FUNCS):
+        cond_scope, med_scope = scope[q_num]
+        positives = int(df[f"Q{q_num}"].sum())
+
+        if not cond_scope and not med_scope:
+            # Demographics or lab values only -- no terminology exposure at all.
+            lines.append(
+                f"Q{q_num:<5}{'n/a':>8}{'n/a':>9}{'n/a':>6}{'n/a':>6}{'n/a':>6}"
+                f"{'n/a':>9}{positives:>11}{'n/a':>8}"
+            )
+            continue
+
+        cond_inactive = cond_scope & inactive
+        med_inactive = med_scope & inactive
+        in_scope_inactive = cond_inactive | med_inactive
+        total_in_scope |= in_scope_inactive
+
+        counts = {}
+        for profile in profiles:
+            c, m = question_scope_sets(criteria, ref_sets[profile], q_num)
+            found = (cond_inactive & c) | (med_inactive & m)
+            counts[profile] = found
+
+        missed = in_scope_inactive - counts["HISTORY-MAX"]
+        for code in missed:
+            unrecoverable.setdefault(code, []).append(q_num)
+
+        lines.append(
+            f"Q{q_num:<5}{len(cond_scope) + len(med_scope):>8}"
+            f"{len(in_scope_inactive):>9}"
+            f"{len(counts['HISTORY-MIN']):>6}{len(counts['HISTORY-MOD']):>6}"
+            f"{len(counts['HISTORY-MAX']):>6}{len(missed):>9}"
+            f"{positives:>11}{rows_inactive[q_num]:>8}"
+        )
+
+    lines.append("")
+    lines.append(
+        f"{len(total_in_scope)} of the {len(inactive)} inactive concepts fall in scope of at "
+        f"least one question;"
+    )
+    lines.append(
+        f"{len(unrecoverable)} of those have no historical association and cannot be "
+        "recovered."
+    )
+
+    if unrecoverable:
+        displays = display_lookup(df)
+        lines.append("")
+        lines.append("Unrecoverable in-scope concepts:")
+        ordered = sorted(unrecoverable.items(), key=lambda kv: (kv[1], kv[0]))
+        for code, questions in ordered[:UNRECOVERABLE_LIST_LIMIT]:
+            qs = ",".join(f"Q{q}" for q in sorted(questions))
+            lines.append(f"    {code:<20}{qs:<16}{displays.get(code, '')}")
+        if len(ordered) > UNRECOVERABLE_LIST_LIMIT:
+            lines.append(f"    ... and {len(ordered) - UNRECOVERABLE_LIST_LIMIT} more")
+
+    return "\n".join(lines)
+
+
+def edition_delta_report(df, ref_sets, edition=REFERENCE_EDITION) -> str:
+    """What recomputing every flag against the reference edition would change.
+
+    Reports the switch rather than making it. The flags in solution.csv remain
+    the per-encounter-edition ones; this quantifies what moves if that choice is
+    revisited, under each history profile and under none.
+    """
+    variants = {}
+    for profile in HISTORY_PROFILES:
+        flags = compute_flags(df, ref_sets[profile])
+        variants[profile] = pd.DataFrame(flags, index=df.index)
+
+    lines = [
+        f"Positives if every flag were recomputed against SNOMED CT-AU {edition}",
+        "alone, rather than against each row's own encounter edition. \"latest\" applies no",
+        "history supplement -- the naive current-release reading.",
+        "",
+        "The medicine criteria are expanded under both product models here (SNOMED",
+        "international and AMT), because the dataset carries codes from both. Using the",
+        "reference edition's own model alone would strand every pre-2025 medicine row and",
+        "report the model switch as terminology drift. These columns isolate the drift.",
+        "",
+        "CAVEAT: the medicine criteria carry a display-text fallback, so a row can still",
+        "match on the product name after its code leaves the ECL. The medicine questions",
+        "therefore understate terminology sensitivity; the condition questions (Q3, Q4,",
+        "Q5, Q8, Q10, Q16) have no fallback and show the true exposure.",
+        "",
+        f"{'Q':<6}{'current':>10}" + "".join(
+            f"{PROFILE_LABELS[p]:>12}" for p in HISTORY_PROFILES
+        ),
+    ]
+
+    for q_num in sorted(QUESTION_FUNCS):
+        col = f"Q{q_num}"
+        row = f"Q{q_num:<5}{int(df[col].sum()):>10}"
+        for profile in HISTORY_PROFILES:
+            row += f"{int(variants[profile][col].sum()):>12}"
+        lines.append(row)
+
+    lines.append("")
+    lines.append(
+        "Movement under +HIST-MAX. The totals above hide it: the newer hierarchy pulls"
+    )
+    lines.append("rows in as well as dropping them, and a question can do both at once.")
+    lines.append("")
+    lines.append(
+        f"{'Q':<6}{'current':>10}{'+HIST-MAX':>12}{'gained':>9}{'lost':>7}{'net':>8}"
+    )
+
+    best = variants["HISTORY-MAX"]
+    for q_num in sorted(QUESTION_FUNCS):
+        col = f"Q{q_num}"
+        current, alt = df[col], best[col]
+        gained = int((~current & alt).sum())
+        lost = int((current & ~alt).sum())
+        lines.append(
+            f"Q{q_num:<5}{int(current.sum()):>10}{int(alt.sum()):>12}"
+            f"{gained:>9}{lost:>7}{gained - lost:>+8}"
+        )
+
+    return "\n".join(lines)
+
+
+def compute_metrics(df, usage=None, sections=None):
     """Produce metrics text from the flagged dataframe.
 
-    ``inactive_text`` is built in main() rather than here so this stays free of
-    terminology server calls.
+    ``sections`` is a list of (title, body) appended verbatim. They are built in
+    main() rather than here so this stays free of terminology server calls.
     """
     lines = []
 
@@ -797,13 +1146,13 @@ def compute_metrics(df, usage=None, inactive_text=None):
             for alert in alerts:
                 lines.append(f"    {alert}")
 
-    if inactive_text is not None:
+    for title, body in sections or []:
         lines.append("")
         lines.append("=" * 60)
-        lines.append("INACTIVE CONCEPTS")
+        lines.append(title)
         lines.append("=" * 60)
         lines.append("")
-        lines.append(inactive_text)
+        lines.append(body)
 
     return "\n".join(lines)
 
@@ -825,7 +1174,14 @@ def main():
     parser.add_argument(
         "--no-inactive-check",
         action="store_true",
-        help="Skip the inactive-concept report and its terminology server calls.",
+        help="Skip every concept-activity report and its terminology server calls.",
+    )
+    parser.add_argument(
+        "--no-history-check",
+        action="store_true",
+        help="Skip the question-scope and recompute-delta reports, which expand every "
+             "ECL again against the reference edition under each history profile. "
+             "The dataset-wide inactive-concept report is still produced.",
     )
     args = parser.parse_args()
 
@@ -853,7 +1209,6 @@ def main():
 
     flag_df = pd.concat(flag_parts).sort_index()
     df = pd.concat([df, flag_df], axis=1)
-    df = df.drop(columns=["_edition"])
 
     q_cols = [f"Q{i}" for i in range(1, QUESTION_COUNT + 1)]
 
@@ -868,24 +1223,60 @@ def main():
             file=sys.stderr,
         )
 
-    inactive_text = None
+    sections = []
     if not args.no_inactive_check:
         print(f"Checking concept activity against SNOMED CT-AU {args.reference_edition}...")
         try:
-            inactive_text = inactive_concept_report(
-                df, args.tx_server, args.reference_edition
-            )
+            codes = set()
+            for series in populated_codes(df).values():
+                codes |= set(series.unique())
+            status = concept_status(codes, args.tx_server, args.reference_edition)
+
+            sections.append((
+                "INACTIVE CONCEPTS",
+                inactive_concept_report(df, status, args.reference_edition),
+            ))
+
+            if not args.no_history_check:
+                print(f"  Expanding ECLs against {args.reference_edition} under "
+                      f"{len(HISTORY_PROFILES)} history profiles...")
+                ref_sets = reference_code_sets(
+                    args.reference_edition, args.tx_server
+                )
+
+                for warning in check_history_sets(ref_sets):
+                    print(f"  WARNING: {warning}", file=sys.stderr)
+
+                criteria = question_criteria(ref_sets[None])
+                sections.append((
+                    "INACTIVE CONCEPTS IN QUESTION SCOPE",
+                    question_scope_report(
+                        df, edition_code_sets, ref_sets, status, criteria,
+                        edition=args.reference_edition,
+                    ),
+                ))
+                print(f"  Recomputing flags against {args.reference_edition}...")
+                sections.append((
+                    f"EFFECT OF RECOMPUTING AGAINST {args.reference_edition}",
+                    edition_delta_report(
+                        df, ref_sets, edition=args.reference_edition
+                    ),
+                ))
         except requests.RequestException as e:
-            # The expensive ECL work is already done; a failed activity check
-            # should annotate the report, not discard the run.
-            inactive_text = (
-                f"Concept activity against SNOMED CT-AU {args.reference_edition} "
-                f"could not be determined: {e}"
-            )
+            # The expensive per-edition ECL work is already done; a failed
+            # activity check should annotate the report, not discard the run.
+            if not sections:
+                sections.append((
+                    "INACTIVE CONCEPTS",
+                    f"Concept activity against SNOMED CT-AU {args.reference_edition} "
+                    f"could not be determined: {e}",
+                ))
             print(f"  WARNING: inactive-concept check failed: {e}", file=sys.stderr)
 
+    df = df.drop(columns=["_edition"])
+
     print("Computing metrics...")
-    output = compute_metrics(df, usage, inactive_text)
+    output = compute_metrics(df, usage, sections)
 
     # Write metrics.txt
     metrics_path = os.path.join(SCRIPT_DIR, "metrics.txt")

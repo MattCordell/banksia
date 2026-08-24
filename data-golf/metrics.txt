@@ -2,86 +2,92 @@
 Analytics Questions
 ============================================================
 
-Q1. Patients with female as their recorded sex.: 127938
-Q2. Patients with a BMI of 30 or more and a total cholesterol to HDL ratio greater than 5.: 45388
-Q3. Patients documented as being healthy or free of current problems.: 100433
-Q4. Patients with hyperthyroidism according to their clinical note.: 476
-Q5. Patients with osteoarthritis in 2024.: 1760
-Q6. Patients taking an ACE inhibitor.: 17393
-Q7. Patients taking a product containing a cardiac (digitalis) glycoside.: 130
-Q8. Patients with a fungal foot infection.: 24
-Q9. Patients taking more than one product that contains paracetamol.: 90
-Q10. Patients with a bilateral condition.: 2908
-Q11. Female patients aged 15 to 49 taking methotrexate.: 555
-Q12. Pregnant patients prescribed a teratogenic medicine.: 729
-Q13. Patients with osteoarthritis or rheumatoid arthritis taking an oral NSAID, and their eGFR is below 60.: 812
-Q14. Patients prescribed digoxin and a loop diuretic, who have an eGFR below 30.: 16
-Q15. Pregnant patients with a fasting glucose of 5.1 mmol/L or greater.: 793
-Q16. Patients with a non-Streptococcal bacterial joint infection.: 1552
-Q17. Patients taking an oral iron supplement.: 13318
-Q18. Patients taking mineral supplement excluding the electrolytes sodium, potassium or chloride.: 20243
+Q1. Patients with female as their recorded sex.: 28573
+Q2. Patients with a BMI of 30 or more and a total cholesterol to HDL ratio greater than 5.: 10128
+Q3. Patients documented as being healthy or free of current problems.: 22430
+Q4. Patients with hyperthyroidism according to their clinical note.: 86
+Q5. Patients with osteoarthritis in 2024.: 464
+Q6. Patients taking an ACE inhibitor.: 3985
+Q7. Patients taking a product containing a cardiac (digitalis) glycoside.: 28
+Q8. Patients with a fungal foot infection.: 7
+Q9. Patients taking more than one product that contains paracetamol.: 17
+Q10. Patients with a bilateral condition.: 612
+Q11. Female patients aged 15 to 49 taking methotrexate.: 121
+Q12. Pregnant patients prescribed a teratogenic medicine.: 152
+Q13. Patients with osteoarthritis or rheumatoid arthritis taking an oral NSAID, and their eGFR is below 60.: 212
+Q14. Patients prescribed digoxin and a loop diuretic, who have an eGFR below 30.: 4
+Q15. Pregnant patients with a fasting glucose of 5.1 mmol/L or greater.: 178
+Q16. Patients with a non-Streptococcal bacterial joint infection.: 312
+Q17. Patients taking an oral iron supplement.: 2768
+Q18. Patients taking mineral supplement excluding the electrolytes sodium, potassium or chloride.: 4228
 
 ============================================================
 DATA SUMMARY
 ============================================================
 
-Total rows: 256515
+Total rows: 57371
 
 Condition counts:
-    Alcoholic Liver Disease: 3775
-    Bacterial Infection: 6446
-    COPD: 3671
-    Chronic Kidney Disease (Stage 3-4): 3999
-    Chronic Liver Disease / Cirrhosis: 1435
-    Essential Hypertension: 22193
-    Fungal Infection: 2444
-    Healthy: 100433
-    Heart Failure (Chronic): 1449
-    Hyperlipidaemia: 14915
-    Hyperthyroidism: 575
-    Hypothyroidism: 4987
-    Inflammatory Conditions: 12248
-    Iron Deficiency Anaemia: 13414
-    Ischaemic Heart Disease: 5126
-    Nonalcoholic Fatty Liver Disease (NAFLD): 20991
-    Osteoarthritis: 14144
-    Parasitic Infection: 417
-    Pregnancy: 1090
-    Rheumatoid Arthritis: 3167
-    Type 2 Diabetes Mellitus: 10068
-    Viral Infection: 9528
+    Alcoholic Liver Disease: 859
+    Bacterial Infection: 1427
+    COPD: 798
+    Chronic Kidney Disease (Stage 3-4): 924
+    Chronic Liver Disease / Cirrhosis: 322
+    Essential Hypertension: 5098
+    Fungal Infection: 566
+    Healthy: 22430
+    Heart Failure (Chronic): 308
+    Hyperlipidaemia: 3255
+    Hyperthyroidism: 104
+    Hypothyroidism: 1103
+    Inflammatory Conditions: 2632
+    Iron Deficiency Anaemia: 3007
+    Ischaemic Heart Disease: 1206
+    Nonalcoholic Fatty Liver Disease (NAFLD): 4703
+    Osteoarthritis: 3231
+    Parasitic Infection: 87
+    Pregnancy: 237
+    Rheumatoid Arthritis: 693
+    Type 2 Diabetes Mellitus: 2213
+    Viral Infection: 2168
 
 ============================================================
 PUBLIC / PRIVATE SPLIT
 ============================================================
 
-Stratified per question at 50% public. Rows: 128258 public / 128257 private.
+Stratified per question at 50% public. Rows: 28686 public / 28685 private.
 
 Q        total  public  private  private %
-Q1      127938   63969    63969      50.0%
-Q2       45388   22694    22694      50.0%
-Q3      100433   50217    50216      50.0%
-Q4         476     238      238      50.0%
-Q5        1760     880      880      50.0%
-Q6       17393    8697     8696      50.0%
-Q7         130      65       65      50.0%
-Q8          24      12       12      50.0%
-Q9          90      45       45      50.0%
-Q10       2908    1454     1454      50.0%
-Q11        555     278      277      49.9%
-Q12        729     365      364      49.9%
-Q13        812     406      406      50.0%
-Q14         16       8        8      50.0%
-Q15        793     396      397      50.1%
-Q16       1552     776      776      50.0%
-Q17      13318    6659     6659      50.0%
-Q18      20243   10122    10121      50.0%
+Q1       28573   14286    14287      50.0%
+Q2       10128    5064     5064      50.0%
+Q3       22430   11215    11215      50.0%
+Q4          86      43       43      50.0%
+Q5         464     232      232      50.0%
+Q6        3985    1992     1993      50.0%
+Q7          28      14       14      50.0%
+Q8           7       4        3      42.9%
+Q9          17       8        9      52.9%
+Q10        612     306      306      50.0%
+Q11        121      61       60      49.6%
+Q12        152      76       76      50.0%
+Q13        212     106      106      50.0%
+Q14          4       2        2      50.0%
+Q15        178      89       89      50.0%
+Q16        312     156      156      50.0%
+Q17       2768    1384     1384      50.0%
+Q18       4228    2114     2114      50.0%
+
+WARNING: 4 question(s) below the 5-positive floor:
+    Q8 has only 4 positive(s) in public of 7 total (floor is 5)
+    Q8 has only 3 positive(s) in private of 7 total (floor is 5)
+    Q14 has only 2 positive(s) in public of 4 total (floor is 5)
+    Q14 has only 2 positive(s) in private of 4 total (floor is 5)
 
 ============================================================
 INACTIVE CONCEPTS
 ============================================================
 
-Concept activity against SNOMED CT-AU 20260131. Flags are computed per
+Concept activity against SNOMED CT-AU 20260731. Flags are computed per
 encounter against the edition current at the time, so an inactive code here
 was still valid when it was recorded.
 
@@ -90,9 +96,130 @@ populated. Column counts overlap -- the medicine slots draw on one another's
 products -- so they sum to more than the deduplicated total below.
 
 Field                concepts inactive    pct      rows inactive    pct
-Clinical_Note_Code       8666      353   4.1%    256515     5262   2.1%
-Medicine_1_Code         11186      198   1.8%    147463     3101   2.1%
-Medicine_2_Code          8855      162   1.8%     68679     1287   1.9%
-Medicine_3_Code          5225      111   2.1%     27342      535   2.0%
+Clinical_Note_Code       5021      334   6.7%     57371     5467   9.5%
+Medicine_1_Code          6903      183   2.7%     36444     3467   9.5%
+Medicine_2_Code          4333      137   3.2%     15867     1069   6.7%
+Medicine_3_Code          2197       90   4.1%      6253      394   6.3%
 
-Across all four fields: 21435 distinct concepts, 593 inactive (2.8%).
+Across all four fields: 13559 distinct concepts, 549 inactive (4.0%).
+
+============================================================
+INACTIVE CONCEPTS IN QUESTION SCOPE
+============================================================
+
+Of the inactive concepts above, which fall inside a question's ECLs. Scope is
+the union across encounter editions, restricted to codes present in the data.
+
+MIN/MOD/MAX count the in-scope inactive concepts each ECL history supplement
+recovers when the criteria are expanded against 20260731 instead;
+"unrecov" are those even HISTORY-MAX cannot reach, meaning SNOMED International
+retired them without a historical association. "rows" are positive rows whose
+matching code is inactive, counted against each row's own encounter edition.
+
+The reference expansions union both product models, so a concept is not called
+unrecoverable merely for belonging to the model the reference edition dropped.
+
+Q        scope inactive   MIN   MOD   MAX  unrecov  positives    rows
+Q1         n/a      n/a   n/a   n/a   n/a      n/a      28573     n/a
+Q2         n/a      n/a   n/a   n/a   n/a      n/a      10128     n/a
+Q3          16        0     0     0     0        0      22430       0
+Q4          22        0     0     0     0        0         86       0
+Q5         366        8     3     4     4        4        464     129
+Q6         718       16     0    15    16        0       3985     356
+Q7          13        0     0     0     0        0         28       0
+Q8           5        0     0     0     0        0          7       0
+Q9         666        0     0     0     0        0         17       0
+Q10        156        3     1     2     3        0        612      42
+Q11         62        4     0     4     4        0        121      12
+Q12       1685       72     2    55    60       12        152      16
+Q13       1362       33    15    25    26        7        212      57
+Q14        113        0     0     0     0        0          4       0
+Q15        187       33     2    19    23       10        178      30
+Q16         88        1     0     0     1        0        312      15
+Q17         82        0     0     0     0        0       2768       0
+Q18        229        2     0     2     2        0       4228       4
+
+111 of the 549 inactive concepts fall in scope of at least one question;
+19 of those have no historical association and cannot be recovered.
+
+Unrecoverable in-scope concepts:
+    190828008           Q5,Q13          Gouty arthropathy
+    239881008           Q5,Q13          Otto's pelvis
+    310640003           Q5,Q13          Degenerative lesion of articular cartilage of knee
+    43132002            Q5,Q13          Degeneration of cervicothoracic intervertebral disc
+    371603001           Q12             Doxycycline calcium 5 mg/mL oral suspension
+    375129007           Q12             Doxycycline monohydrate 100 mg oral capsule
+    106109006           Q12,Q15         Number of previous induced termination of pregnancy
+    169651008           Q12,Q15         Antenatal amniocentesis - awaited
+    199156006           Q12,Q15         Maternal syphilis during pregnancy - baby delivered
+    199158007           Q12,Q15         Maternal syphilis during pregnancy - baby not yet delivered
+    199428006           Q12,Q15         Hydrocephalic disproportion with antenatal problem
+    199484006           Q12,Q15         Cervical incompetence with antenatal problem
+    2989004             Q12,Q15         Complication following molar AND/OR ectopic pregnancy
+    31227001            Q12,Q15         Twelve previous induced terminations of pregnancy
+    42571002            Q12,Q15         Failed induction of labour
+    60755004            Q12,Q15         Persistent hymen affecting pregnancy
+    239795001           Q13             Rheumatoid arthritis with multisystem involvement
+    319841000119107     Q13             Rheumatoid lung disease with rheumatoid arthritis
+    82939003            Q13             Chronic rheumatoid nodular fibrosis
+
+============================================================
+EFFECT OF RECOMPUTING AGAINST 20260731
+============================================================
+
+Positives if every flag were recomputed against SNOMED CT-AU 20260731
+alone, rather than against each row's own encounter edition. "latest" applies no
+history supplement -- the naive current-release reading.
+
+The medicine criteria are expanded under both product models here (SNOMED
+international and AMT), because the dataset carries codes from both. Using the
+reference edition's own model alone would strand every pre-2025 medicine row and
+report the model switch as terminology drift. These columns isolate the drift.
+
+CAVEAT: the medicine criteria carry a display-text fallback, so a row can still
+match on the product name after its code leaves the ECL. The medicine questions
+therefore understate terminology sensitivity; the condition questions (Q3, Q4,
+Q5, Q8, Q10, Q16) have no fallback and show the true exposure.
+
+Q        current      latest   +HIST-MIN   +HIST-MOD   +HIST-MAX
+Q1         28573       28573       28573       28573       28573
+Q2         10128       10128       10128       10128       10128
+Q3         22430       22430       22430       22430       22430
+Q4            86          84          84          84          84
+Q5           464         151         172         179         182
+Q6          3985        3985        3985        3985        3985
+Q7            28          28          28          28          28
+Q8             7           7           7           7           7
+Q9            17          17          17          17          17
+Q10          612         570         597         599         612
+Q11          121         121         121         121         121
+Q12          152         179         183         275         276
+Q13          212         112         124         125         128
+Q14            4           4           4           4           4
+Q15          178         223         235         291         299
+Q16          312         293         293         293         308
+Q17         2768        2768        2768        2768        2768
+Q18         4228        4224        4224        4228        4228
+
+Movement under +HIST-MAX. The totals above hide it: the newer hierarchy pulls
+rows in as well as dropping them, and a question can do both at once.
+
+Q        current   +HIST-MAX   gained   lost     net
+Q1         28573       28573        0      0      +0
+Q2         10128       10128        0      0      +0
+Q3         22430       22430        0      0      +0
+Q4            86          84        0      2      -2
+Q5           464         182        3    285    -282
+Q6          3985        3985        0      0      +0
+Q7            28          28        0      0      +0
+Q8             7           7        0      0      +0
+Q9            17          17        0      0      +0
+Q10          612         612        0      0      +0
+Q11          121         121        0      0      +0
+Q12          152         276      124      0    +124
+Q13          212         128        0     84     -84
+Q14            4           4        0      0      +0
+Q15          178         299      129      8    +121
+Q16          312         308        4      8      -4
+Q17         2768        2768        0      0      +0
+Q18         4228        4228        0      0      +0

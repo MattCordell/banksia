@@ -22,13 +22,31 @@ PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
 GENERATE_PY = os.path.join(PROJECT_ROOT, "generate.py")
 DEFAULT_TX_SERVER = "https://r4.ontoserver.csiro.au/fhir"
 
+# Codes to over-sample: the "unrecoverable in-scope concepts" analyse.py reports
+# (inactive by the reference edition with no historical association, so no
+# history supplement can recover them). Weighting them up puts more of that
+# irrecoverable drift in front of entrants.
+BOOST_CODES_FILE = os.path.join(SCRIPT_DIR, "boost_codes.json")
+DEFAULT_BOOST_FACTOR = 3.0
+
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+# Reference edition --inactive-rate biases code selection against. Deliberately
+# outside PERIODS: a concept cannot be both active in its encounter edition and
+# inactive in the same edition, so the final period would have zero headroom
+# if this matched PERIODS' latest entry.
+INACTIVE_REFERENCE_EDITION = "20260731"
+
 # Each period starts the day after the SNOMED CT-AU edition is published.
-# ecl_template: "product" for pre-2025, "amt-tpuu" for 2025 onwards.
+# ecl_template: "clinical-drug" for pre-2025 (strength-bearing products, falling
+# back to "product" per ecl_templates.json when an ingredient has no
+# strength-bearing concept in that edition), "amt-tpuu" for 2025 onwards.
 PERIODS = [
-    {"start": date(2021, 2, 1), "end": date(2022, 1, 31), "edition": "20210131", "ecl_template": "product"},
-    {"start": date(2022, 2, 1), "end": date(2023, 1, 31), "edition": "20220131", "ecl_template": "product"},
-    {"start": date(2023, 2, 1), "end": date(2024, 1, 31), "edition": "20230131", "ecl_template": "product"},
-    {"start": date(2024, 2, 1), "end": date(2025, 1, 31), "edition": "20240131", "ecl_template": "product"},
+    {"start": date(2021, 2, 1), "end": date(2022, 1, 31), "edition": "20210131", "ecl_template": "clinical-drug"},
+    {"start": date(2022, 2, 1), "end": date(2023, 1, 31), "edition": "20220131", "ecl_template": "clinical-drug"},
+    {"start": date(2023, 2, 1), "end": date(2024, 1, 31), "edition": "20230131", "ecl_template": "clinical-drug"},
+    {"start": date(2024, 2, 1), "end": date(2025, 1, 31), "edition": "20240131", "ecl_template": "clinical-drug"},
     {"start": date(2025, 2, 1), "end": date(2026, 1, 31), "edition": "20250131", "ecl_template": "amt-tpuu"},
     {"start": date(2026, 2, 1), "end": date(2027, 1, 31), "edition": "20260131", "ecl_template": "amt-tpuu"},
 ]
@@ -102,7 +120,46 @@ def compute_dob(rng, age, encounter_date):
     return earliest_dob + timedelta(days=rng.randint(0, delta))
 
 
-def generate_period(period, actual_n, period_seed, rng):
+def report_inactive_rate(df, tx_server, reference_edition):
+    """Print the achieved doomed-draw rate for one period's generated rows.
+
+    Measures the actual per-cell inactive rate against reference_edition
+    across the four SNOMED-coded columns, so the printed figure reflects what
+    was really injected rather than the requested --inactive-rate. The final
+    period (its own encounter edition against a later reference) only has a
+    few months of retirements to draw from, so its achieved rate is expected
+    to fall short of the target -- this makes that visible rather than silent.
+    """
+    codes = set()
+    for col in SNOMED_CODE_COLS:
+        series = df[col].fillna("").astype(str).str.strip()
+        codes |= set(series[series != ""].unique())
+
+    if not codes:
+        print("    achieved doomed-draw rate: n/a (no SNOMED codes generated)")
+        return
+
+    from conditions.snomed import concept_status
+    status = concept_status(codes, tx_server, reference_edition)
+    inactive = {c for c, s in status.items() if s == "inactive"}
+
+    total_cells = 0
+    inactive_cells = 0
+    for col in SNOMED_CODE_COLS:
+        series = df[col].fillna("").astype(str).str.strip()
+        populated = series[series != ""]
+        total_cells += len(populated)
+        inactive_cells += int(populated.isin(inactive).sum())
+
+    rate = inactive_cells / total_cells * 100 if total_cells else 0.0
+    print(
+        f"    achieved doomed-draw rate: {inactive_cells}/{total_cells} code cells "
+        f"({rate:.1f}%) inactive against {reference_edition}"
+    )
+
+
+def generate_period(period, actual_n, period_seed, rng, inactive_rate=0.0,
+                    boost_factor=DEFAULT_BOOST_FACTOR):
     """Generate a cohort for one SNOMED CT-AU edition period."""
     tmp_fd, tmp_path = tempfile.mkstemp(suffix=".csv")
     os.close(tmp_fd)
@@ -118,6 +175,10 @@ def generate_period(period, actual_n, period_seed, rng):
             "--med-ecl-template", period["ecl_template"],
             "--tx-server", DEFAULT_TX_SERVER,
             "--output", tmp_path,
+            "--inactive-rate", str(inactive_rate),
+            "--inactive-reference-edition", INACTIVE_REFERENCE_EDITION,
+            "--boost-codes-file", BOOST_CODES_FILE,
+            "--boost-factor", str(boost_factor),
         ]
         timestamp = datetime.now().strftime("%H:%M:%S")
         print(f"  [{timestamp}] Generating {actual_n} patients for edition "
@@ -127,6 +188,9 @@ def generate_period(period, actual_n, period_seed, rng):
         # Read SNOMED code columns as strings to avoid float conversion
         dtype_overrides = {col: str for col in SNOMED_CODE_COLS}
         df = pd.read_csv(tmp_path, dtype=dtype_overrides)
+
+        if inactive_rate > 0:
+            report_inactive_rate(df, DEFAULT_TX_SERVER, INACTIVE_REFERENCE_EDITION)
     finally:
         if os.path.exists(tmp_path):
             os.remove(tmp_path)
@@ -165,6 +229,22 @@ def main():
         default=DEFAULT_SEED,
         help=f"Random seed for reproducibility (default: {DEFAULT_SEED}).",
     )
+    parser.add_argument(
+        "--inactive-rate",
+        type=float,
+        default=0.0,
+        help="Probability of biasing SNOMED CT code selection toward concepts "
+             "that are active in their encounter edition but inactive in "
+             f"{INACTIVE_REFERENCE_EDITION} (default: 0.0, unbiased).",
+    )
+    parser.add_argument(
+        "--boost-factor",
+        type=float,
+        default=DEFAULT_BOOST_FACTOR,
+        help=f"Weight multiple applied to the codes in boost_codes.json when "
+             f"selecting from the same draw (default: {DEFAULT_BOOST_FACTOR}, "
+             f"i.e. tripled). 1.0 disables the boost.",
+    )
     args = parser.parse_args()
 
     rng = random.Random(args.seed)
@@ -176,7 +256,8 @@ def main():
     for i, period in enumerate(PERIODS):
         lower = math.floor(args.n * 0.9)
         actual_n = rng.randint(lower, args.n)
-        df = generate_period(period, actual_n, period_seeds[i], rng)
+        df = generate_period(period, actual_n, period_seeds[i], rng,
+                             args.inactive_rate, args.boost_factor)
         all_dfs.append(df)
 
     combined = pd.concat(all_dfs, ignore_index=True)

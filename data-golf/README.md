@@ -45,12 +45,14 @@ Iterates over six SNOMED CT-AU edition periods (2021–2026), calling the main b
 
 | Period | Edition | ECL template |
 |--------|---------|--------------|
-| 2021-02-01 → 2022-01-31 | 20210131 | product |
-| 2022-02-01 → 2023-01-31 | 20220131 | product |
-| 2023-02-01 → 2024-01-31 | 20230131 | product |
-| 2024-02-01 → 2025-01-31 | 20240131 | product |
+| 2021-02-01 → 2022-01-31 | 20210131 | clinical-drug |
+| 2022-02-01 → 2023-01-31 | 20220131 | clinical-drug |
+| 2023-02-01 → 2024-01-31 | 20230131 | clinical-drug |
+| 2024-02-01 → 2025-01-31 | 20240131 | clinical-drug |
 | 2025-02-01 → 2026-01-31 | 20250131 | amt-tpuu |
 | 2026-02-01 → 2027-01-31 | 20260131 | amt-tpuu |
+
+`clinical-drug` selects strength-bearing SNOMED CT products (those with `732943007 |Has basis of strength substance|`). Where a category's ingredients have no such concept in that edition, it falls back to the broader `product` template so the row still gets a code — on edition 20210131 that affects 6 of 68 ingredient ECLs.
 
 Each period's cohort is assigned random `EncounterDate` values within the period window and a consistent `DateOfBirth` derived from the generated `Age`. The six cohorts are concatenated, sorted by `EncounterDate`, and saved as `raw_data.csv` with a sequential `Episode Number`.
 
@@ -79,6 +81,12 @@ Conditions are therefore matched by ECL against `Clinical_Note_Code`; medicines 
 ECLs are expanded per edition and applied only to rows whose encounter falls in that edition's period, so a flag reflects the terminology active at the time of the encounter. This is deliberate, and it does mean identical clinical content can flag differently across years — `<<118185001 |Pregnant|` expands to between 782 and 1633 members depending on edition, and *Pregnancy-induced hypertension* only becomes a descendant from the 2024 edition onward.
 
 When authoring an ECL, prefer stable substance groupers over navigation expressions. `(<13790009.<<762951001) AND <<767270007` resolved to a single ingredient in the 2021–2024 editions versus eight in 2025+, silently under-counting every pre-2025 row; `<<767270007 |Iron and/or iron compound|` is stable at 78–87 members across all six.
+
+`analyse.py` quantifies the cost of that choice in three `metrics.txt` sections — dataset-wide inactive concepts, how many fall inside a question's ECLs and whether an ECL history supplement could recover them, and what would move if every flag were recomputed against the latest edition instead. The reports measure the alternative without applying it: `solution.csv` stays encounter-relative.
+
+See **[TerminologyDrift.md](TerminologyDrift.md)** for the analysis. The headline: concept *retirement* touched 741 positive rows across all 18 questions, while *reclassification* moved 952 rows in Q5 alone — `<<396275006 |Osteoarthritis|` went from 431 concepts to 181 between the 2025 and 2026 editions, and only 8 of the 250 departures were retirements. History supplements address inactivation only, so they offer no protection against the larger effect.
+
+Pass `--no-history-check` to skip the two reference-edition sections and their extra ECL expansions; `--no-inactive-check` skips all three.
 
 ## Output files
 

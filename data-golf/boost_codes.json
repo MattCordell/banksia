@@ -1,0 +1,15 @@
+{
+  "_comment": "Unrecoverable in-scope concepts (see metrics.txt) to over-sample. 'factor' is the default weight multiple relative to their peers; override with --boost-factor.",
+  "factor": 3.0,
+  "codes": [
+    {"code": "310640003", "questions": "Q5,Q13", "display": "Degenerative lesion of articular cartilage of knee"},
+    {"code": "43132002", "questions": "Q5,Q13", "display": "Degeneration of cervicothoracic intervertebral disc"},
+    {"code": "371603001", "questions": "Q12", "display": "Doxycycline calcium 5 mg/mL oral suspension"},
+    {"code": "375129007", "questions": "Q12", "display": "Doxycycline monohydrate 100 mg oral capsule"},
+    {"code": "199158007", "questions": "Q12,Q15", "display": "Maternal syphilis during pregnancy - baby not yet delivered"},
+    {"code": "40193008", "questions": "Q12,Q15", "display": "Single vessel of umbilical cord"},
+    {"code": "239795001", "questions": "Q13", "display": "Rheumatoid arthritis with multisystem involvement"},
+    {"code": "319841000119107", "questions": "Q13", "display": "Rheumatoid lung disease with rheumatoid arthritis"},
+    {"code": "82939003", "questions": "Q13", "display": "Chronic rheumatoid nodular fibrosis"}
+  ]
+}
