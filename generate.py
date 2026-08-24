@@ -17,6 +17,7 @@ import pandas as pd
 
 from common.types import PatientContext
 from conditions.generator import assign_condition, resolve_snomed_code
+from conditions.snomed import set_code_boost
 from identity.generator import assign_identity
 from laboratory.generator import generate_lab_results, _resolve_profiles
 from population.generator import generate_contexts
@@ -25,7 +26,10 @@ from formatters.csv_writer import contexts_to_dataframe, write_csv
 from formatters.fhir_writer import build_fhir_patient, post_to_fhir_server
 
 
-def _assign_snomed(ctx, tx_server, snomed_edition, no_snomed):
+def _assign_snomed(
+    ctx, tx_server, snomed_edition, no_snomed,
+    inactive_rate=0.0, inactive_reference_edition=None,
+):
     """Resolve a SNOMED code for the context's condition and populate it."""
     if no_snomed:
         return
@@ -35,6 +39,8 @@ def _assign_snomed(ctx, tx_server, snomed_edition, no_snomed):
         age=ctx.age,
         tx_server=tx_server,
         edition=snomed_edition,
+        inactive_rate=inactive_rate,
+        inactive_reference_edition=inactive_reference_edition,
     )
     if result:
         ctx.snomed_code = result["code"]
@@ -52,6 +58,8 @@ def generate_single(
     no_snomed: bool = False,
     med_ecl_template: str = None,
     episode_date: date = None,
+    inactive_rate: float = 0.0,
+    inactive_reference_edition: str = None,
 ):
     """Generate a single patient with demographics + lab results."""
     ctx = PatientContext(
@@ -61,10 +69,14 @@ def generate_single(
         condition=condition,
     )
     assign_identity(ctx, episode_date=episode_date)
-    _assign_snomed(ctx, tx_server, snomed_edition, no_snomed)
+    _assign_snomed(
+        ctx, tx_server, snomed_edition, no_snomed,
+        inactive_rate=inactive_rate, inactive_reference_edition=inactive_reference_edition,
+    )
     ctx.medicines = generate_medicines(
         ctx, tx_server=tx_server, edition=snomed_edition, no_snomed=no_snomed,
         ecl_template=med_ecl_template,
+        inactive_rate=inactive_rate, inactive_reference_edition=inactive_reference_edition,
     )
     profiles = _resolve_profiles()
     lab = generate_lab_results(ctx, profiles=profiles, rng_seed=rng_seed)
@@ -82,6 +94,8 @@ def generate_cohort(
     no_snomed: bool = False,
     med_ecl_template: str = None,
     episode_date: date = None,
+    inactive_rate: float = 0.0,
+    inactive_reference_edition: str = None,
 ):
     """Generate a cohort: population demographics + lab results for each."""
     if rng_seed is not None:
@@ -96,10 +110,14 @@ def generate_cohort(
     for ctx in contexts:
         assign_identity(ctx, episode_date=episode_date)
         ctx.condition = assign_condition(ctx)
-        _assign_snomed(ctx, tx_server, snomed_edition, no_snomed)
+        _assign_snomed(
+            ctx, tx_server, snomed_edition, no_snomed,
+            inactive_rate=inactive_rate, inactive_reference_edition=inactive_reference_edition,
+        )
         ctx.medicines = generate_medicines(
             ctx, tx_server=tx_server, edition=snomed_edition, no_snomed=no_snomed,
             ecl_template=med_ecl_template,
+            inactive_rate=inactive_rate, inactive_reference_edition=inactive_reference_edition,
         )
 
     # 3. Generate lab results for each context
@@ -147,7 +165,9 @@ def main():
     parser.add_argument("--med-ecl-template", type=str, default=None,
                         help="Medicine ECL template: a named key from "
                              "medicines/ecl_templates.json (e.g. 'amt-tpuu', 'amt-mpuu', "
-                             "'product') or a raw ECL string with {ingredients} placeholder")
+                             "'clinical-drug', 'product') or a raw ECL string with "
+                             "{ingredients} placeholder. Named templates may declare a "
+                             "fallback, used when the preferred template expands to nothing")
     parser.add_argument("--episode-date", type=str, default=None,
                         help="Episode date for birth date calculation (YYYY-MM-DD). "
                              "Defaults to today.")
@@ -157,8 +177,32 @@ def main():
                         help="FHIR server base URL for posting Patient resources")
     parser.add_argument("--no-photo", action="store_true",
                         help="Skip profile photo generation for FHIR output")
+    parser.add_argument("--inactive-rate", type=float, default=0.0,
+                        help="Probability of biasing SNOMED CT code selection toward "
+                             "concepts active in --snomed-edition but inactive in "
+                             "--inactive-reference-edition (default: 0.0, unbiased)")
+    parser.add_argument("--inactive-reference-edition", type=str, default="20260731",
+                        help="SNOMED CT edition concepts are classified against when "
+                             "computing the doomed pool for --inactive-rate "
+                             "(default: 20260731)")
+    parser.add_argument("--boost-codes-file", type=str, default=None,
+                        help="JSON file listing SNOMED CT codes to over-sample "
+                             "({\"factor\": float, \"codes\": [{\"code\": ...}]}). "
+                             "See data-golf/boost_codes.json.")
+    parser.add_argument("--boost-factor", type=float, default=None,
+                        help="Weight multiple applied to the codes in "
+                             "--boost-codes-file, relative to their peers in the "
+                             "same draw (default: the file's own \"factor\"). "
+                             "1.0 disables the boost.")
 
     args = parser.parse_args()
+
+    if args.boost_codes_file:
+        with open(args.boost_codes_file, encoding="utf-8") as f:
+            boost_cfg = json.load(f)
+        factor = args.boost_factor if args.boost_factor is not None else boost_cfg.get("factor", 1.0)
+        set_code_boost([c["code"] for c in boost_cfg.get("codes", [])], factor)
+
     episode_date = date.fromisoformat(args.episode_date) if args.episode_date else None
 
     if args.mode == "single":
@@ -182,6 +226,8 @@ def main():
             no_snomed=args.no_snomed,
             med_ecl_template=args.med_ecl_template,
             episode_date=episode_date,
+            inactive_rate=args.inactive_rate,
+            inactive_reference_edition=args.inactive_reference_edition,
         )
 
         if args.output_format == "fhir":
@@ -214,6 +260,8 @@ def main():
                 no_snomed=args.no_snomed,
                 med_ecl_template=args.med_ecl_template,
                 episode_date=episode_date,
+                inactive_rate=args.inactive_rate,
+                inactive_reference_edition=args.inactive_reference_edition,
             )
             resources = [
                 build_fhir_patient(ctx, include_photo=not args.no_photo)
@@ -243,6 +291,8 @@ def main():
                 no_snomed=args.no_snomed,
                 med_ecl_template=args.med_ecl_template,
                 episode_date=episode_date,
+                inactive_rate=args.inactive_rate,
+                inactive_reference_edition=args.inactive_reference_edition,
             )
 
     elif args.mode == "population":
@@ -250,10 +300,16 @@ def main():
         for ctx in contexts:
             assign_identity(ctx, episode_date=episode_date)
             ctx.condition = assign_condition(ctx)
-            _assign_snomed(ctx, args.tx_server, args.snomed_edition, args.no_snomed)
+            _assign_snomed(
+                ctx, args.tx_server, args.snomed_edition, args.no_snomed,
+                inactive_rate=args.inactive_rate,
+                inactive_reference_edition=args.inactive_reference_edition,
+            )
             ctx.medicines = generate_medicines(
                 ctx, tx_server=args.tx_server, edition=args.snomed_edition,
                 no_snomed=args.no_snomed, ecl_template=args.med_ecl_template,
+                inactive_rate=args.inactive_rate,
+                inactive_reference_edition=args.inactive_reference_edition,
             )
 
         if args.output_format == "fhir":
