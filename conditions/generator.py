@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
 from common.types import PatientContext
-from .snomed import expand_ecl, DEFAULT_TX_SERVER
+from .snomed import expand_ecl, choose_concept, doomed_codes, DEFAULT_TX_SERVER
 
 logger = logging.getLogger(__name__)
 
@@ -68,12 +68,17 @@ def _build_exclusion_set(
     return excluded_codes
 
 
-def _get_age_multiplier(age: int, age_bands: List[Dict]) -> float:
-    """Find the age-band multiplier for a given age."""
+def _get_age_band(age: int, age_bands: List[Dict]) -> Optional[Dict]:
+    """Find the age band covering a given age, or None if uncovered."""
     for band in age_bands:
         if band["min_age"] <= age <= band["max_age"]:
-            return band["multiplier"]
-    return 1.0
+            return band
+    return None
+
+
+def _get_sex_multiplier(sex: str, sex_ratios: Dict[str, float]) -> float:
+    """Look up the sex multiplier, falling back to "other" then 1.0."""
+    return sex_ratios.get(sex, sex_ratios.get("other", 1.0))
 
 
 def _compute_adjusted_prevalence(
@@ -87,13 +92,18 @@ def _compute_adjusted_prevalence(
     if base is None:
         return 0.0
 
-    # Sex adjustment
-    sex_ratios = condition_cfg.get("sex_ratio", {})
-    sex_mult = sex_ratios.get(sex, sex_ratios.get("other", 1.0))
-
     # Age adjustment
     age_bands = condition_cfg.get("age_prevalence", [])
-    age_mult = _get_age_multiplier(age, age_bands)
+    band = _get_age_band(age, age_bands)
+    age_mult = band["multiplier"] if band else 1.0
+
+    # Sex adjustment. A band may carry its own "sex_ratio", which replaces the
+    # condition-level one for that age range only (e.g. a male-skewed
+    # adolescent/young-adult band in an otherwise sex-neutral condition).
+    sex_ratios = condition_cfg.get("sex_ratio", {})
+    if band and "sex_ratio" in band:
+        sex_ratios = band["sex_ratio"]
+    sex_mult = _get_sex_multiplier(sex, sex_ratios)
 
     # Lifestyle adjustment (multiplicative stacking)
     lifestyle_mults = condition_cfg.get("lifestyle_multipliers", {})
@@ -154,6 +164,8 @@ def resolve_snomed_code(
     age: int = -1,
     tx_server: Optional[str] = None,
     edition: Optional[str] = None,
+    inactive_rate: float = 0.0,
+    inactive_reference_edition: Optional[str] = None,
 ) -> Optional[Dict[str, str]]:
     """Resolve a SNOMED CT code for the given condition via ECL expansion.
 
@@ -169,6 +181,13 @@ def resolve_snomed_code(
         tx_server: FHIR terminology server URL. Defaults to Ontoserver.
         edition: Optional SNOMED CT edition version (e.g. "20250131").
             If None, the server default is used.
+        inactive_rate: Probability of biasing the pick toward the subset of
+            the expansion that is active at `edition` but inactive at
+            `inactive_reference_edition`. 0.0 (default) reproduces the
+            unbiased behaviour exactly.
+        inactive_reference_edition: SNOMED CT edition to classify concepts
+            against when computing the doomed pool. Required for
+            inactive_rate to have any effect.
 
     Returns:
         Dict with "code", "system", "display" keys, or None if expansion
@@ -203,7 +222,16 @@ def resolve_snomed_code(
                     len(concepts), condition, sex, age,
                 )
 
-    chosen = random.choice(concepts)
+    doomed = set()
+    if inactive_rate > 0 and inactive_reference_edition:
+        doomed = doomed_codes(
+            ecl,
+            tx_server=server,
+            edition=edition,
+            reference_edition=inactive_reference_edition,
+        )
+
+    chosen = choose_concept(concepts, doomed, inactive_rate)
     return {
         "code": chosen["code"],
         "system": "http://snomed.info/sct",
