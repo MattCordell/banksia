@@ -231,6 +231,12 @@ For a given set of conditions and medicine categories on a single edition, the c
 
 Dev dependencies (optional): pytest, ruff
 
+## Data Golf competition branches
+
+Banksia generated the data for the Data Golf terminology competition. The competition work (question sets, analysis, bias weighting and tuning, post-event reports) is kept off `main` so this branch stays a general-purpose generator. Each edition has its own branch:
+
+- [`data-golf-2026`](https://github.com/MattCordell/banksia/tree/data-golf-2026): Data Golf 2026
+
 ## License
 
 MIT
