@@ -94,11 +94,11 @@ Pass `--no-history-check` to skip the two reference-edition sections and their e
 |------|-------------|---------------------------|
 | `TrainingDataSet.csv` | Patient demographics, labs, SNOMED codes, and medicine codes/displays. Strips `Age`, `Condition`, `LifestyleFactors`, `BirthDate`, and the medicine categories. SNOMED columns renamed to `Clinical_Note_Code` / `Clinical_Note_Display`. | Yes |
 | `sample_submission.csv` | Same structure as a submission (Episode Number + Q1–Q18), filled with random True/False. | Yes |
-| `solution.csv` | Correct answers per episode + `Usage` column (Public/Private for the Kaggle leaderboard split). | **No — keep private** |
+| `solution.csv` | Correct answers per episode + `Usage` column (Public/Private for the Kaggle leaderboard split). | **Not during the event.** Published in this repository after the event closed. |
 | `metrics.txt` | Human-readable criterion counts and condition summary for the organiser. | No |
 | `raw_data.csv` | Full generated data including `Age`, `Condition`, and medicine categories — the source of truth for `solution.csv`. | No |
 
-> **Note:** `solution.csv` and `raw_data.csv` contain information that would let participants answer the questions directly. Do not publish them alongside the competition dataset.
+> **Note:** `solution.csv` and `raw_data.csv` contain information that would let participants answer the questions directly. Do not publish them alongside the competition dataset of a live event. For Data Golf 2026, `solution.csv` was committed to this branch after the competition closed, as a target to compare against (it is one encounter-relative reading of each question, not absolute truth). `raw_data.csv` stays unpublished.
 
 `Age` is withheld and must be derived from `DateOfBirth` and `EncounterDate`. Only `DateOfBirth` is published: an earlier `BirthDate` column was computed against *today* rather than the encounter date and disagreed with `DateOfBirth` by up to six years, flipping rows across the 15/18/50 age thresholds.
 
