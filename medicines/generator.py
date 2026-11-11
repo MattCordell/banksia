@@ -120,7 +120,12 @@ def generate_medicines(
 
     Returns:
         List of dicts with keys: category, code, display.
-        At most MAX_MEDICINES entries.
+        At most MAX_MEDICINES entries. A category that rolls true but draws a
+        code already selected for an earlier category in this call is
+        dropped rather than re-drawn, so codes are unique within the
+        returned list -- the list can end up shorter than MAX_MEDICINES even
+        when more categories rolled true than there were unique codes to go
+        around.
     """
     prescriptions = _load_prescriptions()
     condition_config = prescriptions.get(context.condition)
@@ -130,6 +135,7 @@ def generate_medicines(
     template_chain = resolve_ecl_template_chain(ecl_template)
     categories = condition_config.get("medicines", [])
     selected: List[Dict[str, Optional[str]]] = []
+    used_codes: set = set()
 
     for cat in categories:
         if len(selected) >= MAX_MEDICINES:
@@ -184,8 +190,11 @@ def generate_medicines(
                                 reference_edition=inactive_reference_edition,
                             )
                         choice = choose_concept(concepts, doomed, inactive_rate)
+                        if choice["code"] in used_codes:
+                            continue
                         medicine["code"] = choice["code"]
                         medicine["display"] = choice["display"]
+                        used_codes.add(choice["code"])
 
             selected.append(medicine)
 

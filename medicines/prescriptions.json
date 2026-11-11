@@ -3,7 +3,7 @@
     "medicines": [
       {
         "category": "Non-opioid analgesic",
-        "ecl": "<373216001",
+        "ecl": "<373216001 MINUS <372665008",
         "probability": 0.08,
         "notes": "Paracetamol or ibuprofen OTC use"
       },
@@ -286,7 +286,7 @@
       {
         "category": "Digoxin",
         "ecl": "387461009",
-        "probability": 0.25,
+        "probability": 0.342,
         "notes": "Adjunct if AF or persistent symptoms"
       }
     ],
@@ -418,7 +418,7 @@
       {
         "category": "Methotrexate",
         "ecl": "387381009",
-        "probability": 0.70,
+        "probability": 0.85,
         "notes": "Gold standard first-line DMARD"
       },
       {
@@ -543,7 +543,7 @@
     "medicines": [
       {
         "category": "Non-opioid analgesic",
-        "ecl": "<373216001",
+        "ecl": "<373216001 MINUS <372665008",
         "probability": 0.60,
         "notes": "Paracetamol or ibuprofen for symptomatic relief"
       },
@@ -634,7 +634,7 @@
       {
         "category": "DMARDs",
         "ecl": "387381009 OR 373540008 OR 387248006",
-        "probability": 0.20,
+        "probability": 0.33,
         "notes": "Methotrexate, hydroxychloroquine, sulfasalazine for autoimmune/spondyloarthritis subset"
       },
       {
@@ -651,7 +651,7 @@
     "medicines": [
       {
         "category": "Non-opioid analgesic",
-        "ecl": "90332006",
+        "ecl": "<373216001 MINUS <372665008",
         "probability": 0.75,
         "notes": "Paracetamol; first-line simple analgesia for musculoskeletal injury (Therapeutic Guidelines: Pain)"
       },
