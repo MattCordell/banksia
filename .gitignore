@@ -232,3 +232,6 @@ cohort_results.json
 data-golf/DataSnippet.txt
 data-golf/raw_data.csv
 data-golf/Submission snippet.txt
+
+# Data Golf 2026 participant submissions (~456 MB, named per competitor; not published)
+data-golf/post-event analysis/submissions/

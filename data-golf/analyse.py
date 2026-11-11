@@ -358,6 +358,9 @@ CONDITION_ECLS = {
     # Q16. |Causative agent| rather than a wildcard attribute, so the criterion
     # means "caused by" instead of "mentions a bacterium in any role".
     "bacterial_joint_non_strep": "( (<404684003:{246075003=<<409822003,363698007=<<39352004}) ) MINUS ( ((<<278544002) OR (<404684003:{246075003=<<58800005,363698007=<<39352004})) )",
+    # Q14. |Open wound| with a finding site under |Upper limb structure|, minus
+    # those sited on a finger or the thumb.
+    "open_wound_upper_limb_excl_fingers_thumb": "( (<81405006) ) MINUS ( (<417163006:{116676008=<<59091005,363698007=<<125685002}) )",
 }
 
 @dataclass(frozen=True)
@@ -383,8 +386,6 @@ MEDICINE_ECLS = {
     "arb": MedicineEcl("<<372913009", r"losartan|valsartan|irbesartan|candesartan|telmisartan|olmesartan|eprosartan|azilsartan|fimasartan"),
     # Q7. |Digitalis glycoside| covers digoxin, digitoxin, medigoxin etc.
     "cardiac_glycoside": MedicineEcl("<<(<373247007 AND <372707005) OR (<105590001 :738774007 =<<(<373247007 AND <372707005))", r"digoxin|digitoxin|ouabain|lanatoside|proscillaridin|peruvoside|bufalin"),
-    # Q14. Digoxin specifically, as the question names it. 
-    "digoxin": MedicineEcl("<<387461009 OR (<105590001 :738774007 =<<387461009)", r"digoxin"),
     # Q9. products containing paracetamol.
     "paracetamol": MedicineEcl("<<387517004 OR (<105590001 :738774007 =<<387517004)", r"paracetamol|acetaminophen"),
     # Q11 methotrexate
@@ -403,8 +404,6 @@ MEDICINE_ECLS = {
         r"aspirin|diflunisal|salsalate|ibuprofen|naproxen|ketoprofen|fenoprofen|flurbiprofen|tiaprofenic|dexibuprofen|dexketoprofen|diclofenac|indomethacin|sulindac|etodolac|tolmetin|ketorolac|aceclofenac|nabumetone|mefenamic acid|meclofenamate|piroxicam|meloxicam|tenoxicam|lornoxicam|celecoxib|etoricoxib|parecoxib|rofecoxib|valdecoxib|lumiracoxib|phenylbutazone|metamizole|nimesulide",
         oral_only=True,
     ),
-    # Q14.
-    "loop_diuretic": MedicineEcl("<<372691009", r"frusemide|furosemide|bumetanide|torsemide|ethacrynic|piretanide|azosemide|lasix"),
     # Q17. |Iron and/or iron compound| under an oral-only product template.
     # An earlier version navigated ingredients out of |Iron-containing product in
     # oral dose form| ("(<13790009.<<762951001) AND <<767270007"); that resolved
@@ -652,13 +651,8 @@ def q13_oa_ra_nsaid_low_egfr(df, sets):
     return oa_ra & has_med(df, sets, "nsaid_oral") & (best_egfr(df) < 60)
 
 
-def q14_digoxin_toxicity_risk(df, sets):
-    """Digoxin plus eGFR below 30 plus a loop diuretic."""
-    return (
-        has_med(df, sets, "digoxin")
-        & (best_egfr(df) < 30)
-        & has_med(df, sets, "loop_diuretic")
-    )
+def q14_open_wound_upper_limb_excl_fingers_thumb(df, sets):
+    return has_condition(df, sets, "open_wound_upper_limb_excl_fingers_thumb")
 
 
 def q15_pregnant_high_glucose(df, sets):
@@ -692,7 +686,7 @@ QUESTION_FUNCS: Dict[int, Callable] = {
     11: q11_female_15_49_methotrexate,
     12: q12_pregnant_teratogenic,
     13: q13_oa_ra_nsaid_low_egfr,
-    14: q14_digoxin_toxicity_risk,
+    14: q14_open_wound_upper_limb_excl_fingers_thumb,
     15: q15_pregnant_high_glucose,
     16: q16_bacterial_joint_non_strep,
     17: q17_oral_iron,
@@ -716,7 +710,8 @@ QUESTIONS = {
     12: 'Pregnant patients prescribed a teratogenic medicine.',
     13: 'Patients with osteoarthritis or rheumatoid arthritis taking an oral NSAID, and '
         'their eGFR is below 60.',
-    14: 'Patients prescribed digoxin and a loop diuretic, who have an eGFR below 30.',
+    14: 'Patients with an open wound on an upper limb, excluding the fingers and '
+        'thumb.',
     15: 'Pregnant patients with a fasting glucose of 5.1 mmol/L or greater.',
     16: 'Patients with a non-Streptococcal bacterial joint infection.',
     17: 'Patients taking an oral iron supplement.',
@@ -742,11 +737,11 @@ def assign_usage(flag_df, q_cols, public_fraction=PUBLIC_FRACTION, seed=SPLIT_SE
     short of its target for that question.
 
     Taking the rarest question first is the whole point. The low-prevalence
-    questions are the ones a naive split ruins -- Q14 (digoxin + loop diuretic +
-    eGFR < 30) is a triple conjunction with single-digit positives, and an
-    unstratified split can strand nearly all of them on one side. That is not
-    just noisy: F1 = 2TP/(2TP+FP+FN) is 0 for *every* submission when a split
-    has no true positives to find, so the question silently stops discriminating
+    questions are the ones a naive split ruins -- a multi-condition conjunction
+    with single-digit positives can have an unstratified split strand nearly all
+    of them on one side. That is not just noisy: F1 = 2TP/(2TP+FP+FN) is 0 for
+    *every* submission when a split has no true positives to find, so the
+    question silently stops discriminating
     and caps everyone's macro-F1 at 17/18. Placing the rare questions while all
     rows are still free avoids this; by the time the common questions are placed
     there are plenty of rows left to balance them either way.

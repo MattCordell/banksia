@@ -2,14 +2,2898 @@
   "_comment": "Unrecoverable in-scope concepts (see metrics.txt) to over-sample. 'factor' is the default weight multiple relative to their peers; override with --boost-factor.",
   "factor": 3.0,
   "codes": [
-    {"code": "310640003", "questions": "Q5,Q13", "display": "Degenerative lesion of articular cartilage of knee"},
-    {"code": "43132002", "questions": "Q5,Q13", "display": "Degeneration of cervicothoracic intervertebral disc"},
-    {"code": "371603001", "questions": "Q12", "display": "Doxycycline calcium 5 mg/mL oral suspension"},
-    {"code": "375129007", "questions": "Q12", "display": "Doxycycline monohydrate 100 mg oral capsule"},
-    {"code": "199158007", "questions": "Q12,Q15", "display": "Maternal syphilis during pregnancy - baby not yet delivered"},
-    {"code": "40193008", "questions": "Q12,Q15", "display": "Single vessel of umbilical cord"},
-    {"code": "239795001", "questions": "Q13", "display": "Rheumatoid arthritis with multisystem involvement"},
-    {"code": "319841000119107", "questions": "Q13", "display": "Rheumatoid lung disease with rheumatoid arthritis"},
-    {"code": "82939003", "questions": "Q13", "display": "Chronic rheumatoid nodular fibrosis"}
+    {
+      "code": "310640003",
+      "questions": "Q5,Q13",
+      "display": "Degenerative lesion of articular cartilage of knee"
+    },
+    {
+      "code": "43132002",
+      "questions": "Q5,Q13",
+      "display": "Degeneration of cervicothoracic intervertebral disc"
+    },
+    {
+      "code": "371603001",
+      "questions": "Q12",
+      "display": "Doxycycline calcium 5 mg/mL oral suspension"
+    },
+    {
+      "code": "375129007",
+      "questions": "Q12",
+      "display": "Doxycycline monohydrate 100 mg oral capsule"
+    },
+    {
+      "code": "199158007",
+      "questions": "Q12,Q15",
+      "display": "Maternal syphilis during pregnancy - baby not yet delivered"
+    },
+    {
+      "code": "40193008",
+      "questions": "Q12,Q15",
+      "display": "Single vessel of umbilical cord"
+    },
+    {
+      "code": "239795001",
+      "questions": "Q13",
+      "display": "Rheumatoid arthritis with multisystem involvement"
+    },
+    {
+      "code": "319841000119107",
+      "questions": "Q13",
+      "display": "Rheumatoid lung disease with rheumatoid arthritis"
+    },
+    {
+      "code": "82939003",
+      "questions": "Q13",
+      "display": "Chronic rheumatoid nodular fibrosis"
+    },
+    {
+      "code": "134436002",
+      "display": "Lifestyle (finding)"
+    },
+    {
+      "code": "102476007",
+      "display": "Abnormal patient reaction (finding)"
+    },
+    {
+      "code": "102483000",
+      "display": "Associated symptom (finding)"
+    },
+    {
+      "code": "160644006",
+      "display": "Attends exercise classes (finding)"
+    },
+    {
+      "code": "160764008",
+      "display": "Midwife attends 1-10 days post-discharge (finding)"
+    },
+    {
+      "code": "160765009",
+      "display": "Midwife attends 11-13 days post-discharge (finding)"
+    },
+    {
+      "code": "160766005",
+      "display": "Midwife attends 14-16 days post-discharge (finding)"
+    },
+    {
+      "code": "160767001",
+      "display": "Midwife attends 17-20 days post-discharge (finding)"
+    },
+    {
+      "code": "160768006",
+      "display": "Midwife attends 21-24 days post-discharge (finding)"
+    },
+    {
+      "code": "160769003",
+      "display": "Midwife attends 25-28 days post-discharge (finding)"
+    },
+    {
+      "code": "102734003",
+      "display": "Apolipoprotein LPQ (substance)"
+    },
+    {
+      "code": "164969000",
+      "display": "Dick test negative (finding)"
+    },
+    {
+      "code": "164970004",
+      "display": "Dick test positive (finding)"
+    },
+    {
+      "code": "164972007",
+      "display": "Schick test negative (finding)"
+    },
+    {
+      "code": "164973002",
+      "display": "Schick test positive (finding)"
+    },
+    {
+      "code": "167008003",
+      "display": "No toxic substance in blood (finding)"
+    },
+    {
+      "code": "167510006",
+      "display": "Urine: no bile products (finding)"
+    },
+    {
+      "code": "167511005",
+      "display": "Urine: bile products present (finding)"
+    },
+    {
+      "code": "167855007",
+      "display": "Vomit toxicology: nil found (finding)"
+    },
+    {
+      "code": "168058008",
+      "display": "Calculus core (finding)"
+    },
+    {
+      "code": "168059000",
+      "display": "Calculus inner layer (finding)"
+    },
+    {
+      "code": "168060005",
+      "display": "Calculus middle layer (finding)"
+    },
+    {
+      "code": "168061009",
+      "display": "Calculus outer layer - crust (finding)"
+    },
+    {
+      "code": "168097000",
+      "display": "Amniotic fluid cell content OK (finding)"
+    },
+    {
+      "code": "168277004",
+      "display": "Serology: false positive (finding)"
+    },
+    {
+      "code": "103303007",
+      "display": "Hearing loss remits during vertigo attacks (finding)"
+    },
+    {
+      "code": "169636004",
+      "display": "Parent craft class attended (finding)"
+    },
+    {
+      "code": "169651008",
+      "display": "Antenatal amniocentesis - awaited (finding)"
+    },
+    {
+      "code": "169662008",
+      "display": "Antenatal ultrasound scan awaited (finding)"
+    },
+    {
+      "code": "170552004",
+      "display": "Outpatients last attended (finding)"
+    },
+    {
+      "code": "170706008",
+      "display": "Epilepsy associated problems (finding)"
+    },
+    {
+      "code": "170801006",
+      "display": "Attends slimming clinic (finding)"
+    },
+    {
+      "code": "170901005",
+      "display": "Ostomy patient problem (finding)"
+    },
+    {
+      "code": "171106005",
+      "display": "Screening invite -not attended (finding)"
+    },
+    {
+      "code": "171273009",
+      "display": "Immunization invitation - not attended (finding)"
+    },
+    {
+      "code": "171325001",
+      "display": "New patient screening requested (finding)"
+    },
+    {
+      "code": "103707005",
+      "display": "Patient status determination resolved (finding)"
+    },
+    {
+      "code": "180865007",
+      "display": "Failure to achieve operative objectives (disorder)"
+    },
+    {
+      "code": "182853003",
+      "display": "Drug not collect -pat.disagree (finding)"
+    },
+    {
+      "code": "183654001",
+      "display": "Follow-up in outpatient clinic (finding)"
+    },
+    {
+      "code": "183737004",
+      "display": "Domiciliary visit received (finding)"
+    },
+    {
+      "code": "183738009",
+      "display": "General medicine domiciliary visit done (finding)"
+    },
+    {
+      "code": "183739001",
+      "display": "Pediatric domiciliary visit done (finding)"
+    },
+    {
+      "code": "183740004",
+      "display": "Dermatology domiciliary visit done (finding)"
+    },
+    {
+      "code": "183741000",
+      "display": "Cardiology domiciliary visit done (finding)"
+    },
+    {
+      "code": "183742007",
+      "display": "Immunology domiciliary visit done (finding)"
+    },
+    {
+      "code": "183743002",
+      "display": "Neurology domiciliary visit done (finding)"
+    },
+    {
+      "code": "183744008",
+      "display": "Geriatric domiciliary visit done (finding)"
+    },
+    {
+      "code": "183745009",
+      "display": "Gastroenterology domiciliary visit done (finding)"
+    },
+    {
+      "code": "183746005",
+      "display": "Psychiatry domiciliary visit done (finding)"
+    },
+    {
+      "code": "183747001",
+      "display": "Rheumatology domiciliary visit done (finding)"
+    },
+    {
+      "code": "183749003",
+      "display": "Psychogeriatric domiciliary visit done (finding)"
+    },
+    {
+      "code": "183750003",
+      "display": "Oncology domiciliary visit done (finding)"
+    },
+    {
+      "code": "183751004",
+      "display": "Diabetology domiciliary visit done (finding)"
+    },
+    {
+      "code": "183753001",
+      "display": "General surgical domiciliary visit done (finding)"
+    },
+    {
+      "code": "183754007",
+      "display": "Ophthalmology domiciliary visit done (finding)"
+    },
+    {
+      "code": "183756009",
+      "display": "Orthopedic domiciliary visit done (finding)"
+    },
+    {
+      "code": "183757000",
+      "display": "Neurosurgical domiciliary visit done (finding)"
+    },
+    {
+      "code": "183759002",
+      "display": "Pediatric surgical domiciliary visit done (finding)"
+    },
+    {
+      "code": "183760007",
+      "display": "Obstetric domiciliary visit done (finding)"
+    },
+    {
+      "code": "183761006",
+      "display": "Gynecological domiciliary visit done (finding)"
+    },
+    {
+      "code": "183762004",
+      "display": "Plastic surgery domiciliary visit done (finding)"
+    },
+    {
+      "code": "183763009",
+      "display": "Oral surgery domiciliary visit done (finding)"
+    },
+    {
+      "code": "183764003",
+      "display": "Urological domiciliary visit done (finding)"
+    },
+    {
+      "code": "183798007",
+      "display": "Inpatient stay longer than 12 hours (finding)"
+    },
+    {
+      "code": "183799004",
+      "display": "Inpatient stay 1 day (finding)"
+    },
+    {
+      "code": "183800000",
+      "display": "Inpatient stay 2 days (finding)"
+    },
+    {
+      "code": "183801001",
+      "display": "Inpatient stay 3 days (finding)"
+    },
+    {
+      "code": "183802008",
+      "display": "Inpatient stay 4 days (finding)"
+    },
+    {
+      "code": "183803003",
+      "display": "Inpatient stay 5 days (finding)"
+    },
+    {
+      "code": "183804009",
+      "display": "Inpatient stay 6 days (finding)"
+    },
+    {
+      "code": "183805005",
+      "display": "Inpatient stay 7 days (finding)"
+    },
+    {
+      "code": "183806006",
+      "display": "Inpatient stay 8 days (finding)"
+    },
+    {
+      "code": "183807002",
+      "display": "Inpatient stay 9 days (finding)"
+    },
+    {
+      "code": "183808007",
+      "display": "Inpatient stay 10 days (finding)"
+    },
+    {
+      "code": "183809004",
+      "display": "Inpatient stay 11 days (finding)"
+    },
+    {
+      "code": "183810009",
+      "display": "Inpatient stay 12 days (finding)"
+    },
+    {
+      "code": "183811008",
+      "display": "Inpatient stay 13 days (finding)"
+    },
+    {
+      "code": "183812001",
+      "display": "Inpatient stay 14 days (finding)"
+    },
+    {
+      "code": "184048005",
+      "display": "Patient registration-form used (finding)"
+    },
+    {
+      "code": "184062003",
+      "display": "Patient not registered (finding)"
+    },
+    {
+      "code": "184063008",
+      "display": "Patient signed registration form (finding)"
+    },
+    {
+      "code": "184073005",
+      "display": "Patient re-registered (finding)"
+    },
+    {
+      "code": "184076002",
+      "display": "Patient may not register (finding)"
+    },
+    {
+      "code": "184081006",
+      "display": "Patient has moved away (finding)"
+    },
+    {
+      "code": "184082004",
+      "display": "Patient has gone abroad (finding)"
+    },
+    {
+      "code": "184088000",
+      "display": "Patient away at school (finding)"
+    },
+    {
+      "code": "184089008",
+      "display": "Patient away at college or university (finding)"
+    },
+    {
+      "code": "184090004",
+      "display": "Patient works away (finding)"
+    },
+    {
+      "code": "184109007",
+      "display": "Patient registration data unknown (finding)"
+    },
+    {
+      "code": "184110002",
+      "display": "Patient forename unknown (finding)"
+    },
+    {
+      "code": "184111003",
+      "display": "Patient surname unknown (finding)"
+    },
+    {
+      "code": "184112005",
+      "display": "Patient address unknown (finding)"
+    },
+    {
+      "code": "184113000",
+      "display": "Patient title unknown (finding)"
+    },
+    {
+      "code": "184115007",
+      "display": "Patient sex unknown (finding)"
+    },
+    {
+      "code": "184116008",
+      "display": "Patient marital status unknown (finding)"
+    },
+    {
+      "code": "184117004",
+      "display": "Patient post-code unknown (finding)"
+    },
+    {
+      "code": "184118009",
+      "display": "Patient telephone number unknown (finding)"
+    },
+    {
+      "code": "184119001",
+      "display": "Patient occupation unknown (finding)"
+    },
+    {
+      "code": "184121006",
+      "display": "Patient distance to surgery unknown (finding)"
+    },
+    {
+      "code": "184122004",
+      "display": "Patient hospital number unknown (finding)"
+    },
+    {
+      "code": "184124003",
+      "display": "Patient registration - data queries (finding)"
+    },
+    {
+      "code": "184147002",
+      "display": "New patient questionnaire completed (finding)"
+    },
+    {
+      "code": "184165003",
+      "display": "Registered in deprived area (finding)"
+    },
+    {
+      "code": "184166002",
+      "display": "Registered in deprived area - high (finding)"
+    },
+    {
+      "code": "184167006",
+      "display": "Registered in deprived area - medium (finding)"
+    },
+    {
+      "code": "184168001",
+      "display": "Registered in deprived area - low (finding)"
+    },
+    {
+      "code": "184179006",
+      "display": "Patient says leaving list (finding)"
+    },
+    {
+      "code": "184180009",
+      "display": "Asked to sign med card - done (finding)"
+    },
+    {
+      "code": "184276009",
+      "display": "Awaiting hospital death discharge letter (finding)"
+    },
+    {
+      "code": "184307002",
+      "display": "Postmortem report received (finding)"
+    },
+    {
+      "code": "184817001",
+      "display": "Employment medical bill sent (finding)"
+    },
+    {
+      "code": "184818006",
+      "display": "Employment medical fee paid (finding)"
+    },
+    {
+      "code": "184819003",
+      "display": "Employment medical not paid (finding)"
+    },
+    {
+      "code": "184825004",
+      "display": "Special activity med - paid (finding)"
+    },
+    {
+      "code": "184826003",
+      "display": "Special activity med - unpaid (finding)"
+    },
+    {
+      "code": "184835005",
+      "display": "Life assurance preliminary report completed (finding)"
+    },
+    {
+      "code": "184836006",
+      "display": "Life assurance preliminary report sent off (finding)"
+    },
+    {
+      "code": "184837002",
+      "display": "Life assurance preliminary report fee paid (finding)"
+    },
+    {
+      "code": "184838007",
+      "display": "Life assurance preliminary report fee unpaid (finding)"
+    },
+    {
+      "code": "184857003",
+      "display": "Crime inj comp cert completed (finding)"
+    },
+    {
+      "code": "184858008",
+      "display": "Crime inj comp cert sent off (finding)"
+    },
+    {
+      "code": "184859000",
+      "display": "Crime inj comp cert paid (finding)"
+    },
+    {
+      "code": "184860005",
+      "display": "Crime inj comp cert unpaid (finding)"
+    },
+    {
+      "code": "184874003",
+      "display": "Social sec report sent off (finding)"
+    },
+    {
+      "code": "184875002",
+      "display": "Social sec report fee paid (finding)"
+    },
+    {
+      "code": "184876001",
+      "display": "Social sec report unpaid (finding)"
+    },
+    {
+      "code": "184884002",
+      "display": "Disabled registration application - fee paid (finding)"
+    },
+    {
+      "code": "184885001",
+      "display": "Disabled registration application - fee unpaid (finding)"
+    },
+    {
+      "code": "184894007",
+      "display": "Fitness to drive rep sent off (finding)"
+    },
+    {
+      "code": "184895008",
+      "display": "Fitness to drive rep fee paid (finding)"
+    },
+    {
+      "code": "184896009",
+      "display": "Fitness to drive rep - unpaid (finding)"
+    },
+    {
+      "code": "184903009",
+      "display": "Racing drivers med - fee paid (finding)"
+    },
+    {
+      "code": "184904003",
+      "display": "Racing drivers med - not paid (finding)"
+    },
+    {
+      "code": "184915008",
+      "display": "Elderly drive ins med paid (finding)"
+    },
+    {
+      "code": "184917000",
+      "display": "Elderly driver med not paid (finding)"
+    },
+    {
+      "code": "184923005",
+      "display": "Seat belt exam-fee paid (finding)"
+    },
+    {
+      "code": "184924004",
+      "display": "Seat belt exam - unpaid (finding)"
+    },
+    {
+      "code": "184930004",
+      "display": "PSV exam - fee unpaid (finding)"
+    },
+    {
+      "code": "184941002",
+      "display": "Taxi cab driver med fee paid (finding)"
+    },
+    {
+      "code": "184942009",
+      "display": "Taxi cab driver med fee unpaid (finding)"
+    },
+    {
+      "code": "184968002",
+      "display": "Police attend request-fee sent (finding)"
+    },
+    {
+      "code": "184969005",
+      "display": "Police attend request-paid (finding)"
+    },
+    {
+      "code": "184970006",
+      "display": "Police attend request-unpaid (finding)"
+    },
+    {
+      "code": "184980005",
+      "display": "Solicitors report sent (finding)"
+    },
+    {
+      "code": "184981009",
+      "display": "Solicitors examination and report sent (finding)"
+    },
+    {
+      "code": "184982002",
+      "display": "Solicitors report-fee paid (finding)"
+    },
+    {
+      "code": "184983007",
+      "display": "Solicitors report-fee unpaid (finding)"
+    },
+    {
+      "code": "184989006",
+      "display": "Court att fee to solicitor (finding)"
+    },
+    {
+      "code": "184990002",
+      "display": "Court attendance fee paid (finding)"
+    },
+    {
+      "code": "184991003",
+      "display": "Court attendance fee unpaid (finding)"
+    },
+    {
+      "code": "185001002",
+      "display": "Mobility allowance report - fee paid (finding)"
+    },
+    {
+      "code": "185002009",
+      "display": "Mobility allowance report - fee unpaid (finding)"
+    },
+    {
+      "code": "185004005",
+      "display": "Medical report received (finding)"
+    },
+    {
+      "code": "185006007",
+      "display": "Medical report received from hospital (finding)"
+    },
+    {
+      "code": "185007003",
+      "display": "Insurance form received (finding)"
+    },
+    {
+      "code": "185008008",
+      "display": "Medical reports sent (finding)"
+    },
+    {
+      "code": "185009000",
+      "display": "Medical report sent (finding)"
+    },
+    {
+      "code": "185011009",
+      "display": "War Pensions report requested (finding)"
+    },
+    {
+      "code": "185012002",
+      "display": "War Pensions report sent (finding)"
+    },
+    {
+      "code": "185034000",
+      "display": "Boarded out exam - fee to SS (finding)"
+    },
+    {
+      "code": "185035004",
+      "display": "Boarded out exam - fee paid (finding)"
+    },
+    {
+      "code": "185036003",
+      "display": "Boarded out exam - fee unpaid (finding)"
+    },
+    {
+      "code": "185039005",
+      "display": "Child at risk conf attend >1hr (finding)"
+    },
+    {
+      "code": "185040007",
+      "display": "Child at risk conf attend <1hr (finding)"
+    },
+    {
+      "code": "185043009",
+      "display": "Child at risk fee unpaid (finding)"
+    },
+    {
+      "code": "185047005",
+      "display": "Child to care exam fee to SS (finding)"
+    },
+    {
+      "code": "185048000",
+      "display": "Child to care exam fee paid (finding)"
+    },
+    {
+      "code": "185049008",
+      "display": "Child to care exam fee unpaid (finding)"
+    },
+    {
+      "code": "185090006",
+      "display": "Inf dis notif fee paid (finding)"
+    },
+    {
+      "code": "185091005",
+      "display": "Inf dis notif fee unpaid (finding)"
+    },
+    {
+      "code": "185326000",
+      "display": "Did not attend - reason given (finding)"
+    },
+    {
+      "code": "185379005",
+      "display": "Patient \"called\" - prevention (finding)"
+    },
+    {
+      "code": "185380008",
+      "display": "Patient \"re-called\"-prevention (finding)"
+    },
+    {
+      "code": "185392008",
+      "display": "Patient never seen (finding)"
+    },
+    {
+      "code": "185393003",
+      "display": "Patient seen only once (finding)"
+    },
+    {
+      "code": "185394009",
+      "display": "Patient not seen for more than five years (finding)"
+    },
+    {
+      "code": "185395005",
+      "display": "Patient not seen for more than one year (finding)"
+    },
+    {
+      "code": "185396006",
+      "display": "Patient comes yearly (finding)"
+    },
+    {
+      "code": "185397002",
+      "display": "Patient comes 6 monthly (finding)"
+    },
+    {
+      "code": "185398007",
+      "display": "Patient comes 3 monthly (finding)"
+    },
+    {
+      "code": "185399004",
+      "display": "Patient comes 2 monthly (finding)"
+    },
+    {
+      "code": "185400006",
+      "display": "Patient comes monthly (finding)"
+    },
+    {
+      "code": "185401005",
+      "display": "Patient comes more than once a month (finding)"
+    },
+    {
+      "code": "185402003",
+      "display": "Patient comes more than once a week (finding)"
+    },
+    {
+      "code": "185444009",
+      "display": "Ultrasound scan report received (finding)"
+    },
+    {
+      "code": "185445005",
+      "display": "Isotope scan report received (finding)"
+    },
+    {
+      "code": "185461007",
+      "display": "Home visit planned by doctor (finding)"
+    },
+    {
+      "code": "185471009",
+      "display": "Home visit - no reply (finding)"
+    },
+    {
+      "code": "185542006",
+      "display": "Deleted from call-not wanted (finding)"
+    },
+    {
+      "code": "185543001",
+      "display": "Deleted from call-not attended (finding)"
+    },
+    {
+      "code": "185544007",
+      "display": "Deleted from call - not appropriate (finding)"
+    },
+    {
+      "code": "185552005",
+      "display": "Deleted from recall-not wanted (finding)"
+    },
+    {
+      "code": "185553000",
+      "display": "Deleted from recall - not coming (finding)"
+    },
+    {
+      "code": "185554006",
+      "display": "Deleted from recall - not appropriate (finding)"
+    },
+    {
+      "code": "185562003",
+      "display": "Child immunization - call deleted (finding)"
+    },
+    {
+      "code": "185572000",
+      "display": "Child development - call deleted (finding)"
+    },
+    {
+      "code": "185592007",
+      "display": "Rubella injection - call deleted (finding)"
+    },
+    {
+      "code": "185602008",
+      "display": "Cervical smear - call deleted (finding)"
+    },
+    {
+      "code": "185642003",
+      "display": "Cap check - call deleted (finding)"
+    },
+    {
+      "code": "185654003",
+      "display": "Adult screening - call deleted (finding)"
+    },
+    {
+      "code": "185688009",
+      "display": "Adult immunization - call deleted (finding)"
+    },
+    {
+      "code": "185705002",
+      "display": "Breast screening - call deleted (finding)"
+    },
+    {
+      "code": "185709008",
+      "display": "Breast screening - recall deleted (finding)"
+    },
+    {
+      "code": "185713001",
+      "display": "Breast screening non-attender (finding)"
+    },
+    {
+      "code": "185716009",
+      "display": "Attends hypertension monitoring (finding)"
+    },
+    {
+      "code": "185728001",
+      "display": "Attends asthma monitoring (finding)"
+    },
+    {
+      "code": "185741002",
+      "display": "Attends obesity monitoring (finding)"
+    },
+    {
+      "code": "185753003",
+      "display": "Attends diabetes monitoring (finding)"
+    },
+    {
+      "code": "185765004",
+      "display": "Attends geriatric monitoring (finding)"
+    },
+    {
+      "code": "185777009",
+      "display": "Attends stress monitoring (finding)"
+    },
+    {
+      "code": "185789006",
+      "display": "Attends stop smoking monitoring (finding)"
+    },
+    {
+      "code": "185889003",
+      "display": "Attended new patient screening (finding)"
+    },
+    {
+      "code": "185891006",
+      "display": "New patient screening default (finding)"
+    },
+    {
+      "code": "185897005",
+      "display": "New patient screening deleted (finding)"
+    },
+    {
+      "code": "185908005",
+      "display": "Attends hormone replacement monitoring (finding)"
+    },
+    {
+      "code": "185968008",
+      "display": "Patient awaiting domiciliary (finding)"
+    },
+    {
+      "code": "185969000",
+      "display": "Patient awaiting outpatient department appointment (finding)"
+    },
+    {
+      "code": "185970004",
+      "display": "Patient awaiting medical adm (finding)"
+    },
+    {
+      "code": "185971000",
+      "display": "Patient awaiting surgical adm (finding)"
+    },
+    {
+      "code": "185973002",
+      "display": "Patient awaiting investigation (finding)"
+    },
+    {
+      "code": "105994001",
+      "display": "Regional congenital anomaly (disorder)"
+    },
+    {
+      "code": "193610005",
+      "display": "Toxic cataract not due to drugs (disorder)"
+    },
+    {
+      "code": "198624007",
+      "display": "Membranous pregnancy (disorder)"
+    },
+    {
+      "code": "216299002",
+      "display": "Attack (finding)"
+    },
+    {
+      "code": "224386000",
+      "display": "Attends job club (finding)"
+    },
+    {
+      "code": "225778009",
+      "display": "Toiletries (substance)"
+    },
+    {
+      "code": "225939001",
+      "display": "Likely to spill hot drinks (finding)"
+    },
+    {
+      "code": "229641005",
+      "display": "Transsexual voice (finding)"
+    },
+    {
+      "code": "229986006",
+      "display": "Grasp arm position (finding)"
+    },
+    {
+      "code": "229987002",
+      "display": "Half grasp arm position (finding)"
+    },
+    {
+      "code": "229988007",
+      "display": "Wing arm position (finding)"
+    },
+    {
+      "code": "229989004",
+      "display": "Low wing arm position (finding)"
+    },
+    {
+      "code": "229990008",
+      "display": "Half wing arm position (finding)"
+    },
+    {
+      "code": "229991007",
+      "display": "Half low wing arm position (finding)"
+    },
+    {
+      "code": "229992000",
+      "display": "Bend arm position (finding)"
+    },
+    {
+      "code": "229993005",
+      "display": "Half bend arm position (finding)"
+    },
+    {
+      "code": "229994004",
+      "display": "Across bend arm position (finding)"
+    },
+    {
+      "code": "229995003",
+      "display": "Half across bend arm position (finding)"
+    },
+    {
+      "code": "229996002",
+      "display": "Under bend arm position (finding)"
+    },
+    {
+      "code": "229997006",
+      "display": "Half under bend arm position (finding)"
+    },
+    {
+      "code": "229998001",
+      "display": "Reach arm position (finding)"
+    },
+    {
+      "code": "229999009",
+      "display": "Half reach arm position (finding)"
+    },
+    {
+      "code": "230000003",
+      "display": "Arm support position (finding)"
+    },
+    {
+      "code": "230001004",
+      "display": "Yard arm position (finding)"
+    },
+    {
+      "code": "230002006",
+      "display": "Half yard arm position (finding)"
+    },
+    {
+      "code": "230003001",
+      "display": "Stretch arm position (finding)"
+    },
+    {
+      "code": "230004007",
+      "display": "Half stretch arm position (finding)"
+    },
+    {
+      "code": "230005008",
+      "display": "Ring arm position (finding)"
+    },
+    {
+      "code": "230006009",
+      "display": "Head rest arm position (finding)"
+    },
+    {
+      "code": "230007000",
+      "display": "Neck rest arm position (finding)"
+    },
+    {
+      "code": "234412000",
+      "display": "Abnormal cation transport syndrome (disorder)"
+    },
+    {
+      "code": "238392009",
+      "display": "Sycosis cruris (disorder)"
+    },
+    {
+      "code": "240691009",
+      "display": "Sibbens (disorder)"
+    },
+    {
+      "code": "111362001",
+      "display": "Anal furunculosis (disorder)"
+    },
+    {
+      "code": "241860009",
+      "display": "Condensation trap causing toxic effect (disorder)"
+    },
+    {
+      "code": "241924003",
+      "display": "Firework causing toxic effect (disorder)"
+    },
+    {
+      "code": "249124004",
+      "display": "Condition of amniotic membranes (finding)"
+    },
+    {
+      "code": "253443005",
+      "display": "Ebstein's anomaly of common atrioventricular valve (disorder)"
+    },
+    {
+      "code": "253496001",
+      "display": "Ebstein's anomaly of left atrioventricular valve (disorder)"
+    },
+    {
+      "code": "256130006",
+      "display": "Diethyl methacrylate (substance)"
+    },
+    {
+      "code": "256232007",
+      "display": "Cerulin (substance)"
+    },
+    {
+      "code": "256829004",
+      "display": "Partial toe transfer (substance)"
+    },
+    {
+      "code": "256928008",
+      "display": "A*0201 (substance)"
+    },
+    {
+      "code": "256930005",
+      "display": "A*0203 (substance)"
+    },
+    {
+      "code": "256932002",
+      "display": "A*0205 (substance)"
+    },
+    {
+      "code": "256933007",
+      "display": "A*0206 (substance)"
+    },
+    {
+      "code": "256940008",
+      "display": "A*0301 (substance)"
+    },
+    {
+      "code": "256942000",
+      "display": "A*1101 (substance)"
+    },
+    {
+      "code": "256943005",
+      "display": "A*1102 (substance)"
+    },
+    {
+      "code": "256944004",
+      "display": "A*2301 (substance)"
+    },
+    {
+      "code": "256945003",
+      "display": "A*2401 (substance)"
+    },
+    {
+      "code": "256946002",
+      "display": "A*2501 (substance)"
+    },
+    {
+      "code": "256947006",
+      "display": "A*2601 (substance)"
+    },
+    {
+      "code": "256948001",
+      "display": "A*2901 (substance)"
+    },
+    {
+      "code": "256949009",
+      "display": "A*2902 (substance)"
+    },
+    {
+      "code": "256950009",
+      "display": "A*3001 (substance)"
+    },
+    {
+      "code": "256951008",
+      "display": "A*3002 (substance)"
+    },
+    {
+      "code": "256955004",
+      "display": "A*3201 (substance)"
+    },
+    {
+      "code": "256956003",
+      "display": "A*3301 (substance)"
+    },
+    {
+      "code": "256957007",
+      "display": "A*3401 (substance)"
+    },
+    {
+      "code": "256963003",
+      "display": "A*6801 (substance)"
+    },
+    {
+      "code": "256964009",
+      "display": "A*6802 (substance)"
+    },
+    {
+      "code": "256968007",
+      "display": "B*0701 (substance)"
+    },
+    {
+      "code": "256969004",
+      "display": "B*0702 (substance)"
+    },
+    {
+      "code": "256972006",
+      "display": "B*1301 (substance)"
+    },
+    {
+      "code": "256973001",
+      "display": "B*1302 (substance)"
+    },
+    {
+      "code": "256975008",
+      "display": "B*1402 (substance)"
+    },
+    {
+      "code": "256978005",
+      "display": "B*1503 (substance)"
+    },
+    {
+      "code": "256980004",
+      "display": "B*1801 (substance)"
+    },
+    {
+      "code": "256984008",
+      "display": "B*2704 (substance)"
+    },
+    {
+      "code": "256985009",
+      "display": "B*2705 (substance)"
+    },
+    {
+      "code": "256989003",
+      "display": "B*3502 (substance)"
+    },
+    {
+      "code": "256990007",
+      "display": "B*3503 (substance)"
+    },
+    {
+      "code": "256991006",
+      "display": "B*3504 (substance)"
+    },
+    {
+      "code": "256994003",
+      "display": "B*3701 (substance)"
+    },
+    {
+      "code": "256995002",
+      "display": "B*3801 (substance)"
+    },
+    {
+      "code": "256996001",
+      "display": "B*3901 (substance)"
+    },
+    {
+      "code": "256997005",
+      "display": "B*3902 (substance)"
+    },
+    {
+      "code": "256998000",
+      "display": "B*4001 (substance)"
+    },
+    {
+      "code": "256999008",
+      "display": "B*4002 (substance)"
+    },
+    {
+      "code": "257004002",
+      "display": "B*4201 (substance)"
+    },
+    {
+      "code": "257006000",
+      "display": "B*4402 (substance)"
+    },
+    {
+      "code": "257007009",
+      "display": "B*4403 (substance)"
+    },
+    {
+      "code": "257009007",
+      "display": "B*4601 (substance)"
+    },
+    {
+      "code": "257010002",
+      "display": "B*4701 (substance)"
+    },
+    {
+      "code": "257011003",
+      "display": "B*4801 (substance)"
+    },
+    {
+      "code": "257012005",
+      "display": "B*4901 (substance)"
+    },
+    {
+      "code": "257013000",
+      "display": "B*5001 (substance)"
+    },
+    {
+      "code": "257014006",
+      "display": "B*5101 (substance)"
+    },
+    {
+      "code": "257016008",
+      "display": "B*5201 (substance)"
+    },
+    {
+      "code": "257017004",
+      "display": "B*5301 (substance)"
+    },
+    {
+      "code": "257019001",
+      "display": "B*5501 (substance)"
+    },
+    {
+      "code": "257020007",
+      "display": "B*5601 (substance)"
+    },
+    {
+      "code": "257022004",
+      "display": "B*5701 (substance)"
+    },
+    {
+      "code": "257023009",
+      "display": "B*5702 (substance)"
+    },
+    {
+      "code": "257028000",
+      "display": "Cw*0102 (substance)"
+    },
+    {
+      "code": "257033001",
+      "display": "Cw*0302 (substance)"
+    },
+    {
+      "code": "257034007",
+      "display": "Cw*0401 (substance)"
+    },
+    {
+      "code": "257035008",
+      "display": "Cw*0501 (substance)"
+    },
+    {
+      "code": "257037000",
+      "display": "Cw*0701 (substance)"
+    },
+    {
+      "code": "257038005",
+      "display": "Cw*0702 (substance)"
+    },
+    {
+      "code": "257039002",
+      "display": "Cw*0801 (substance)"
+    },
+    {
+      "code": "257040000",
+      "display": "Cw*0802 (substance)"
+    },
+    {
+      "code": "257043003",
+      "display": "Cw*1202 (substance)"
+    },
+    {
+      "code": "257044009",
+      "display": "Cw*1301 (substance)"
+    },
+    {
+      "code": "257048007",
+      "display": "DPA1*0103 (substance)"
+    },
+    {
+      "code": "257049004",
+      "display": "DPA1*0201 (substance)"
+    },
+    {
+      "code": "257050004",
+      "display": "DPA1*02021 (substance)"
+    },
+    {
+      "code": "257054008",
+      "display": "DPB1*0101 (substance)"
+    },
+    {
+      "code": "257055009",
+      "display": "DPB1*0201 (substance)"
+    },
+    {
+      "code": "257059003",
+      "display": "DPB1*0301 (substance)"
+    },
+    {
+      "code": "257060008",
+      "display": "DPB1*0401 (substance)"
+    },
+    {
+      "code": "257062000",
+      "display": "DPB1*0501 (substance)"
+    },
+    {
+      "code": "257066002",
+      "display": "DPB1*1101 (substance)"
+    },
+    {
+      "code": "257075000",
+      "display": "DPB1*2001 (substance)"
+    },
+    {
+      "code": "257081008",
+      "display": "DPB1*2601 (substance)"
+    },
+    {
+      "code": "257091002",
+      "display": "DQA1*0101 (substance)"
+    },
+    {
+      "code": "257092009",
+      "display": "DQA1*0102 (substance)"
+    },
+    {
+      "code": "257094005",
+      "display": "DQA1*0104 (substance)"
+    },
+    {
+      "code": "257099000",
+      "display": "DQA1*0401 (substance)"
+    },
+    {
+      "code": "257100008",
+      "display": "DQA1*0501 (substance)"
+    },
+    {
+      "code": "257104004",
+      "display": "DQA1*0601 (substance)"
+    },
+    {
+      "code": "257105003",
+      "display": "DQB1*0501 (substance)"
+    },
+    {
+      "code": "257106002",
+      "display": "DQB1*0502 (substance)"
+    },
+    {
+      "code": "257110004",
+      "display": "DQB1*0601 (substance)"
+    },
+    {
+      "code": "257111000",
+      "display": "DQB1*0602 (substance)"
+    },
+    {
+      "code": "257112007",
+      "display": "DQB1*0603 (substance)"
+    },
+    {
+      "code": "257113002",
+      "display": "DQB1*0604 (substance)"
+    },
+    {
+      "code": "257114008",
+      "display": "DQB1*0605 (substance)"
+    },
+    {
+      "code": "257116005",
+      "display": "DQB1*0201 (substance)"
+    },
+    {
+      "code": "257117001",
+      "display": "DQB1*0301 (substance)"
+    },
+    {
+      "code": "257118006",
+      "display": "DQB1*0302 (substance)"
+    },
+    {
+      "code": "257122001",
+      "display": "DQB1*0401 (substance)"
+    },
+    {
+      "code": "257124000",
+      "display": "DRB1*0101 (substance)"
+    },
+    {
+      "code": "257125004",
+      "display": "DRB1*0102 (substance)"
+    },
+    {
+      "code": "257127007",
+      "display": "DRB1*1501 (substance)"
+    },
+    {
+      "code": "257128002",
+      "display": "DRB1*1502 (substance)"
+    },
+    {
+      "code": "257129005",
+      "display": "DRB1*1503 (substance)"
+    },
+    {
+      "code": "257130000",
+      "display": "DRB1*1601 (substance)"
+    },
+    {
+      "code": "257132008",
+      "display": "DRB1*1602 (substance)"
+    },
+    {
+      "code": "257133003",
+      "display": "DRB1*0301 (substance)"
+    },
+    {
+      "code": "257134009",
+      "display": "DRB1*0302 (substance)"
+    },
+    {
+      "code": "257136006",
+      "display": "DRB1*0401 (substance)"
+    },
+    {
+      "code": "257138007",
+      "display": "DRB1*0403 (substance)"
+    },
+    {
+      "code": "257139004",
+      "display": "DRB1*0404 (substance)"
+    },
+    {
+      "code": "257140002",
+      "display": "DRB1*0405 (substance)"
+    },
+    {
+      "code": "257141003",
+      "display": "DRB1*0406 (substance)"
+    },
+    {
+      "code": "257142005",
+      "display": "DRB1*0407 (substance)"
+    },
+    {
+      "code": "257143000",
+      "display": "DRB1*0408 (substance)"
+    },
+    {
+      "code": "257150001",
+      "display": "DRB1*1102 (substance)"
+    },
+    {
+      "code": "257155006",
+      "display": "DRB1*1202 (substance)"
+    },
+    {
+      "code": "257156007",
+      "display": "DRB1*1301 (substance)"
+    },
+    {
+      "code": "257157003",
+      "display": "DRB1*1302 (substance)"
+    },
+    {
+      "code": "257158008",
+      "display": "DRB1*1303 (substance)"
+    },
+    {
+      "code": "257162002",
+      "display": "DRB1*1401 (substance)"
+    },
+    {
+      "code": "257164001",
+      "display": "DRB1*1403 (substance)"
+    },
+    {
+      "code": "257166004",
+      "display": "DRB1*1405 (substance)"
+    },
+    {
+      "code": "257167008",
+      "display": "DRB1*1406 (substance)"
+    },
+    {
+      "code": "257168003",
+      "display": "DRB1*1407 (substance)"
+    },
+    {
+      "code": "257171006",
+      "display": "DRB1*0701 (substance)"
+    },
+    {
+      "code": "257173009",
+      "display": "DRB1*0801 (substance)"
+    },
+    {
+      "code": "257178000",
+      "display": "DRB1*0804 (substance)"
+    },
+    {
+      "code": "257182003",
+      "display": "DRB1*1001 (substance)"
+    },
+    {
+      "code": "257183008",
+      "display": "DRB3*0101 (substance)"
+    },
+    {
+      "code": "257185001",
+      "display": "DRB3*0202 (substance)"
+    },
+    {
+      "code": "257186000",
+      "display": "DRB3*0301 (substance)"
+    },
+    {
+      "code": "257187009",
+      "display": "DRB4*0101 (substance)"
+    },
+    {
+      "code": "257188004",
+      "display": "DRB5*0101 (substance)"
+    },
+    {
+      "code": "259089000",
+      "display": "Biochemical analyte (substance)"
+    },
+    {
+      "code": "259592005",
+      "display": "Alpha-1-antitrypsin isoform null (substance)"
+    },
+    {
+      "code": "259617005",
+      "display": "Fetal sulfur glycoprotein antigen (substance)"
+    },
+    {
+      "code": "259671000",
+      "display": "Stone constituent (substance)"
+    },
+    {
+      "code": "259677001",
+      "display": "Hematology analyte (substance)"
+    },
+    {
+      "code": "259776003",
+      "display": "Immunology analyte (substance)"
+    },
+    {
+      "code": "259777007",
+      "display": "Immunochemistry analyte (substance)"
+    },
+    {
+      "code": "259854003",
+      "display": "Hemorrhagic fever virus antibody (substance)"
+    },
+    {
+      "code": "259859008",
+      "display": "Amebic antibody (substance)"
+    },
+    {
+      "code": "259943009",
+      "display": "Cellular analyte (substance)"
+    },
+    {
+      "code": "259986009",
+      "display": "Flinders medical center-7 marker (substance)"
+    },
+    {
+      "code": "259988005",
+      "display": "Transplantation analyte (substance)"
+    },
+    {
+      "code": "260071009",
+      "display": "Human leukocyte antigen allele (substance)"
+    },
+    {
+      "code": "264305004",
+      "display": "Ectopic releasing factor (substance)"
+    },
+    {
+      "code": "264324001",
+      "display": "Toxic material (substance)"
+    },
+    {
+      "code": "270054009",
+      "display": "Patient registered - FP4 (finding)"
+    },
+    {
+      "code": "270055005",
+      "display": "Patient registered - FP4/4B (finding)"
+    },
+    {
+      "code": "270056006",
+      "display": "Patient registered - FP1 (finding)"
+    },
+    {
+      "code": "270057002",
+      "display": "Patient registered - FP58 (finding)"
+    },
+    {
+      "code": "270058007",
+      "display": "Patient registered - FP19 (finding)"
+    },
+    {
+      "code": "270059004",
+      "display": "Patient registered - FP32 (finding)"
+    },
+    {
+      "code": "270060009",
+      "display": "Patient registered - FP106 (finding)"
+    },
+    {
+      "code": "270061008",
+      "display": "FP13 - ex HM forces registrat (finding)"
+    },
+    {
+      "code": "270062001",
+      "display": "Patient registered GMS1 (finding)"
+    },
+    {
+      "code": "270071005",
+      "display": "Patient registered by FPC (finding)"
+    },
+    {
+      "code": "270074002",
+      "display": "FPC told patient deregistered (finding)"
+    },
+    {
+      "code": "270075001",
+      "display": "FPC acknowledge patient deregistration (finding)"
+    },
+    {
+      "code": "270103006",
+      "display": "Coroner report - requested (finding)"
+    },
+    {
+      "code": "270104000",
+      "display": "Coroner report - sent off (finding)"
+    },
+    {
+      "code": "270105004",
+      "display": "Coroner report - paid for (finding)"
+    },
+    {
+      "code": "270108002",
+      "display": "Coroner's postmortem report awaited (finding)"
+    },
+    {
+      "code": "270109005",
+      "display": "Coroner's postmortem report requested (finding)"
+    },
+    {
+      "code": "270110000",
+      "display": "Coroner's postmortem report received (finding)"
+    },
+    {
+      "code": "270355000",
+      "display": "Special activity med fee sent (finding)"
+    },
+    {
+      "code": "270412003",
+      "display": "Court of protect cert signed (finding)"
+    },
+    {
+      "code": "270413008",
+      "display": "Court of prot cert fee sent (finding)"
+    },
+    {
+      "code": "270414002",
+      "display": "Court of prot cert fee paid (finding)"
+    },
+    {
+      "code": "270415001",
+      "display": "Court of prot fee unpaid (finding)"
+    },
+    {
+      "code": "270426007",
+      "display": "Did not attend - no reason (finding)"
+    },
+    {
+      "code": "270564006",
+      "display": "Patient reg. form sent to HB (finding)"
+    },
+    {
+      "code": "270607006",
+      "display": "Police surgeon's postmortem report awaited (finding)"
+    },
+    {
+      "code": "270608001",
+      "display": "Police surgeon's postmortem report requested (finding)"
+    },
+    {
+      "code": "270609009",
+      "display": "Police surgeon's postmortem report received (finding)"
+    },
+    {
+      "code": "270832006",
+      "display": "Special activity med bill sent (finding)"
+    },
+    {
+      "code": "271555006",
+      "display": "Patient registered - GPR (finding)"
+    },
+    {
+      "code": "271892003",
+      "display": "Hysterical simulation of disease (finding)"
+    },
+    {
+      "code": "272524002",
+      "display": "Analyte (substance)"
+    },
+    {
+      "code": "274684006",
+      "display": "False-positive serological test for syphilis (finding)"
+    },
+    {
+      "code": "274852001",
+      "display": "Abnormal enzyme level in specimens from male genital organs (finding)"
+    },
+    {
+      "code": "275585008",
+      "display": "Patient awaiting procedure (finding)"
+    },
+    {
+      "code": "275652006",
+      "display": "Patient registered - FP13 (finding)"
+    },
+    {
+      "code": "275694009",
+      "display": "Patient defaulted from follow-up (finding)"
+    },
+    {
+      "code": "275982002",
+      "display": "Cervical smear non-responder (finding)"
+    },
+    {
+      "code": "276085006",
+      "display": "Bought out of service (finding)"
+    },
+    {
+      "code": "276590002",
+      "display": "Tentorial laceration - acute syndrome (disorder)"
+    },
+    {
+      "code": "276591003",
+      "display": "Tentorial laceration - subacute syndrome (disorder)"
+    },
+    {
+      "code": "276620002",
+      "display": "Traumatic neonatal facial cyanosis (disorder)"
+    },
+    {
+      "code": "277282008",
+      "display": "Cosmetic component (substance)"
+    },
+    {
+      "code": "277770000",
+      "display": "Specific antigen (substance)"
+    },
+    {
+      "code": "278698006",
+      "display": "Drug analyte (substance)"
+    },
+    {
+      "code": "281335003",
+      "display": "No patient sex given (finding)"
+    },
+    {
+      "code": "281336002",
+      "display": "No patient name given (finding)"
+    },
+    {
+      "code": "281341005",
+      "display": "Awaiting request (finding)"
+    },
+    {
+      "code": "281399006",
+      "display": "Did not attend (finding)"
+    },
+    {
+      "code": "289281002",
+      "display": "Placenta problem (finding)"
+    },
+    {
+      "code": "289926004",
+      "display": "Manufactured material (substance)"
+    },
+    {
+      "code": "289996005",
+      "display": "Household material (substance)"
+    },
+    {
+      "code": "300848003",
+      "display": "Mass of body structure (finding)"
+    },
+    {
+      "code": "301297006",
+      "display": "Chest sinus (finding)"
+    },
+    {
+      "code": "302178002",
+      "display": "Outcome of benefit application awaited (finding)"
+    },
+    {
+      "code": "304634006",
+      "display": "Arm positioned out on arm board (finding)"
+    },
+    {
+      "code": "305518007",
+      "display": "Under care of psychiatrist for mental handicap (finding)"
+    },
+    {
+      "code": "305698003",
+      "display": "Seen by psychiatrist for mental handicap (finding)"
+    },
+    {
+      "code": "306939000",
+      "display": "Rinne false negative (finding)"
+    },
+    {
+      "code": "307927003",
+      "display": "Patient registered (finding)"
+    },
+    {
+      "code": "308722001",
+      "display": "Patient asked to attend (finding)"
+    },
+    {
+      "code": "119251002",
+      "display": "Reverse sneezing (finding)"
+    },
+    {
+      "code": "310451009",
+      "display": "Life assurance report requested (finding)"
+    },
+    {
+      "code": "310453007",
+      "display": "Disabled driver report requested (finding)"
+    },
+    {
+      "code": "310454001",
+      "display": "Fitness to drive report requested (finding)"
+    },
+    {
+      "code": "310455000",
+      "display": "Medical report requested (finding)"
+    },
+    {
+      "code": "310456004",
+      "display": "Report requested by benefits agency (finding)"
+    },
+    {
+      "code": "310458003",
+      "display": "Disabled registration report requested (finding)"
+    },
+    {
+      "code": "310855005",
+      "display": "Housing report requested (finding)"
+    },
+    {
+      "code": "310856006",
+      "display": "Housing report sent (finding)"
+    },
+    {
+      "code": "310857002",
+      "display": "Housing report paid (finding)"
+    },
+    {
+      "code": "310880005",
+      "display": "Cholesterol reduction program - attended (finding)"
+    },
+    {
+      "code": "311947007",
+      "display": "Writing and printing material (substance)"
+    },
+    {
+      "code": "311952002",
+      "display": "Fire-related material (substance)"
+    },
+    {
+      "code": "312273006",
+      "display": "Microbiology analyte (substance)"
+    },
+    {
+      "code": "312274000",
+      "display": "Cast analyte (substance)"
+    },
+    {
+      "code": "312290000",
+      "display": "Bile chemical (substance)"
+    },
+    {
+      "code": "312297002",
+      "display": "Constituents (substance)"
+    },
+    {
+      "code": "312298007",
+      "display": "Abnormal constituent (substance)"
+    },
+    {
+      "code": "312299004",
+      "display": "Foreign constituent (substance)"
+    },
+    {
+      "code": "312300007",
+      "display": "Mineral analyte (substance)"
+    },
+    {
+      "code": "312887003",
+      "display": "Attending clinic (finding)"
+    },
+    {
+      "code": "312888008",
+      "display": "Attending diabetes clinic (finding)"
+    },
+    {
+      "code": "312889000",
+      "display": "Attending ophthalmology clinic (finding)"
+    },
+    {
+      "code": "312890009",
+      "display": "Attending establishment (finding)"
+    },
+    {
+      "code": "313374008",
+      "display": "Solicitors report requested (finding)"
+    },
+    {
+      "code": "314860001",
+      "display": "Attending cardiology clinic (finding)"
+    },
+    {
+      "code": "124193005",
+      "display": "Deficiency of urate oxidase (disorder)"
+    },
+    {
+      "code": "124194004",
+      "display": "Deficiency of nitrate reductase (disorder)"
+    },
+    {
+      "code": "128947001",
+      "display": "Graft to cited body segment (substance)"
+    },
+    {
+      "code": "128950003",
+      "display": "Arterial graft to cited segment (substance)"
+    },
+    {
+      "code": "128951004",
+      "display": "Venous graft to cited segment (substance)"
+    },
+    {
+      "code": "129840009",
+      "display": "At risk for physiological dysfunction (finding)"
+    },
+    {
+      "code": "13543005",
+      "display": "Pressure (finding)"
+    },
+    {
+      "code": "360517009",
+      "display": "Whirling disease (disorder)"
+    },
+    {
+      "code": "360653002",
+      "display": "Deficiency of pectinesterase (disorder)"
+    },
+    {
+      "code": "17216000",
+      "display": "Dyspnea, class I (finding)"
+    },
+    {
+      "code": "17545002",
+      "display": "Decreased diameter (finding)"
+    },
+    {
+      "code": "19181003",
+      "display": "Lymphocytic plasmacytic synovitis (disorder)"
+    },
+    {
+      "code": "19776001",
+      "display": "Decreased size (finding)"
+    },
+    {
+      "code": "20224008",
+      "display": "Delta heavy chain disease (disorder)"
+    },
+    {
+      "code": "2346005",
+      "display": "Vascormone (substance)"
+    },
+    {
+      "code": "363011001",
+      "display": "Complication of diathermy procedure (disorder)"
+    },
+    {
+      "code": "25332000",
+      "display": "Diplodiosis (disorder)"
+    },
+    {
+      "code": "26485002",
+      "display": "Sawdust liver (disorder)"
+    },
+    {
+      "code": "2665008",
+      "display": "Coordinate convulsion (finding)"
+    },
+    {
+      "code": "28608002",
+      "display": "Choriovitelline placenta (disorder)"
+    },
+    {
+      "code": "29143009",
+      "display": "Decreased thickness (finding)"
+    },
+    {
+      "code": "29165009",
+      "display": "Decreased pressure (finding)"
+    },
+    {
+      "code": "3209002",
+      "display": "Pancuronium sodium (substance)"
+    },
+    {
+      "code": "322006",
+      "display": "Octylphenoxy P.H. ethanol (substance)"
+    },
+    {
+      "code": "32979008",
+      "display": "Chronic failure (finding)"
+    },
+    {
+      "code": "3455002",
+      "display": "Discontinued pesticide (substance)"
+    },
+    {
+      "code": "37251003",
+      "display": "Auditory reflex (finding)"
+    },
+    {
+      "code": "37758008",
+      "display": "Drug-induced coagulation inhibitor (substance)"
+    },
+    {
+      "code": "365613002",
+      "display": "Finding of presence of hemoglobin (finding)"
+    },
+    {
+      "code": "365706007",
+      "display": "Finding of presence of microbial antigen (finding)"
+    },
+    {
+      "code": "365707003",
+      "display": "Finding of presence of viral antigen (finding)"
+    },
+    {
+      "code": "39950000",
+      "display": "Dyspnea, class III (finding)"
+    },
+    {
+      "code": "40259002",
+      "display": "Progressive sensory ataxia of Charolais (disorder)"
+    },
+    {
+      "code": "42649002",
+      "display": "Riley-Shwachman syndrome (disorder)"
+    },
+    {
+      "code": "43311000",
+      "display": "Latent homosexual state (finding)"
+    },
+    {
+      "code": "43784004",
+      "display": "Thymic lymphopoietin suppressing factor (substance)"
+    },
+    {
+      "code": "45773008",
+      "display": "Garbage poisoning (disorder)"
+    },
+    {
+      "code": "48581007",
+      "display": "Plastic reagent (substance)"
+    },
+    {
+      "code": "49946005",
+      "display": "Podencephalus (disorder)"
+    },
+    {
+      "code": "5078000",
+      "display": "Scriver-Goldbloom-Roy syndrome (disorder)"
+    },
+    {
+      "code": "51590001",
+      "display": "Increased pressure (finding)"
+    },
+    {
+      "code": "54449002",
+      "display": "Forced uterine inversion (disorder)"
+    },
+    {
+      "code": "57489004",
+      "display": "Subacute failure (finding)"
+    },
+    {
+      "code": "59161003",
+      "display": "Thymic erythropoietin suppression factor (substance)"
+    },
+    {
+      "code": "60620005",
+      "display": "Epsilon heavy chain disease (disorder)"
+    },
+    {
+      "code": "6334008",
+      "display": "Cervical inunction (finding)"
+    },
+    {
+      "code": "63884000",
+      "display": "Acute failure (finding)"
+    },
+    {
+      "code": "67419006",
+      "display": "Navicular disease (disorder)"
+    },
+    {
+      "code": "67586006",
+      "display": "Nonylphenoxy P.H. ethanol (substance)"
+    },
+    {
+      "code": "72365000",
+      "display": "Dyspnea, class II (finding)"
+    },
+    {
+      "code": "73272005",
+      "display": "Chronic insufficiency (finding)"
+    },
+    {
+      "code": "73322006",
+      "display": "Dyspnea, class IV (finding)"
+    },
+    {
+      "code": "73883007",
+      "display": "Emulsion proteinuria (finding)"
+    },
+    {
+      "code": "74090008",
+      "display": "Dimozide (substance)"
+    },
+    {
+      "code": "76797004",
+      "display": "Failure (finding)"
+    },
+    {
+      "code": "77065004",
+      "display": "Absence of pressure (finding)"
+    },
+    {
+      "code": "78558002",
+      "display": "Contraction (finding)"
+    },
+    {
+      "code": "81677009",
+      "display": "Lactation tetany (disorder)"
+    },
+    {
+      "code": "85660004",
+      "display": "Multiple personality traits (finding)"
+    },
+    {
+      "code": "87502001",
+      "display": "At risk for imbalanced body temperature (finding)"
+    },
+    {
+      "code": "88007000",
+      "display": "Sodium tetrahydride (substance)"
+    },
+    {
+      "code": "8866002",
+      "display": "Vague functional signs and symptoms (finding)"
+    },
+    {
+      "code": "90434008",
+      "display": "Dual personality traits (finding)"
+    },
+    {
+      "code": "919001",
+      "display": "Pseudohomosexual state (finding)"
+    },
+    {
+      "code": "311932003",
+      "display": "Decorative agent (substance)"
+    },
+    {
+      "code": "370496000",
+      "display": "Urovagina (disorder)"
+    },
+    {
+      "code": "370516001",
+      "display": "Budgerigar fledgling disease (disorder)"
+    },
+    {
+      "code": "371877003",
+      "display": "Device inserted into sheath (finding)"
+    },
+    {
+      "code": "33907000",
+      "display": "Clinical stage III E (finding)"
+    },
+    {
+      "code": "35440002",
+      "display": "Clinical stage I D (finding)"
+    },
+    {
+      "code": "369986006",
+      "display": "N1bi: Metastasis in 1 to 3 lymph nodes, any > 0.2 cm and all < 2 cm in greatest dimension (finding)"
+    },
+    {
+      "code": "369987002",
+      "display": "N1bii: Metastasis in 4 or more lymph nodes, any > 0.2 cm and all < 2 cm in greatest dimension (finding)"
+    },
+    {
+      "code": "369988007",
+      "display": "N1biii: Extension of tumor beyond the capsule of a lymph node metastasis, < 2 cm in greatest dimension (finding)"
+    },
+    {
+      "code": "369989004",
+      "display": "N1biv: Metastasis to a lymph node > 2 cm in greatest dimension (finding)"
+    },
+    {
+      "code": "386125002",
+      "display": "Device crossed septum (finding)"
+    },
+    {
+      "code": "387060001",
+      "display": "Prophyllin (substance)"
+    },
+    {
+      "code": "391109009",
+      "display": "Attends respiratory support group (finding)"
+    },
+    {
+      "code": "395888007",
+      "display": "Squill opiate (substance)"
+    },
+    {
+      "code": "52865009",
+      "display": "Clinical stage IV D (finding)"
+    },
+    {
+      "code": "55336000",
+      "display": "Clinical stage III D (finding)"
+    },
+    {
+      "code": "277772008",
+      "display": "Node stage N1bi (finding)"
+    },
+    {
+      "code": "277776006",
+      "display": "Node stage N1bii (finding)"
+    },
+    {
+      "code": "277777002",
+      "display": "Node stage N1biii (finding)"
+    },
+    {
+      "code": "277778007",
+      "display": "Node stage N1biv (finding)"
+    },
+    {
+      "code": "64202001",
+      "display": "Clinical stage IV E (finding)"
+    },
+    {
+      "code": "64877001",
+      "display": "Clinical stage III S (finding)"
+    },
+    {
+      "code": "70664003",
+      "display": "Clinical stage IV S (finding)"
+    },
+    {
+      "code": "80663004",
+      "display": "pN4 category (finding)"
+    },
+    {
+      "code": "90321006",
+      "display": "Clinical stage II S (finding)"
+    },
+    {
+      "code": "112240001",
+      "display": "Clinical stage II D (finding)"
+    },
+    {
+      "code": "117111002",
+      "display": "Blood product unit awaiting inspection and entry to inventory (finding)"
+    },
+    {
+      "code": "398284004",
+      "display": "Patient in room (finding)"
+    },
+    {
+      "code": "399041003",
+      "display": "Chastek paralysis (disorder)"
+    },
+    {
+      "code": "401178003",
+      "display": "Epilepsy care arrangement (finding)"
+    },
+    {
+      "code": "401248001",
+      "display": "Attends coronary heart disease monitoring (finding)"
+    },
+    {
+      "code": "401305005",
+      "display": "Attending chest clinic (finding)"
+    },
+    {
+      "code": "405256006",
+      "display": "Parturient paresis (disorder)"
+    },
+    {
+      "code": "405778003",
+      "display": "Attends psychiatric outpatient clinic (finding)"
+    },
+    {
+      "code": "405818003",
+      "display": "Arcanobacterial mastitis (disorder)"
+    },
+    {
+      "code": "407616001",
+      "display": "Epilepsy severity (finding)"
+    },
+    {
+      "code": "408336008",
+      "display": "Did not attend physiotherapy appointment (finding)"
+    },
+    {
+      "code": "408382000",
+      "display": "Home visit planned by healthcare professional (finding)"
+    },
+    {
+      "code": "408510000",
+      "display": "Patient awaiting equipment (finding)"
+    },
+    {
+      "code": "46711008",
+      "display": "Diglycol hydroiodide (substance)"
+    },
+    {
+      "code": "185329007",
+      "display": "Did not attend - appointment mix-up (finding)"
+    },
+    {
+      "code": "409041001",
+      "display": "Reproductive risk (finding)"
+    },
+    {
+      "code": "409042008",
+      "display": "Fertility risk (finding)"
+    },
+    {
+      "code": "412767008",
+      "display": "Did not attend psychiatry clinic (finding)"
+    },
+    {
+      "code": "412770007",
+      "display": "Attending day hospital (finding)"
+    },
+    {
+      "code": "413120009",
+      "display": "Did not attend podiatry clinic (finding)"
+    },
+    {
+      "code": "413129005",
+      "display": "Patient asked to make an appointment (finding)"
+    },
+    {
+      "code": "413313008",
+      "display": "Did not attend dentist in last 12 - 18 months (finding)"
+    },
+    {
+      "code": "413314002",
+      "display": "Patient not registered with dentist (finding)"
+    },
+    {
+      "code": "413989008",
+      "display": "Did not attend substance misuse clinic (finding)"
+    },
+    {
+      "code": "413988000",
+      "display": "Did not attend peripheral vascular disease clinic (finding)"
+    },
+    {
+      "code": "413987005",
+      "display": "Did not attend dietetic clinic (finding)"
+    },
+    {
+      "code": "414260005",
+      "display": "First outpatient appointment date (finding)"
+    },
+    {
+      "code": "413986001",
+      "display": "Did not attend community psychiatric nurse review (finding)"
+    },
+    {
+      "code": "414939007",
+      "display": "On suspended waiting list (finding)"
+    },
+    {
+      "code": "416498006",
+      "display": "Attended psycho-educational group (finding)"
+    },
+    {
+      "code": "206453006",
+      "display": "Delayed conjugation causing neonatal jaundice associated with another disorder (disorder)"
+    },
+    {
+      "code": "259667003",
+      "display": "Biochemical analyte functional group (substance)"
+    },
+    {
+      "code": "169592009",
+      "display": "Antenatal care: poor home conditions (situation)"
+    },
+    {
+      "code": "185668005",
+      "display": "Blood pressure screening - call deleted (finding)"
+    },
+    {
+      "code": "183755008",
+      "display": "Ear, nose and throat domiciliary visit done (finding)"
+    },
+    {
+      "code": "314503007",
+      "display": "Did not attend - hospital appointment (finding)"
+    },
+    {
+      "code": "385379008",
+      "display": "Tumor-node-metastasis (TNM) tumor staging finding (finding)"
+    },
+    {
+      "code": "422346007",
+      "display": "Lente human insulin (substance)"
+    },
+    {
+      "code": "414382000",
+      "display": "Healthcare Professional at risk (finding)"
+    },
+    {
+      "code": "427586006",
+      "display": "Head pressing (finding)"
+    },
+    {
+      "code": "413597006",
+      "display": "Attended diabetes structured education program (finding)"
+    },
+    {
+      "code": "184125002",
+      "display": "Questionable if first name of patient correct (finding)"
+    },
+    {
+      "code": "439203001",
+      "display": "Questionable if distance from patient home to site of care correct (finding)"
+    },
+    {
+      "code": "184129008",
+      "display": "Questionable if patient date of birth correct (finding)"
+    },
+    {
+      "code": "184131004",
+      "display": "Questionable if patient marital status correct (finding)"
+    },
+    {
+      "code": "184134007",
+      "display": "Questionable if patient occupation correct (finding)"
+    },
+    {
+      "code": "184132006",
+      "display": "Questionable if patient postal code correct (finding)"
+    },
+    {
+      "code": "184137000",
+      "display": "Questionable if patient hospital number correct (finding)"
+    },
+    {
+      "code": "184133001",
+      "display": "Questionable if patient telephone number correct (finding)"
+    },
+    {
+      "code": "184128000",
+      "display": "Questionable if patient title correct (finding)"
+    },
+    {
+      "code": "274851008",
+      "display": "Abnormal enzyme level finding in specimen from digestive organ and/or abdominal cavity (finding)"
+    },
+    {
+      "code": "184127005",
+      "display": "Questionable if patient address correct (finding)"
+    },
+    {
+      "code": "184126001",
+      "display": "Questionable if last name of patient correct (finding)"
+    },
+    {
+      "code": "184130003",
+      "display": "Questionable if patient sex correct (finding)"
+    },
+    {
+      "code": "288850009",
+      "display": "Risk situation requiring placement on supervision register (finding)"
+    },
+    {
+      "code": "274855004",
+      "display": "Abnormal enzyme level in specimen from female genital organ (finding)"
+    },
+    {
+      "code": "442154008",
+      "display": "Dehiscence of internal surgical wound (disorder)"
+    },
+    {
+      "code": "442377003",
+      "display": "False positive complement fixation test for syphilis (finding)"
+    },
+    {
+      "code": "274856003",
+      "display": "Abnormal enzyme level in specimen from respiratory organ and thorax (finding)"
+    },
+    {
+      "code": "385382003",
+      "display": "Node category finding (finding)"
+    },
+    {
+      "code": "385380006",
+      "display": "Metastasis category finding (finding)"
+    },
+    {
+      "code": "22079002",
+      "display": "N4 category (finding)"
+    },
+    {
+      "code": "27167007",
+      "display": "MX category (finding)"
+    },
+    {
+      "code": "53623008",
+      "display": "N1 category (finding)"
+    },
+    {
+      "code": "185472002",
+      "display": "Home visit canceled by patient (finding)"
+    },
+    {
+      "code": "185332005",
+      "display": "Appointment canceled by patient (finding)"
+    },
+    {
+      "code": "449029005",
+      "display": "Imperforate ventriculoarterial valve (disorder)"
+    },
+    {
+      "code": "448948004",
+      "display": "Overriding ventriculoarterial valve (disorder)"
+    },
+    {
+      "code": "449812006",
+      "display": "Intravasation of drug or medicament (disorder)"
+    },
+    {
+      "code": "184929009",
+      "display": "Public service vehicle exam - fee paid (finding)"
+    },
+    {
+      "code": "184176004",
+      "display": "General practitioner responsibility to patient stopped (finding)"
+    },
+    {
+      "code": "266974005",
+      "display": "Human immunodeficiency virus risk lifestyle (finding)"
+    },
+    {
+      "code": "184937001",
+      "display": "Heavy goods vehicle exam - fee unpaid (finding)"
+    },
+    {
+      "code": "185648004",
+      "display": "Oral contraceptives check - call deleted (finding)"
+    },
+    {
+      "code": "413104004",
+      "display": "Did not attend diphtheria, tetanus and acellular pertussis, polio and measles, mumps and rubella vaccine booster (finding)"
+    },
+    {
+      "code": "184936005",
+      "display": "Heavy goods vehicle exam - fee paid (finding)"
+    },
+    {
+      "code": "472946002",
+      "display": "Previously heterosexual transsexual (finding)"
+    },
+    {
+      "code": "472945003",
+      "display": "Previously asexual transsexual (finding)"
+    },
+    {
+      "code": "472947006",
+      "display": "Previously homosexual transsexual (finding)"
+    },
+    {
+      "code": "472977000",
+      "display": "Previously bisexual transsexual (finding)"
+    },
+    {
+      "code": "609185006",
+      "display": "Magnetic resonance imaging report received (finding)"
+    },
+    {
+      "code": "390922008",
+      "display": "Did not attend diabetic clinic (finding)"
+    },
+    {
+      "code": "390923003",
+      "display": "Did not attend cardiac clinic (finding)"
+    },
+    {
+      "code": "397710003",
+      "display": "Did not attend outpatient appointment (finding)"
+    },
+    {
+      "code": "390924009",
+      "display": "Did not attend cholesterol clinic (finding)"
+    },
+    {
+      "code": "390925005",
+      "display": "Did not attend hypertension clinic (finding)"
+    },
+    {
+      "code": "401202005",
+      "display": "Did not attend mental health appointment (finding)"
+    },
+    {
+      "code": "184172002",
+      "display": "Patient deregistered by general practitioner (finding)"
+    },
+    {
+      "code": "185636002",
+      "display": "Contraceptive intrauterine device check - call deleted (finding)"
+    },
+    {
+      "code": "169483008",
+      "display": "Contraceptive intrauterine device fitting awaited (finding)"
+    },
+    {
+      "code": "169484002",
+      "display": "Contraceptive intrauterine device removal awaited (finding)"
+    },
+    {
+      "code": "184114006",
+      "display": "Patient date of birth unknown (finding)"
+    },
+    {
+      "code": "699191007",
+      "display": "Did not attend asthma review (finding)"
+    },
+    {
+      "code": "699381006",
+      "display": "Oculoskeletal dysplasia (disorder)"
+    },
+    {
+      "code": "184173007",
+      "display": "Patient told by general practitioner deregistered (finding)"
+    },
+    {
+      "code": "305869004",
+      "display": "Seen by mental handicap psychiatry service (finding)"
+    },
+    {
+      "code": "268542002",
+      "display": "Cancer cervix screening - not attended (finding)"
+    },
+    {
+      "code": "372986006",
+      "display": "Infection caused by Aspergillus maydis (disorder)"
+    },
+    {
+      "code": "41461004",
+      "display": "Platelet dysfunction caused by drugs (disorder)"
+    },
+    {
+      "code": "373002002",
+      "display": "Infection caused by Aspergillus taumanii (disorder)"
+    },
+    {
+      "code": "372989004",
+      "display": "Infection caused by Aspergillus notatum (disorder)"
+    },
+    {
+      "code": "713972008",
+      "display": "False positive serology for human immunodeficiency virus antibody (finding)"
+    },
+    {
+      "code": "715989002",
+      "display": "Congenital cataract with intellectual disability and anal atresia and urinary defect syndrome (disorder)"
+    },
+    {
+      "code": "720376002",
+      "display": "Registered for access to online patient education (finding)"
+    },
+    {
+      "code": "722108000",
+      "display": "Osteochondrodysplatic nanism, deafness, retinitis pigmentosa syndrome (disorder)"
+    },
+    {
+      "code": "722433005",
+      "display": "Dyschondrosteosis and nephritis syndrome (disorder)"
+    },
+    {
+      "code": "690151000119101",
+      "display": "False positive purified protein derivative (finding)"
+    },
+    {
+      "code": "732247000",
+      "display": "Cleft lip retinopathy syndrome (disorder)"
+    },
+    {
+      "code": "733110004",
+      "display": "Van den Bosch syndrome (disorder)"
+    },
+    {
+      "code": "733507000",
+      "display": "Arm positioned across torso (finding)"
+    },
+    {
+      "code": "733508005",
+      "display": "Arm positioned at side (finding)"
+    },
+    {
+      "code": "735446004",
+      "display": "Hypersensitivity disorder of respiratory tract (disorder)"
+    },
+    {
+      "code": "736815004",
+      "display": "Did not attend abdominal aortic aneurysm screening (finding)"
+    },
+    {
+      "code": "769681006",
+      "display": "First encounter by subject (finding)"
+    },
+    {
+      "code": "769686001",
+      "display": "Subsequent encounter by subject (finding)"
+    },
+    {
+      "code": "103035004",
+      "display": "11-deoxysteroid (substance)"
+    },
+    {
+      "code": "773578004",
+      "display": "Spondylocostal dysostosis, hypospadias, intellectual disability syndrome (disorder)"
+    },
+    {
+      "code": "293994004",
+      "display": "Allergy to calcium channel blocker (finding)"
+    },
+    {
+      "code": "109431006",
+      "display": "Ebstein-like malformation of mitral valve (disorder)"
+    },
+    {
+      "code": "185546009",
+      "display": "Call postponed (finding)"
+    },
+    {
+      "code": "1179268009",
+      "display": "Toy causing toxic effect (disorder)"
+    },
+    {
+      "code": "183748006",
+      "display": "Pulmonary medicine domiciliary visit done (finding)"
+    },
+    {
+      "code": "413103005",
+      "display": "Did not attend diphtheria, tetanus and pertussis, Haemophilus influenzae type b and polio vaccination (finding)"
+    },
+    {
+      "code": "413106002",
+      "display": "Did not attend third diphtheria, tetanus and pertussis, Haemophilus influenzae type b and polio vaccination (finding)"
+    },
+    {
+      "code": "413105003",
+      "display": "Did not attend second diphtheria, tetanus and pertussis, Haemophilus influenzae type b and polio vaccination (finding)"
+    },
+    {
+      "code": "1237201004",
+      "display": "Naloxone dependence (disorder)"
+    },
+    {
+      "code": "125150003",
+      "display": "Density below reference range (finding)"
+    },
+    {
+      "code": "167856008",
+      "display": "Substance detected in vomitus (finding)"
+    },
+    {
+      "code": "169581008",
+      "display": "Antenatal care: grand multiparity (situation)"
+    },
+    {
+      "code": "169593004",
+      "display": "Antenatal care: poor antenatal attender (situation)"
+    },
+    {
+      "code": "169594005",
+      "display": "Late onset antenatal care (situation)"
+    }
   ]
 }

@@ -18,7 +18,7 @@ True when the criterion holds for that episode.
 | Q11 | Female patients aged 15 to 49 taking methotrexate. |
 | Q12 | Pregnant patients prescribed a teratogenic medicine. |
 | Q13 | Patients with osteoarthritis or rheumatoid arthritis taking an oral NSAID, and their eGFR is below 60. |
-| Q14 | Patients prescribed digoxin and a loop diuretic, who have an eGFR below 30. |
+| Q14 | Patients with an open wound on an upper limb, excluding the fingers and thumb. |
 | Q15 | Pregnant patients with a fasting glucose of 5.1 mmol/L or greater. |
 | Q16 | Patients with a non-Streptococcal bacterial joint infection. |
 | Q17 | Patients taking an oral iron supplement. |
